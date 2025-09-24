@@ -25,7 +25,9 @@ import {
   Edit,
   Save,
   X,
+  BookOpenCheck,
 } from "lucide-react"
+import { RelatedKnowledgeModal } from "@/components/related-knowledge-modal"
 
 interface Response {
   id: string
@@ -60,6 +62,7 @@ export function ResponseDetailModal({
   const [isEditing, setIsEditing] = useState(false)
   const [editedResponse, setEditedResponse] = useState("")
   const [rejectReason, setRejectReason] = useState("")
+  const [relatedKnowledgeOpen, setRelatedKnowledgeOpen] = useState(false)
 
   if (!response) return null
 
@@ -259,9 +262,19 @@ export function ResponseDetailModal({
         {/* Fixed Footer */}
         <div className="border-t bg-white p-4 flex-shrink-0">
           <div className="flex justify-between">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Đóng
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Đóng
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setRelatedKnowledgeOpen(true)}
+                className="text-indigo-600 border-indigo-200 hover:bg-indigo-50"
+              >
+                <BookOpenCheck className="h-4 w-4 mr-2" />
+                Xem trong KB
+              </Button>
+            </div>
 
             {response.status === "pending" && (
               <div className="flex gap-2">
@@ -278,6 +291,18 @@ export function ResponseDetailModal({
           </div>
         </div>
       </DialogContent>
+
+      {/* Related Knowledge Modal */}
+      <RelatedKnowledgeModal
+        isOpen={relatedKnowledgeOpen}
+        onOpenChange={setRelatedKnowledgeOpen}
+        responseId={response.id}
+        searchContext={response.question}
+        onAttachKnowledge={(knowledgeIds) => {
+          console.log("Attached knowledge items:", knowledgeIds)
+          // Handle knowledge attachment logic here
+        }}
+      />
     </Dialog>
   )
 }

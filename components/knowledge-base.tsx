@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { KnowledgeItemDetailModal } from "@/components/knowledge-item-detail-modal"
+import { MultimediaKnowledgeBase } from "@/components/multimedia-knowledge-base"
 import { RichTextEditorWithPreview } from "@/components/ui/rich-text-editor"
 import { FileUpload } from "@/components/ui/file-upload"
 import { BulkOperations, useBulkSelection, BulkSelectionCheckbox, commonBulkActions } from "@/components/ui/bulk-operations"
@@ -141,6 +142,11 @@ const mockKnowledgeItems: KnowledgeItem[] = [
 ]
 
 export function KnowledgeBase() {
+  // Use the new multimedia knowledge base
+  return <MultimediaKnowledgeBase />
+}
+
+export function KnowledgeBaseOld() {
   const [knowledgeItems, setKnowledgeItems] = useState<KnowledgeItem[]>(mockKnowledgeItems)
   const [categories, setCategories] = useState<Category[]>(mockCategories)
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
