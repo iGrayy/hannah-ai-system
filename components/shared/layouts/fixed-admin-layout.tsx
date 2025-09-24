@@ -32,6 +32,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
     { id: "analytics", label: "Advanced Analytics" },
     { id: "security", label: "Security & Compliance" },
     { id: "integrations", label: "Integration Hub" },
+    { id: "ai-training", label: "AI Training" },
   ]
 
   const currentNavItems = user?.role === "faculty" ? facultyNavItems : adminNavItems

@@ -27,7 +27,7 @@ import {
   X,
   BookOpenCheck,
 } from "lucide-react"
-import { RelatedKnowledgeModal } from "@/components/related-knowledge-modal"
+import { RelatedKnowledgeModal } from "../knowledge/related-knowledge-modal"
 
 interface Response {
   id: string

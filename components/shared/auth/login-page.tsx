@@ -101,6 +101,10 @@ export function LoginPage() {
                 <span className="font-medium text-slate-700">Faculty:</span>
                 <span className="text-slate-600">faculty@hannah.edu / 123456</span>
               </div>
+              <div className="flex items-center justify-between p-2 bg-white rounded-lg">
+                <span className="font-medium text-slate-700">Student:</span>
+                <span className="text-slate-600">student@hannah.edu / 123456</span>
+              </div>
             </div>
           </div>
         </CardContent>

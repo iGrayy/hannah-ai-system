@@ -26,7 +26,7 @@ interface User {
   name: string
   email: string
   role: "admin" | "faculty" | "student"
-  status: "active" | "inactive" | "pending"
+  status: "active" | "inactive" | "awaiting_verification"
   department: string
   lastLogin: string
   createdAt: string
@@ -84,7 +84,7 @@ const mockUsers: User[] = [
     name: "Pham Thi D",
     email: "pham.d@university.edu",
     role: "faculty",
-    status: "pending",
+    status: "awaiting_verification",
     department: "Software Engineering",
     lastLogin: "Never",
     createdAt: "2024-01-10",
@@ -161,10 +161,10 @@ export function AdminUserManagement() {
         )
       case "inactive":
         return <Badge variant="secondary">Inactive</Badge>
-      case "pending":
+      case "awaiting_verification":
         return (
-          <Badge variant="outline" className="border-yellow-500 text-yellow-600">
-            Pending
+          <Badge variant="outline" className="border-orange-500 text-orange-600">
+            Awaiting Verification
           </Badge>
         )
       default:
@@ -194,7 +194,7 @@ export function AdminUserManagement() {
       if (confirm(`Bạn có chắc chắn muốn ${action} tài khoản của ${user.name}?`)) {
         setUsers((prev) =>
           prev.map((u) =>
-            u.id === userId ? { ...u, status: newStatus as "active" | "inactive" | "pending" } : u,
+            u.id === userId ? { ...u, status: newStatus as "active" | "inactive" | "awaiting_verification" } : u,
           ),
         )
         alert(`✅ Đã ${action} tài khoản của ${user.name}`)
@@ -251,10 +251,10 @@ export function AdminUserManagement() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm font-medium">Pending</span>
+              <Clock className="h-4 w-4 text-orange-500" />
+              <span className="text-sm font-medium">Awaiting Verification</span>
             </div>
-            <p className="text-2xl font-bold mt-2">{users.filter((u) => u.status === "pending").length}</p>
+            <p className="text-2xl font-bold mt-2">{users.filter((u) => u.status === "awaiting_verification").length}</p>
           </CardContent>
         </Card>
 

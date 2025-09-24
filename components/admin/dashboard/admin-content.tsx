@@ -1,22 +1,27 @@
 "use client"
 
 import { useState } from "react"
-import { AdminLayout } from "@/components/admin-layout"
-import { SimpleAdminLayout } from "@/components/simple-admin-layout"
-import { FixedAdminLayout } from "@/components/fixed-admin-layout"
-import { FacultyDashboard } from "@/components/faculty-dashboard"
-import { AdminUserManagement } from "@/components/admin-user-management"
-import { AdminSystemConfig } from "@/components/admin-system-config"
-import { AdminPerformance } from "@/components/admin-performance"
-import { AdminAnalytics } from "@/components/admin-analytics"
-import { AdminSecurity } from "@/components/admin-security"
-import { AdminIntegrations } from "@/components/admin-integrations"
-import { ResponseManagement } from "@/components/response-management"
-import { KnowledgeBase } from "@/components/knowledge-base"
-import { QualityAssurance } from "@/components/quality-assurance"
-import { StudentMonitoring } from "@/components/student-monitoring"
-import { UserProfile } from "@/components/user-profile"
+import { FixedAdminLayout } from "@/components/shared/layouts"
 import { useAuth } from "@/contexts/auth-context"
+
+// Import actual components
+import { AdminUserManagement } from "../user-management/admin-user-management"
+import { AdminSystemConfig } from "../system/admin-system-config"
+import { AdminPerformance } from "../system/admin-performance"
+import { AdminIntegrations } from "../system/admin-integrations"
+import { AdminAnalytics } from "../analytics/admin-analytics"
+import { AdminSecurity } from "../security/admin-security"
+import { AITrainingManagement } from "../ai-training/ai-training-management"
+
+// Faculty components (will be imported from faculty module)
+import { FacultyDashboard } from "../../faculty/dashboard/faculty-dashboard"
+import { ResponseManagement } from "../../faculty/responses/response-management"
+import { KnowledgeBase } from "../../faculty/knowledge/knowledge-base"
+import { StudentMonitoring } from "../../faculty/students/student-monitoring"
+import { QualityAssurance } from "../../faculty/quality/quality-assurance"
+import { UserProfile } from "../../shared/common/user-profile"
+
+
 
 export function AdminContent() {
   const { user } = useAuth()
@@ -55,6 +60,8 @@ export function AdminContent() {
           return <AdminSecurity />
         case "integrations":
           return <AdminIntegrations />
+        case "ai-training":
+          return <AITrainingManagement />
         case "profile":
           return <UserProfile />
         default:

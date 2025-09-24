@@ -3,7 +3,7 @@
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 
-type UserRole = "admin" | "faculty"
+type UserRole = "admin" | "faculty" | "student"
 
 interface User {
   id: string
@@ -37,6 +37,13 @@ const mockUsers: User[] = [
     email: "faculty@hannah.edu",
     role: "faculty", // Default faculty role for faculty login
     avatar: "/faculty-avatar.jpg",
+  },
+  {
+    id: "3",
+    name: "Nguyen Van B",
+    email: "student@hannah.edu",
+    role: "student", // Student role for student login
+    avatar: "/student-avatar.jpg",
   },
 ]
 
@@ -79,7 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const userWithRole = {
         ...foundUser,
-        role: foundUser.email.includes("admin") ? ("admin" as UserRole) : ("faculty" as UserRole),
+        role: foundUser.email.includes("admin") ? ("admin" as UserRole) :
+              foundUser.email.includes("student") ? ("student" as UserRole) :
+              ("faculty" as UserRole),
       }
 
       console.log(`[v0] Final role assigned: ${userWithRole.role}`)

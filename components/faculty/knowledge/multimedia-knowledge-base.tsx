@@ -46,7 +46,7 @@ interface MediaContent {
   id: string
   title: string
   description: string
-  type: "article" | "video" | "pdf" | "interactive"
+  type: "article" | "pdf" | "interactive"
   category: string
   tags: string[]
   status: "draft" | "published"
@@ -65,27 +65,6 @@ interface MediaContent {
 }
 
 const mockMediaContent: MediaContent[] = [
-  {
-    id: "kb-1",
-    title: "Introduction to Hannah AI System",
-    description: "Complete overview of Hannah AI features and capabilities",
-    type: "video",
-    category: "Getting Started",
-    tags: ["introduction", "overview", "tutorial"],
-    status: "published",
-    author: "Dr. Smith",
-    createdAt: "2024-01-15",
-    updatedAt: "2024-01-20",
-    mediaUrl: "/videos/intro.mp4",
-    thumbnailUrl: "/thumbnails/intro.jpg",
-    duration: "15:30",
-    chapters: [
-      { title: "Welcome & Overview", startTime: 0 },
-      { title: "Key Features", startTime: 180 },
-      { title: "Getting Started", startTime: 420 },
-      { title: "Q&A Session", startTime: 720 }
-    ]
-  },
   {
     id: "kb-2",
     title: "Faculty User Manual",
@@ -140,7 +119,6 @@ export function MultimediaKnowledgeBase() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "video": return <PlaySquare className="h-5 w-5 text-violet-600" />
       case "pdf": return <FileImage className="h-5 w-5 text-rose-600" />
       case "interactive": return <Sparkles className="h-5 w-5 text-cyan-600" />
       default: return <FileText className="h-5 w-5 text-slate-600" />
@@ -176,56 +154,6 @@ export function MultimediaKnowledgeBase() {
 
   const renderMediaViewer = (content: MediaContent) => {
     switch (content.type) {
-      case "video":
-        return (
-          <div className="space-y-4">
-            <div className="relative bg-black rounded-lg overflow-hidden">
-              <div className="aspect-video flex items-center justify-center">
-                <div className="text-white text-center">
-                  <PlaySquare className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-sm opacity-75">Video Player Placeholder</p>
-                  <p className="text-xs opacity-50">Duration: {content.duration}</p>
-                </div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <div className="flex items-center gap-2 text-white">
-                  <Button size="sm" variant="ghost" className="text-white hover:bg-white/20">
-                    <Play className="h-4 w-4" />
-                  </Button>
-                  <div className="flex-1 bg-white/20 rounded-full h-1">
-                    <div className="bg-white rounded-full h-1 w-1/3"></div>
-                  </div>
-                  <Button size="sm" variant="ghost" className="text-white hover:bg-white/20">
-                    <Volume2 className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-white hover:bg-white/20">
-                    <Maximize className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-            
-            {content.chapters && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Chapters</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {content.chapters.map((chapter, index) => (
-                      <div key={index} className="flex items-center gap-3 p-2 rounded hover:bg-muted cursor-pointer">
-                        <div className="text-xs text-muted-foreground w-12">
-                          {Math.floor(chapter.startTime / 60)}:{(chapter.startTime % 60).toString().padStart(2, '0')}
-                        </div>
-                        <div className="text-sm">{chapter.title}</div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )
 
       case "pdf":
         return (
@@ -342,7 +270,6 @@ export function MultimediaKnowledgeBase() {
               <SelectContent>
                 <SelectItem value="all">Tất cả</SelectItem>
                 <SelectItem value="article">Bài viết</SelectItem>
-                <SelectItem value="video">Video</SelectItem>
                 <SelectItem value="pdf">PDF</SelectItem>
                 <SelectItem value="interactive">Tương tác</SelectItem>
               </SelectContent>
@@ -469,10 +396,7 @@ function CreateContentForm({ onClose }: { onClose: () => void }) {
           <FileText className="h-4 w-4" />
           Bài viết
         </TabsTrigger>
-        <TabsTrigger value="video" className="flex items-center gap-2">
-          <PlaySquare className="h-4 w-4" />
-          Video
-        </TabsTrigger>
+
         <TabsTrigger value="pdf" className="flex items-center gap-2">
           <FileImage className="h-4 w-4" />
           PDF
@@ -522,16 +446,7 @@ function CreateContentForm({ onClose }: { onClose: () => void }) {
           </div>
         </TabsContent>
         
-        <TabsContent value="video" className="space-y-4">
-          <div>
-            <Label htmlFor="video-upload">Upload Video</Label>
-            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
-              <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Kéo thả file video hoặc click để chọn</p>
-              <p className="text-xs text-muted-foreground mt-1">Hỗ trợ MP4, WebM (tối đa 500MB)</p>
-            </div>
-          </div>
-        </TabsContent>
+
         
         <TabsContent value="pdf" className="space-y-4">
           <div>

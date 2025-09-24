@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { StudentDetailModal } from "@/components/student-detail-modal"
+import { StudentDetailModal } from "./student-detail-modal"
 import {
   BarChart,
   Bar,
