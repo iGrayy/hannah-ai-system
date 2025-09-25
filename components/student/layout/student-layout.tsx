@@ -1,7 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+ 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { UserProfileModal } from "../profile/user-profile-modal"
@@ -32,18 +34,39 @@ interface StudentLayoutProps {
 }
 
 const navigationItems = [
-  { id: "chat", label: "Chat with Hannah", icon: MessageSquare },
-  { id: "resources", label: "Learning Resources", icon: BookOpen },
+  { id: "chat", label: "Trò chuyện với Hannah", icon: MessageSquare },
+  { id: "resources", label: "Tài nguyên học tập", icon: BookOpen },
 ]
 
 export function StudentLayout({ children, activeTab, onTabChange }: StudentLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
   const { user, logout } = useAuth()
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const handleLogout = () => {
     logout()
   }
+
+  useEffect(() => {
+    if (searchOpen) {
+      // Focus search input when popover opens
+      setTimeout(() => searchInputRef.current?.focus(), 50)
+    }
+  }, [searchOpen])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -73,7 +96,7 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
                 </div>
                 <div>
                   <h1 className="font-bold text-gray-900">Hannah AI</h1>
-                  <p className="text-xs text-gray-500">Student Portal</p>
+                  <p className="text-xs text-gray-500">Cổng thông tin sinh viên</p>
                 </div>
               </div>
               <Button
@@ -165,19 +188,89 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {navigationItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+                {navigationItems.find(item => item.id === activeTab)?.label || 'Bảng điều khiển'}
               </h2>
               <p className="text-sm text-gray-500">
-                Welcome back! How can Hannah help you today?
+                Chào mừng trở lại! Hannah có thể giúp gì cho bạn hôm nay?
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm">
-                <Search className="h-4 w-4" />
+              <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Tìm kiếm"
+                    onClick={() => setSearchOpen((v) => !v)}
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4">
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-semibold">Tìm kiếm nhanh</h4>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        className="w-full pl-9 pr-3 py-2 border rounded-md text-sm focus:outline-none"
+                        placeholder="Nhập từ khóa (VD: môn học, chủ đề, bài tập...)"
+                        ref={searchInputRef}
+                      />
+                    </div>
+                    <div className="text-xs text-muted-foreground">Gợi ý: "lịch thi", "học phần web", "điểm danh"</div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Popover open={notifOpen} onOpenChange={setNotifOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Thông báo"
+                    onClick={() => setNotifOpen((v) => !v)}
+                    className="relative"
+                  >
+                    <Bell className="h-4 w-4" />
+                    <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-red-500 rounded-full" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-96 p-0 overflow-hidden">
+                  <div className="p-4 border-b">
+                    <h4 className="text-sm font-semibold">Thông báo</h4>
+                    <p className="text-xs text-muted-foreground">Bạn có 3 thông báo mới</p>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    <div className="p-4 hover:bg-accent/50 transition-colors">
+                      <p className="text-sm font-medium">Lịch thi học kỳ</p>
+                      <p className="text-xs text-muted-foreground mt-1">Lịch thi dự kiến đã được cập nhật. Kiểm tra ngay.</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">2 giờ trước</p>
+                    </div>
+                    <div className="p-4 hover:bg-accent/50 transition-colors">
+                      <p className="text-sm font-medium">Phản hồi từ Hannah</p>
+                      <p className="text-xs text-muted-foreground mt-1">Câu hỏi về "React Components" đã có phản hồi mới.</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">Hôm nay</p>
+                    </div>
+                    <div className="p-4 hover:bg-accent/50 transition-colors">
+                      <p className="text-sm font-medium">Tài nguyên mới</p>
+                      <p className="text-xs text-muted-foreground mt-1">"Thiết kế CSDL nâng cao" vừa được thêm vào.</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">Hôm qua</p>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t bg-muted/40 text-right">
+                    <Button variant="outline" size="sm">Đánh dấu đã đọc</Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Chia sẻ"
+                onClick={() => alert("🔗 Đã sao chép liên kết chia sẻ (mô phỏng)")}
+              >
+                
               </Button>
-              <Button variant="ghost" size="sm">
-                <Bell className="h-4 w-4" />
-              </Button>
+              
             </div>
           </div>
         </div>

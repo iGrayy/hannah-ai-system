@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -12,10 +13,12 @@ import {
   Paperclip,
   Code,
   Smile,
+  Share2,
   MoreVertical,
   Zap,
   Clock,
   CheckCircle,
+  Trash2,
 } from "lucide-react"
 
 interface Message {
@@ -99,12 +102,12 @@ console.log(addFive(3)); // Output: 8`,
 ]
 
 const quickActions = [
-  "Explain this code",
-  "Debug my error",
-  "Project help",
-  "Assignment clarification",
-  "Academic info",
-  "Best practices",
+  "Giải thích đoạn mã",
+  "Gỡ lỗi giúp tôi",
+  "Hỗ trợ dự án",
+  "Làm rõ bài tập",
+  "Thông tin học vụ",
+  "Thực hành tốt",
 ]
 
 export function ChatInterface() {
@@ -164,8 +167,8 @@ export function ChatInterface() {
       <div className="w-80 border-r border-gray-200 flex flex-col">
         {/* Sessions Header */}
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Conversations</h3>
-          <p className="text-sm text-gray-500">Your chat history with Hannah</p>
+          <h3 className="font-semibold text-gray-900">Cuộc trò chuyện</h3>
+          <p className="text-sm text-gray-500">Lịch sử chat của bạn với Hannah</p>
         </div>
 
         {/* Sessions List */}
@@ -178,17 +181,50 @@ export function ChatInterface() {
               }`}
               onClick={() => setSelectedSession(session.id)}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900 truncate">{session.title}</h4>
                   <p className="text-sm text-gray-500 truncate mt-1">{session.lastMessage}</p>
                   <p className="text-xs text-gray-400 mt-1">{formatTime(session.timestamp)}</p>
                 </div>
-                {session.unread > 0 && (
-                  <Badge className="bg-blue-500 text-white text-xs">
-                    {session.unread}
-                  </Badge>
-                )}
+                <div className="flex items-center gap-2 ml-2">
+                  {session.unread > 0 && (
+                    <Badge className="bg-blue-500 text-white text-xs">
+                      {session.unread}
+                    </Badge>
+                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label="Tùy chọn"
+                        className="h-6 w-6 p-0"
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40 z-50">
+                      <DropdownMenuItem onClick={() => alert('🔗 Chia sẻ cuộc trò chuyện (mô phỏng)')}>
+                        <Share2 className="h-4 w-4 mr-2" />
+                        Chia sẻ
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => {
+                        const newName = prompt('Đổi tên cuộc trò chuyện:', session.title)
+                        if (newName) alert('✅ Đã đổi tên (mô phỏng) thành: ' + newName)
+                      }}>
+                        <Smile className="h-4 w-4 mr-2" />
+                        Đổi tên
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => confirm('Xóa cuộc trò chuyện này? (mô phỏng)') && alert('🗑️ Đã xóa (mô phỏng)')} className="text-red-600 focus:text-red-600">
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Xóa
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             </div>
           ))}
@@ -198,7 +234,7 @@ export function ChatInterface() {
         <div className="p-4 border-t border-gray-200">
           <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
             <Zap className="h-4 w-4 mr-2" />
-            New Conversation
+            Cuộc trò chuyện mới
           </Button>
         </div>
       </div>
@@ -219,12 +255,12 @@ export function ChatInterface() {
                 <h3 className="font-semibold text-gray-900">Hannah AI</h3>
                 <div className="flex items-center gap-1">
                   <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-500">Online</span>
+                  <span className="text-sm text-gray-500">Trực tuyến</span>
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="sm">
-              <MoreVertical className="h-4 w-4" />
+            <Button variant="ghost" size="sm" onClick={() => alert('🔗 Chia sẻ đoạn chat (mô phỏng)')} title="Chia sẻ">
+              <Share2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -285,7 +321,7 @@ export function ChatInterface() {
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
-                    <span className="text-xs text-gray-500 ml-2">Hannah is typing...</span>
+                    <span className="text-xs text-gray-500 ml-2">Hannah đang nhập...</span>
                   </div>
                 </div>
               </div>
@@ -317,7 +353,7 @@ export function ChatInterface() {
           <div className="p-4 border-t border-gray-100 bg-gray-50">
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <label className="text-sm font-medium">Language:</label>
+                <label className="text-sm font-medium">Ngôn ngữ:</label>
                 <Select value={codeLanguage} onValueChange={setCodeLanguage}>
                   <SelectTrigger className="w-32">
                     <SelectValue />
@@ -335,7 +371,7 @@ export function ChatInterface() {
               <Textarea
                 value={codeSnippet}
                 onChange={(e) => setCodeSnippet(e.target.value)}
-                placeholder="Paste your code here..."
+                placeholder="Dán mã của bạn vào đây..."
                 className="min-h-[120px] font-mono text-sm bg-gray-900 text-green-400 border-gray-600"
               />
               <div className="flex gap-2">
@@ -371,10 +407,10 @@ export function ChatInterface() {
                   disabled={!codeSnippet.trim()}
                 >
                   <Code className="h-4 w-4 mr-2" />
-                  Send Code
+                  Gửi mã
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => setShowCodeInput(false)}>
-                  Cancel
+                  Hủy
                 </Button>
               </div>
             </div>
@@ -388,7 +424,7 @@ export function ChatInterface() {
               <Textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask Hannah about programming, projects, assignments, or academic info..."
+                placeholder="Hỏi Hannah về lập trình, dự án, bài tập hoặc thông tin học vụ..."
                 className="min-h-[60px] max-h-32 resize-none"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -399,14 +435,14 @@ export function ChatInterface() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Button variant="outline" size="sm" title="Upload file">
+              <Button variant="outline" size="sm" title="Tải tệp lên">
                 <Paperclip className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCodeInput(!showCodeInput)}
-                title="Share code snippet"
+                title="Chia sẻ đoạn mã"
                 className={showCodeInput ? "bg-blue-100 border-blue-300" : ""}
               >
                 <Code className="h-4 w-4" />
@@ -415,7 +451,7 @@ export function ChatInterface() {
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim()}
                 className="bg-blue-500 hover:bg-blue-600"
-                title="Send message"
+                title="Gửi tin nhắn"
               >
                 <Send className="h-4 w-4" />
               </Button>

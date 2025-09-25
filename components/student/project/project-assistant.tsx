@@ -147,19 +147,19 @@ export function ProjectAssistant() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Project Assistant</h1>
-                <p className="text-gray-600">Get help with your projects and track issues</p>
+                <h1 className="text-2xl font-bold text-gray-900">Trợ lý dự án</h1>
+                <p className="text-gray-600">Nhận hỗ trợ cho dự án và theo dõi vấn đề</p>
               </div>
               <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
                 <Plus className="h-4 w-4 mr-2" />
-                New Issue
+                Vấn đề mới
               </Button>
             </div>
 
             <TabsList className="grid w-full grid-cols-3 max-w-md">
-              <TabsTrigger value="issues">My Issues</TabsTrigger>
-              <TabsTrigger value="create">Create Issue</TabsTrigger>
-              <TabsTrigger value="help">Quick Help</TabsTrigger>
+              <TabsTrigger value="issues">Vấn đề của tôi</TabsTrigger>
+              <TabsTrigger value="create">Tạo vấn đề</TabsTrigger>
+              <TabsTrigger value="help">Hỗ trợ nhanh</TabsTrigger>
             </TabsList>
           </div>
         </div>
@@ -173,7 +173,7 @@ export function ProjectAssistant() {
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
-                      placeholder="Search issues..."
+                      placeholder="Tìm kiếm vấn đề..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10"
@@ -181,13 +181,13 @@ export function ProjectAssistant() {
                   </div>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Status" />
+                      <SelectValue placeholder="Trạng thái" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="open">Open</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="resolved">Resolved</SelectItem>
+                      <SelectItem value="all">Tất cả</SelectItem>
+                      <SelectItem value="open">Mở</SelectItem>
+                      <SelectItem value="in-progress">Đang xử lý</SelectItem>
+                      <SelectItem value="resolved">Đã giải quyết</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -210,7 +210,7 @@ export function ProjectAssistant() {
                           <div className="flex flex-col gap-2 items-end">
                             <div className="flex items-center gap-2">
                               {getStatusIcon(issue.status)}
-                              <span className="text-sm capitalize">{issue.status.replace('-', ' ')}</span>
+                              <span className="text-sm capitalize">{issue.status === 'in-progress' ? 'Đang xử lý' : issue.status === 'open' ? 'Mở' : 'Đã giải quyết'}</span>
                             </div>
                             <Badge className={getPriorityColor(issue.priority)}>
                               {issue.priority}
@@ -221,22 +221,22 @@ export function ProjectAssistant() {
                       <CardContent className="pt-0">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <span>Created {issue.createdAt.toLocaleDateString()}</span>
+                            <span>Đã tạo {issue.createdAt.toLocaleDateString()}</span>
                             {issue.files && (
                               <div className="flex items-center gap-1">
                                 <FileText className="h-4 w-4" />
-                                <span>{issue.files.length} files</span>
+                                <span>{issue.files.length} tệp</span>
                               </div>
                             )}
                           </div>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm">
                               <Eye className="h-4 w-4 mr-2" />
-                              View
+                              Xem
                             </Button>
                             <Button variant="outline" size="sm">
                               <MessageSquare className="h-4 w-4 mr-2" />
-                              Ask Hannah
+                              Hỏi Hannah
                             </Button>
                           </div>
                         </div>
@@ -244,7 +244,7 @@ export function ProjectAssistant() {
                           <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                             <div className="flex items-center gap-2 mb-1">
                               <CheckCircle className="h-4 w-4 text-green-600" />
-                              <span className="text-sm font-medium text-green-800">Solution</span>
+                            <span className="text-sm font-medium text-green-800">Giải pháp</span>
                             </div>
                             <p className="text-sm text-green-700">{issue.solution}</p>
                           </div>
@@ -269,26 +269,26 @@ export function ProjectAssistant() {
             <div className="h-full overflow-y-auto p-6">
               <div className="max-w-2xl mx-auto">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Create New Issue</CardTitle>
+                    <CardHeader>
+                    <CardTitle>Tạo vấn đề mới</CardTitle>
                     <CardDescription>
-                      Describe your problem or question and Hannah will help you solve it
+                      Mô tả vấn đề/câu hỏi của bạn, Hannah sẽ hỗ trợ bạn giải quyết
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Issue Title</label>
+                      <label className="text-sm font-medium mb-2 block">Tiêu đề vấn đề</label>
                       <Input
-                        placeholder="Brief description of your issue..."
+                        placeholder="Mô tả ngắn gọn vấn đề của bạn..."
                         value={newIssue.title}
                         onChange={(e) => setNewIssue(prev => ({ ...prev, title: e.target.value }))}
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Detailed Description</label>
+                      <label className="text-sm font-medium mb-2 block">Mô tả chi tiết</label>
                       <Textarea
-                        placeholder="Provide as much detail as possible about your issue, including error messages, what you've tried, and what you expected to happen..."
+                        placeholder="Cung cấp chi tiết về vấn đề: thông báo lỗi, bạn đã thử gì và mong đợi điều gì..."
                         className="min-h-32"
                         value={newIssue.description}
                         onChange={(e) => setNewIssue(prev => ({ ...prev, description: e.target.value }))}
@@ -297,44 +297,44 @@ export function ProjectAssistant() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Category</label>
+                        <label className="text-sm font-medium mb-2 block">Phân loại</label>
                         <Select value={newIssue.category} onValueChange={(value: any) => setNewIssue(prev => ({ ...prev, category: value }))}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="bug">🐛 Bug</SelectItem>
-                            <SelectItem value="question">❓ Question</SelectItem>
-                            <SelectItem value="help">🆘 Help</SelectItem>
-                            <SelectItem value="feature">💡 Feature</SelectItem>
+                            <SelectItem value="bug">🐛 Lỗi</SelectItem>
+                            <SelectItem value="question">❓ Câu hỏi</SelectItem>
+                            <SelectItem value="help">🆘 Hỗ trợ</SelectItem>
+                            <SelectItem value="feature">💡 Tính năng</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Priority</label>
+                        <label className="text-sm font-medium mb-2 block">Mức độ ưu tiên</label>
                         <Select value={newIssue.priority} onValueChange={(value: any) => setNewIssue(prev => ({ ...prev, priority: value }))}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="low">🟢 Low</SelectItem>
-                            <SelectItem value="medium">🟡 Medium</SelectItem>
-                            <SelectItem value="high">🔴 High</SelectItem>
+                            <SelectItem value="low">🟢 Thấp</SelectItem>
+                            <SelectItem value="medium">🟡 Trung bình</SelectItem>
+                            <SelectItem value="high">🔴 Cao</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Upload Files (Optional)</label>
+                      <label className="text-sm font-medium mb-2 block">Tải tệp lên (Tùy chọn)</label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer">
                         <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                         <p className="text-sm text-gray-600">
-                          Drop your files here or <span className="text-blue-600">browse</span>
+                          Kéo thả tệp vào đây hoặc <span className="text-blue-600">chọn tệp</span>
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Supported: .js, .py, .java, .cpp, .txt, .log (Max 10MB)
+                          Hỗ trợ: .js, .py, .java, .cpp, .txt, .log (Tối đa 10MB)
                         </p>
                       </div>
                     </div>
@@ -345,11 +345,11 @@ export function ProjectAssistant() {
                         disabled={!newIssue.title.trim() || !newIssue.description.trim()}
                         className="flex-1"
                       >
-                        Create Issue
+                        Tạo vấn đề
                       </Button>
                       <Button variant="outline">
                         <MessageSquare className="h-4 w-4 mr-2" />
-                        Ask Hannah Directly
+                        Hỏi Hannah trực tiếp
                       </Button>
                     </div>
                   </CardContent>
@@ -366,9 +366,9 @@ export function ProjectAssistant() {
                   <Card className="hover:shadow-md transition-shadow cursor-pointer">
                     <CardHeader className="text-center">
                       <Bug className="h-12 w-12 text-red-500 mx-auto mb-2" />
-                      <CardTitle>Debug My Code</CardTitle>
+                      <CardTitle>Gỡ lỗi mã của tôi</CardTitle>
                       <CardDescription>
-                        Get help finding and fixing bugs in your code
+                        Hỗ trợ tìm và sửa lỗi trong mã của bạn
                       </CardDescription>
                     </CardHeader>
                   </Card>
@@ -376,9 +376,9 @@ export function ProjectAssistant() {
                   <Card className="hover:shadow-md transition-shadow cursor-pointer">
                     <CardHeader className="text-center">
                       <Code className="h-12 w-12 text-blue-500 mx-auto mb-2" />
-                      <CardTitle>Code Review</CardTitle>
+                      <CardTitle>Review mã</CardTitle>
                       <CardDescription>
-                        Get feedback on your code quality and best practices
+                        Nhận nhận xét về chất lượng mã và thực hành tốt
                       </CardDescription>
                     </CardHeader>
                   </Card>
@@ -386,9 +386,9 @@ export function ProjectAssistant() {
                   <Card className="hover:shadow-md transition-shadow cursor-pointer">
                     <CardHeader className="text-center">
                       <Lightbulb className="h-12 w-12 text-yellow-500 mx-auto mb-2" />
-                      <CardTitle>Implementation Ideas</CardTitle>
+                      <CardTitle>Gợi ý triển khai</CardTitle>
                       <CardDescription>
-                        Get suggestions for implementing features
+                        Nhận đề xuất cách triển khai tính năng
                       </CardDescription>
                     </CardHeader>
                   </Card>

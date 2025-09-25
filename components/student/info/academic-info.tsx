@@ -156,19 +156,19 @@ export function AcademicInfo() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Academic Information</h1>
-                <p className="text-gray-600">Find answers to common questions and important information</p>
+                <h1 className="text-2xl font-bold text-gray-900">Thông tin học vụ</h1>
+                <p className="text-gray-600">Tìm câu trả lời và thông tin quan trọng</p>
               </div>
               <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
                 <Phone className="h-4 w-4 mr-2" />
-                Contact Support
+                Liên hệ hỗ trợ
               </Button>
             </div>
 
             <TabsList className="grid w-full grid-cols-3 max-w-md">
-              <TabsTrigger value="faq">FAQ</TabsTrigger>
-              <TabsTrigger value="quick">Quick Access</TabsTrigger>
-              <TabsTrigger value="contact">Contact Info</TabsTrigger>
+              <TabsTrigger value="faq">Câu hỏi thường gặp</TabsTrigger>
+              <TabsTrigger value="quick">Truy cập nhanh</TabsTrigger>
+              <TabsTrigger value="contact">Liên hệ</TabsTrigger>
             </TabsList>
           </div>
         </div>
@@ -182,7 +182,7 @@ export function AcademicInfo() {
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
-                      placeholder="Search FAQ..."
+                      placeholder="Tìm kiếm câu hỏi..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10"
@@ -196,7 +196,7 @@ export function AcademicInfo() {
                         size="sm"
                         onClick={() => setSelectedCategory(category)}
                       >
-                        {category === "all" ? "All" : category}
+                        {category === "all" ? "Tất cả" : category}
                       </Button>
                     ))}
                   </div>
@@ -207,10 +207,10 @@ export function AcademicInfo() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Search className="h-5 w-5 text-blue-500" />
-                      Quick Chat Topics
+                      Chủ đề chat nhanh
                     </CardTitle>
                     <CardDescription>
-                      Click to start a conversation with Hannah about these topics
+                      Nhấn để bắt đầu cuộc trò chuyện với Hannah về các chủ đề này
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -242,7 +242,7 @@ export function AcademicInfo() {
                               <Badge variant="outline">{faq.category}</Badge>
                               <div className="flex items-center gap-1 text-sm text-gray-500">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
-                                <span>{faq.helpful} found helpful</span>
+                                <span>{faq.helpful} thấy hữu ích</span>
                               </div>
                             </div>
                           </div>
@@ -260,10 +260,10 @@ export function AcademicInfo() {
                           </div>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm">
-                              👍 Helpful
+                              👍 Hữu ích
                             </Button>
                             <Button variant="outline" size="sm">
-                              💬 Ask Hannah
+                              💬 Hỏi Hannah
                             </Button>
                           </div>
                         </div>
@@ -274,10 +274,10 @@ export function AcademicInfo() {
                   {filteredFAQs.length === 0 && (
                     <div className="text-center py-12">
                       <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-                      <p className="text-gray-500">Try adjusting your search or ask Hannah directly</p>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Không có kết quả</h3>
+                      <p className="text-gray-500">Hãy thử thay đổi tìm kiếm hoặc hỏi Hannah trực tiếp</p>
                       <Button className="mt-4">
-                        💬 Chat with Hannah
+                        💬 Chat với Hannah
                       </Button>
                     </div>
                   )}
@@ -322,7 +322,7 @@ export function AcademicInfo() {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <School className="h-5 w-5 text-blue-500" />
-                        Academic Office
+                        Phòng đào tạo
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -336,11 +336,11 @@ export function AcademicInfo() {
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin className="h-4 w-4 text-gray-500" />
-                        <span>Room 101, Administration Building</span>
+                        <span>Phòng 101, Tòa Hành chính</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <Clock className="h-4 w-4 text-gray-500" />
-                        <span>Mon-Fri: 8:00 AM - 5:00 PM</span>
+                        <span>Thứ 2 - Thứ 6: 8:00 - 17:00</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -349,7 +349,7 @@ export function AcademicInfo() {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <DollarSign className="h-5 w-5 text-green-500" />
-                        Finance Office
+                        Phòng tài chính
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -363,11 +363,11 @@ export function AcademicInfo() {
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin className="h-4 w-4 text-gray-500" />
-                        <span>Room 205, Administration Building</span>
+                        <span>Phòng 205, Tòa Hành chính</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <Clock className="h-4 w-4 text-gray-500" />
-                        <span>Mon-Fri: 8:00 AM - 4:30 PM</span>
+                        <span>Thứ 2 - Thứ 6: 8:00 - 16:30</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -376,7 +376,7 @@ export function AcademicInfo() {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5 text-purple-500" />
-                        Student Services
+                        Dịch vụ sinh viên
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -390,11 +390,11 @@ export function AcademicInfo() {
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin className="h-4 w-4 text-gray-500" />
-                        <span>Room 150, Student Center</span>
+                        <span>Phòng 150, Trung tâm Sinh viên</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <Clock className="h-4 w-4 text-gray-500" />
-                        <span>Mon-Fri: 8:30 AM - 5:30 PM</span>
+                        <span>Thứ 2 - Thứ 6: 8:30 - 17:30</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -403,7 +403,7 @@ export function AcademicInfo() {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <AlertCircle className="h-5 w-5 text-red-500" />
-                        Emergency Contact
+                        Liên hệ khẩn cấp
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -417,11 +417,11 @@ export function AcademicInfo() {
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin className="h-4 w-4 text-gray-500" />
-                        <span>Security Office, Main Gate</span>
+                        <span>Văn phòng an ninh, Cổng chính</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <Clock className="h-4 w-4 text-gray-500" />
-                        <span>24/7 Available</span>
+                        <span>Hỗ trợ 24/7</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -433,9 +433,9 @@ export function AcademicInfo() {
                     <div className="flex items-center gap-3">
                       <AlertCircle className="h-5 w-5 text-red-600" />
                       <div>
-                        <p className="font-medium text-red-900">Emergency Situations</p>
+                        <p className="font-medium text-red-900">Tình huống khẩn cấp</p>
                         <p className="text-sm text-red-700">
-                          For urgent matters outside office hours, call the emergency hotline or contact campus security.
+                          Với các trường hợp khẩn cấp ngoài giờ làm việc, hãy gọi đường dây nóng hoặc liên hệ an ninh khuôn viên.
                         </p>
                       </div>
                     </div>
