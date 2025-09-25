@@ -69,7 +69,7 @@ export function AdminPerformance() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,247</div>
-            <p className="text-xs text-muted-foreground">+12% from yesterday</p>
+            <p className="text-xs text-muted-foreground">+12% so với hôm qua</p>
           </CardContent>
         </Card>
       </div>
@@ -89,7 +89,7 @@ export function AdminPerformance() {
                 <YAxis />
                 <Tooltip />
                 <Line type="monotone" dataKey="cpu" stroke="#8884d8" name="CPU %" />
-                <Line type="monotone" dataKey="memory" stroke="#82ca9d" name="Memory %" />
+                <Line type="monotone" dataKey="memory" stroke="#82ca9d" name="Bộ nhớ %" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

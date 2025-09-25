@@ -25,6 +25,7 @@ import {
   LogOut,
   Menu,
   X,
+  FolderPlus,
 } from "lucide-react"
 
 interface StudentLayoutProps {
@@ -36,6 +37,7 @@ interface StudentLayoutProps {
 const navigationItems = [
   { id: "chat", label: "Trò chuyện với Hannah", icon: MessageSquare },
   { id: "resources", label: "Tài nguyên học tập", icon: BookOpen },
+  { id: "projects", label: "Dự án", icon: FolderPlus },
 ]
 
 export function StudentLayout({ children, activeTab, onTabChange }: StudentLayoutProps) {

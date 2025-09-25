@@ -63,7 +63,7 @@ export function AdminIntegrations() {
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList>
           <TabsTrigger value="all">Tất cả tích hợp</TabsTrigger>
-          <TabsTrigger value="ai">Dịch vụ AI</TabsTrigger>
+          <TabsTrigger value="ai">Phiên bản AI</TabsTrigger>
           <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
           <TabsTrigger value="communication">Liên lạc</TabsTrigger>
           <TabsTrigger value="storage">Lưu trữ</TabsTrigger>
@@ -106,7 +106,7 @@ export function AdminIntegrations() {
                     />
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
-                      Configure
+                      Cấu hình
                     </Button>
                   </div>
                 </CardContent>

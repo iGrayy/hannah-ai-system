@@ -75,7 +75,7 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
-                Training Data & Model Parameters
+                Dữ liệu huấn luyện & tham số mô hình
               </CardTitle>
               <CardDescription>Quản lý dữ liệu huấn luyện và tham số mô hình</CardDescription>
             </CardHeader>
@@ -112,7 +112,7 @@ export function AdminSystemConfig() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Upload Training Data (CSV/JSON)</Label>
+                <Label>Tải dữ liệu huấn luyện (CSV/JSON)</Label>
                 <Input type="file" accept=".csv,.json" />
                 <p className="text-xs text-muted-foreground">Tải dữ liệu huấn luyện để làm giàu mô hình (mô phỏng)</p>
               </div>

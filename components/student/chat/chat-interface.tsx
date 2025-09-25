@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +15,7 @@ import {
   Code,
   Smile,
   Share2,
+  Flag,
   MoreVertical,
   Zap,
   Clock,
@@ -120,6 +122,7 @@ export function ChatInterface() {
   const [codeLanguage, setCodeLanguage] = useState("javascript")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const lastUserMessageRef = useRef<string>("")
+  const [flagOpen, setFlagOpen] = useState(false)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -206,13 +209,13 @@ export function ChatInterface() {
               }`}
               onClick={() => setSelectedSession(session.id)}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
+              <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+                <div className="min-w-0">
                   <h4 className="font-medium text-gray-900 truncate">{session.title}</h4>
                   <p className="text-sm text-gray-500 truncate mt-1">{session.lastMessage}</p>
                   <p className="text-xs text-gray-400 mt-1">{formatTime(session.timestamp)}</p>
                 </div>
-                <div className="flex items-center gap-2 ml-2">
+                <div className="flex items-center gap-2 ml-2 justify-end w-10">
                   {session.unread > 0 && (
                     <Badge className="bg-blue-500 text-white text-xs">
                       {session.unread}
@@ -284,9 +287,14 @@ export function ChatInterface() {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => alert('🔗 Chia sẻ đoạn chat (mô phỏng)')} title="Chia sẻ">
-              <Share2 className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={() => alert('🔗 Chia sẻ đoạn chat (mô phỏng)')} title="Chia sẻ">
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setFlagOpen(true)} title="Đánh dấu cần can thiệp">
+                <Flag className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -497,6 +505,20 @@ export function ChatInterface() {
           </div>
         </div>
       </div>
+      <Dialog open={flagOpen} onOpenChange={setFlagOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đánh dấu cần can thiệp</DialogTitle>
+            <DialogDescription>
+              Đánh dấu cuộc trò chuyện cần sự can thiệp của con người. Thông tin sẽ được gửi đến giảng viên/phụ trách để xử lý.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setFlagOpen(false)}>Hủy</Button>
+            <Button onClick={() => { setFlagOpen(false); alert('✅ Đã đánh dấu (mô phỏng)'); }}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
