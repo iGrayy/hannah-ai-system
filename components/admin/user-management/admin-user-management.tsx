@@ -156,15 +156,15 @@ export function AdminUserManagement() {
       case "active":
         return (
           <Badge variant="default" className="bg-green-600">
-            Active
+            Đang hoạt động
           </Badge>
         )
       case "inactive":
-        return <Badge variant="secondary">Inactive</Badge>
+        return <Badge variant="secondary">Ngừng hoạt động</Badge>
       case "awaiting_verification":
         return (
           <Badge variant="outline" className="border-orange-500 text-orange-600">
-            Awaiting Verification
+            Chờ xác minh
           </Badge>
         )
       default:
@@ -177,9 +177,9 @@ export function AdminUserManagement() {
       case "admin":
         return <Badge variant="destructive">Admin</Badge>
       case "faculty":
-        return <Badge variant="default">Faculty</Badge>
+        return <Badge variant="default">Giảng viên</Badge>
       case "student":
-        return <Badge variant="secondary">Student</Badge>
+        return <Badge variant="secondary">Sinh viên</Badge>
       default:
         return null
     }
@@ -207,8 +207,8 @@ export function AdminUserManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">User Management</h1>
-          <p className="text-muted-foreground">Manage user accounts, roles, and permissions for the Hannah system</p>
+          <h1 className="text-3xl font-bold text-balance">Quản lý người dùng</h1>
+          <p className="text-muted-foreground">Quản lý tài khoản, vai trò và quyền truy cập cho hệ thống Hannah</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -217,11 +217,11 @@ export function AdminUserManagement() {
             onClick={() => alert("📁 Chức năng import users từ CSV/Excel sẽ được triển khai sau!")}
           >
             <Upload className="h-4 w-4 mr-2" />
-            Import Users
+            Nhập người dùng
           </Button>
           <Button size="sm" onClick={() => setIsAddingUser(true)}>
             <UserPlus className="h-4 w-4 mr-2" />
-            Add User
+            Thêm người dùng
           </Button>
         </div>
       </div>
@@ -232,7 +232,7 @@ export function AdminUserManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium">Total Users</span>
+              <span className="text-sm font-medium">Tổng người dùng</span>
             </div>
             <p className="text-2xl font-bold mt-2">{users.length}</p>
           </CardContent>
@@ -242,7 +242,7 @@ export function AdminUserManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-green-500" />
-              <span className="text-sm font-medium">Active Users</span>
+              <span className="text-sm font-medium">Đang hoạt động</span>
             </div>
             <p className="text-2xl font-bold mt-2">{users.filter((u) => u.status === "active").length}</p>
           </CardContent>
@@ -252,7 +252,7 @@ export function AdminUserManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">Awaiting Verification</span>
+              <span className="text-sm font-medium">Chờ xác minh</span>
             </div>
             <p className="text-2xl font-bold mt-2">{users.filter((u) => u.status === "awaiting_verification").length}</p>
           </CardContent>
@@ -262,7 +262,7 @@ export function AdminUserManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-purple-500" />
-              <span className="text-sm font-medium">Faculty</span>
+              <span className="text-sm font-medium">Giảng viên</span>
             </div>
             <p className="text-2xl font-bold mt-2">{users.filter((u) => u.role === "faculty").length}</p>
           </CardContent>
@@ -272,9 +272,9 @@ export function AdminUserManagement() {
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
-          <TabsTrigger value="audit">Audit Log</TabsTrigger>
+          <TabsTrigger value="users">Người dùng</TabsTrigger>
+          <TabsTrigger value="roles">Vai trò & Quyền</TabsTrigger>
+          <TabsTrigger value="audit">Nhật ký hệ thống</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="space-y-4">
@@ -286,7 +286,7 @@ export function AdminUserManagement() {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      placeholder="Search users by name, email, or department..."
+                      placeholder="Tìm người dùng theo tên, email hoặc khoa..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -295,10 +295,10 @@ export function AdminUserManagement() {
                 </div>
                 <Select value={filterRole} onValueChange={setFilterRole}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by role" />
+                    <SelectValue placeholder="Lọc theo vai trò" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="all">Tất cả vai trò</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
                     <SelectItem value="faculty">Faculty</SelectItem>
                     <SelectItem value="student">Student</SelectItem>
@@ -306,13 +306,13 @@ export function AdminUserManagement() {
                 </Select>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder="Lọc theo trạng thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                    <SelectItem value="active">Đang hoạt động</SelectItem>
+                    <SelectItem value="inactive">Ngừng hoạt động</SelectItem>
+                    <SelectItem value="pending">Chờ xử lý</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -322,18 +322,18 @@ export function AdminUserManagement() {
           {/* Users Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Users ({filteredUsers.length})</CardTitle>
+              <CardTitle>Người dùng ({filteredUsers.length})</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Login</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Người dùng</TableHead>
+                    <TableHead>Vai trò</TableHead>
+                    <TableHead>Khoa</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Đăng nhập gần nhất</TableHead>
+                    <TableHead>Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -370,8 +370,8 @@ export function AdminUserManagement() {
                             </DialogTrigger>
                             <DialogContent className="max-w-2xl">
                               <DialogHeader>
-                                <DialogTitle>User Details</DialogTitle>
-                                <DialogDescription>View and edit user information and permissions</DialogDescription>
+                                <DialogTitle>Chi tiết người dùng</DialogTitle>
+                                <DialogDescription>Xem và chỉnh sửa thông tin người dùng và quyền truy cập</DialogDescription>
                               </DialogHeader>
                               {selectedUser && (
                                 <div className="space-y-6">
@@ -397,17 +397,17 @@ export function AdminUserManagement() {
 
                                   <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                      <label className="text-sm font-medium">Department</label>
+                                      <label className="text-sm font-medium">Khoa</label>
                                       <p className="text-sm text-muted-foreground">{selectedUser.department}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium">Created</label>
+                                      <label className="text-sm font-medium">Ngày tạo</label>
                                       <p className="text-sm text-muted-foreground">{selectedUser.createdAt}</p>
                                     </div>
                                   </div>
 
                                   <div>
-                                    <label className="text-sm font-medium mb-2 block">Permissions</label>
+                                    <label className="text-sm font-medium mb-2 block">Quyền</label>
                                     <div className="grid grid-cols-2 gap-2">
                                       {allPermissions.map((permission) => (
                                         <div key={permission.id} className="flex items-center space-x-2">
@@ -426,12 +426,12 @@ export function AdminUserManagement() {
                                   <div className="flex justify-between pt-4 border-t">
                                     <Button variant="outline">
                                       <Key className="h-4 w-4 mr-2" />
-                                      Reset Password
+                                      Đặt lại mật khẩu
                                     </Button>
                                     <div className="flex gap-2">
                                       <Button variant="outline">
                                         <Edit className="h-4 w-4 mr-2" />
-                                        Edit
+                                        Sửa
                                       </Button>
                                       <Switch
                                         checked={selectedUser.status === "active"}
@@ -467,13 +467,13 @@ export function AdminUserManagement() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     {role.name}
-                    <Badge variant="outline">{role.userCount} users</Badge>
+                    <Badge variant="outline">{role.userCount} người dùng</Badge>
                   </CardTitle>
                   <CardDescription>{role.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Permissions:</label>
+                    <label className="text-sm font-medium">Quyền:</label>
                     <div className="space-y-1">
                       {role.permissions.map((permId) => {
                         const perm = allPermissions.find((p) => p.id === permId)
@@ -488,11 +488,11 @@ export function AdminUserManagement() {
                   <div className="flex gap-2 mt-4">
                     <Button variant="outline" size="sm">
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      Sửa
                     </Button>
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
-                      Configure
+                      Cấu hình
                     </Button>
                   </div>
                 </CardContent>
@@ -504,34 +504,34 @@ export function AdminUserManagement() {
         <TabsContent value="audit" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Audit Log</CardTitle>
-              <CardDescription>Track user activities and system changes</CardDescription>
+              <CardTitle>Nhật ký hệ thống</CardTitle>
+              <CardDescription>Theo dõi hoạt động người dùng và thay đổi hệ thống</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 p-3 border rounded-lg">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">User login successful</p>
-                    <p className="text-xs text-muted-foreground">Dr. Nguyen Van A logged in from 192.168.1.100</p>
+                    <p className="text-sm font-medium">Đăng nhập thành công</p>
+                    <p className="text-xs text-muted-foreground">Dr. Nguyen Van A đăng nhập từ 192.168.1.100</p>
                   </div>
-                  <span className="text-xs text-muted-foreground">2 hours ago</span>
+                  <span className="text-xs text-muted-foreground">2 giờ trước</span>
                 </div>
                 <div className="flex items-center gap-4 p-3 border rounded-lg">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">User role updated</p>
-                    <p className="text-xs text-muted-foreground">Le Van C role changed from Student to Faculty</p>
+                    <p className="text-sm font-medium">Cập nhật vai trò người dùng</p>
+                    <p className="text-xs text-muted-foreground">Le Van C đổi vai trò từ Sinh viên sang Giảng viên</p>
                   </div>
-                  <span className="text-xs text-muted-foreground">5 hours ago</span>
+                  <span className="text-xs text-muted-foreground">5 giờ trước</span>
                 </div>
                 <div className="flex items-center gap-4 p-3 border rounded-lg">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">Failed login attempt</p>
-                    <p className="text-xs text-muted-foreground">Multiple failed attempts for admin@university.edu</p>
+                    <p className="text-sm font-medium">Nỗ lực đăng nhập thất bại</p>
+                    <p className="text-xs text-muted-foreground">Nhiều lần thất bại cho admin@university.edu</p>
                   </div>
-                  <span className="text-xs text-muted-foreground">1 day ago</span>
+                  <span className="text-xs text-muted-foreground">1 ngày trước</span>
                 </div>
               </div>
             </CardContent>

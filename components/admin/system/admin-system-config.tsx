@@ -19,14 +19,14 @@ export function AdminSystemConfig() {
           <h1 className="text-2xl font-bold">Cấu hình hệ thống</h1>
           <p className="text-muted-foreground">Quản trị cài đặt và cấu hình hệ thống</p>
         </div>
-        <Button>Save Changes</Button>
+        <Button>Lưu thay đổi</Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList>
           <TabsTrigger value="general">Chung</TabsTrigger>
-          <TabsTrigger value="ai">Training Data</TabsTrigger>
-          <TabsTrigger value="kb-structure">Cấu trúc Knowledge Base</TabsTrigger>
+          <TabsTrigger value="ai">Phiên bản</TabsTrigger>
+          <TabsTrigger value="kb-structure">Cấu trúc Kiến thức</TabsTrigger>
           <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
           <TabsTrigger value="security">Bảo mật</TabsTrigger>
         </TabsList>
@@ -160,7 +160,7 @@ export function AdminSystemConfig() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Connection Status</Label>
+                <Label>Trạng thái kết nối</Label>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
                       Đã kết nối
@@ -169,20 +169,20 @@ export function AdminSystemConfig() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Pool Size</Label>
+                  <Label>Kích thước pool</Label>
                   <Input type="number" defaultValue="20" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Backup Schedule</Label>
+                <Label>Lịch sao lưu</Label>
                 <Select defaultValue="daily">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="hourly">Hàng giờ</SelectItem>
+                    <SelectItem value="daily">Hàng ngày</SelectItem>
+                    <SelectItem value="weekly">Hàng tuần</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -195,39 +195,39 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Security Settings
+                Cài đặt bảo mật
               </CardTitle>
-              <CardDescription>Security and compliance configuration</CardDescription>
+              <CardDescription>Cấu hình bảo mật và tuân thủ</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Two-Factor Authentication</Label>
-                    <p className="text-sm text-muted-foreground">Require 2FA for all admin accounts</p>
+                    <Label>Xác thực hai lớp</Label>
+                    <p className="text-sm text-muted-foreground">Yêu cầu 2FA cho tất cả tài khoản admin</p>
                   </div>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Session Timeout</Label>
-                    <p className="text-sm text-muted-foreground">Auto logout after inactivity</p>
+                    <Label>Thời gian hết hạn phiên</Label>
+                    <p className="text-sm text-muted-foreground">Tự động đăng xuất khi không hoạt động</p>
                   </div>
                   <Select defaultValue="30">
                     <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="15">15 min</SelectItem>
-                      <SelectItem value="30">30 min</SelectItem>
-                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="15">15 phút</SelectItem>
+                      <SelectItem value="30">30 phút</SelectItem>
+                      <SelectItem value="60">1 giờ</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Audit Logging</Label>
-                    <p className="text-sm text-muted-foreground">Log all admin actions</p>
+                    <Label>Ghi nhật ký kiểm toán</Label>
+                    <p className="text-sm text-muted-foreground">Ghi lại mọi hành động của admin</p>
                   </div>
                   <Switch defaultChecked />
                 </div>

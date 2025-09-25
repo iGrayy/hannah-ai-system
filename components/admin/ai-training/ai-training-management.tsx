@@ -34,7 +34,7 @@ import {
 interface TrainingSession {
   id: string
   name: string
-  status: "running" | "completed" | "failed" | "pending"
+  status: "running" | "completed" | "failed" | "paused"
   progress: number
   startTime: string
   endTime?: string
@@ -130,8 +130,11 @@ export function AITrainingManagement() {
         return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>
       case "failed":
         return <Badge className="bg-red-100 text-red-800"><AlertCircle className="h-3 w-3 mr-1" />Failed</Badge>
-      case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>
+      case "paused":
+        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Tạm dừng</Badge>
+      // hỗ trợ dữ liệu cũ nếu có 'pending'
+      case "pending" as any:
+        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Đang chờ</Badge>
       default:
         return null
     }
@@ -182,13 +185,13 @@ export function AITrainingManagement() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Brain className="h-8 w-8 text-purple-600" />
-            AI Training Management
+            Huấn luyện dữ liệu 
           </h1>
-          <p className="text-muted-foreground">Train and optimize Hannah AI with custom datasets</p>
+          <p className="text-muted-foreground">Huấn luyện dữ liệu và tối ưu Hannah AI</p>
         </div>
         <Button onClick={startNewTraining}>
           <Play className="h-4 w-4 mr-2" />
-          Start Training
+          Bắt đầu huấn luyện
         </Button>
       </div>
 
@@ -198,7 +201,7 @@ export function AITrainingManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Brain className="h-4 w-4 text-purple-500" />
-              <span className="text-sm font-medium">Active Sessions</span>
+              <span className="text-sm font-medium">Phiên đang chạy</span>
             </div>
             <p className="text-2xl font-bold mt-2">{trainingSessions.filter(s => s.status === "running").length}</p>
           </CardContent>
@@ -208,7 +211,7 @@ export function AITrainingManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-500" />
-              <span className="text-sm font-medium">Completed</span>
+              <span className="text-sm font-medium">Hoàn tất</span>
             </div>
             <p className="text-2xl font-bold mt-2">{trainingSessions.filter(s => s.status === "completed").length}</p>
           </CardContent>
@@ -218,7 +221,7 @@ export function AITrainingManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Database className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium">Datasets</span>
+              <span className="text-sm font-medium">Training Data</span>
             </div>
             <p className="text-2xl font-bold mt-2">{datasets.length}</p>
           </CardContent>
@@ -228,7 +231,7 @@ export function AITrainingManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">Avg Accuracy</span>
+              <span className="text-sm font-medium">Độ chính xác TB</span>
             </div>
             <p className="text-2xl font-bold mt-2">91.2%</p>
           </CardContent>
@@ -237,28 +240,28 @@ export function AITrainingManagement() {
 
       <Tabs defaultValue="sessions" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="sessions">Training Sessions</TabsTrigger>
-          <TabsTrigger value="datasets">Datasets</TabsTrigger>
-          <TabsTrigger value="config">Configuration</TabsTrigger>
+          <TabsTrigger value="sessions">Phiên huấn luyện</TabsTrigger>
+          <TabsTrigger value="datasets">Dữ liệu huấn luyện</TabsTrigger>
+          <TabsTrigger value="config">Cấu hình</TabsTrigger>
         </TabsList>
 
         <TabsContent value="sessions" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Training Sessions</CardTitle>
-              <CardDescription>Monitor and manage AI training sessions</CardDescription>
+              <CardTitle>Phiên huấn luyện</CardTitle>
+              <CardDescription>Theo dõi và quản lý các phiên huấn luyện AI</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Progress</TableHead>
-                    <TableHead>Dataset Size</TableHead>
-                    <TableHead>Accuracy</TableHead>
+                    <TableHead>Tên</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Tiến độ</TableHead>
+                    <TableHead>Kích thước dữ liệu</TableHead>
+                    <TableHead>Độ chính xác</TableHead>
                     <TableHead>Loss</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -304,26 +307,26 @@ export function AITrainingManagement() {
         <TabsContent value="datasets" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Training Datasets</CardTitle>
-              <CardDescription>Manage datasets for AI training</CardDescription>
+              <CardTitle>Training Data</CardTitle>
+              <CardDescription>Quản lý dữ liệu dùng cho huấn luyện AI</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center mb-4">
                 <div></div>
                 <Button size="sm" onClick={() => setShowDatasetUpload(true)}>
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Dataset
+                  Tải dữ liệu lên
                 </Button>
               </div>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Last Updated</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Tên</TableHead>
+                    <TableHead>Loại</TableHead>
+                    <TableHead>Kích thước</TableHead>
+                    <TableHead>Cập nhật</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -331,7 +334,7 @@ export function AITrainingManagement() {
                     <TableRow key={dataset.id}>
                       <TableCell className="font-medium">{dataset.name}</TableCell>
                       <TableCell>{getDatasetTypeBadge(dataset.type)}</TableCell>
-                      <TableCell>{dataset.size.toLocaleString()} items</TableCell>
+                      <TableCell>{dataset.size.toLocaleString()} mục</TableCell>
                       <TableCell>{dataset.lastUpdated}</TableCell>
                       <TableCell>
                         <Badge variant={dataset.status === "ready" ? "default" : "secondary"}>
@@ -356,26 +359,26 @@ export function AITrainingManagement() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                Training Configuration
+                Cấu hình huấn luyện
               </CardTitle>
-              <CardDescription>Configure AI training parameters</CardDescription>
+              <CardDescription>Cấu hình tham số huấn luyện AI</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="learning-rate">Learning Rate</Label>
+                  <Label htmlFor="learning-rate">Tốc độ học (Learning rate)</Label>
                   <Input id="learning-rate" defaultValue="0.001" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="batch-size">Batch Size</Label>
+                  <Label htmlFor="batch-size">Batch size</Label>
                   <Input id="batch-size" defaultValue="32" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="epochs">Epochs</Label>
+                  <Label htmlFor="epochs">Số epoch</Label>
                   <Input id="epochs" defaultValue="10" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="model-type">Model Type</Label>
+                  <Label htmlFor="model-type">Loại mô hình</Label>
                   <Select defaultValue="transformer">
                     <SelectTrigger>
                       <SelectValue />
@@ -389,14 +392,14 @@ export function AITrainingManagement() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="training-notes">Training Notes</Label>
+                  <Label htmlFor="training-notes">Ghi chú huấn luyện</Label>
                 <Textarea 
                   id="training-notes" 
-                  placeholder="Add notes about this training configuration..."
+                  placeholder="Thêm ghi chú cho cấu hình huấn luyện này..."
                   rows={3}
                 />
               </div>
-              <Button>Save Configuration</Button>
+              <Button>Lưu cấu hình</Button>
             </CardContent>
           </Card>
         </TabsContent>
