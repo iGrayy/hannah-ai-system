@@ -55,7 +55,7 @@ interface Student {
   id: string
   name: string
   email: string
-  class: string
+  major: string
   avatar: string
   lastActive: string
   questionsAsked: number
@@ -82,7 +82,7 @@ const mockStudents: Student[] = [
     id: "SV001",
     name: "Nguyen Van A",
     email: "nguyenvana@student.edu",
-    class: "CS2023A",
+    major: "CS2023A",
     avatar: "/placeholder.svg",
     lastActive: "2 hours ago",
     questionsAsked: 45,
@@ -103,7 +103,7 @@ const mockStudents: Student[] = [
     id: "SV002",
     name: "Tran Thi B",
     email: "tranthib@student.edu",
-    class: "CS2023A",
+    major: "CS2023A",
     avatar: "/placeholder.svg",
     lastActive: "1 day ago",
     questionsAsked: 12,
@@ -124,7 +124,7 @@ const mockStudents: Student[] = [
     id: "SV003",
     name: "Le Van C",
     email: "levanc@student.edu",
-    class: "CS2023B",
+    major: "CS2023B",
     avatar: "/placeholder.svg",
     lastActive: "30 min ago",
     questionsAsked: 78,
@@ -156,7 +156,7 @@ const activityData: StudentActivity[] = [
 export function StudentMonitoring() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [statusFilter, setStatusFilter] = useState("all")
-  const [classFilter, setClassFilter] = useState("all")
+  const [majorFilter, setMajorFilter] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [detailModalOpen, setDetailModalOpen] = useState(false)
 
@@ -183,11 +183,11 @@ export function StudentMonitoring() {
 
   const filteredStudents = mockStudents.filter((student) => {
     const matchesStatus = statusFilter === "all" || student.status === statusFilter
-    const matchesClass = classFilter === "all" || student.class === classFilter
+    const matchesMajor = majorFilter === "all" || student.major === majorFilter
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.id.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesStatus && matchesClass && matchesSearch
+    return matchesStatus && matchesMajor && matchesSearch
   })
 
   return (
@@ -307,12 +307,12 @@ export function StudentMonitoring() {
                     <SelectItem value="excelling">Xuất sắc</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={classFilter} onValueChange={setClassFilter}>
+                <Select value={majorFilter} onValueChange={setMajorFilter}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Lớp" />
+                    <SelectValue placeholder="Ngành" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả lớp</SelectItem>
+                    <SelectItem value="all">Tất cả Ngành</SelectItem>
                     <SelectItem value="CS2023A">CS2023A</SelectItem>
                     <SelectItem value="CS2023B">CS2023B</SelectItem>
                   </SelectContent>
@@ -324,7 +324,7 @@ export function StudentMonitoring() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Sinh viên</TableHead>
-                    <TableHead>Lớp</TableHead>
+                    <TableHead>Ngành</TableHead>
                     <TableHead>Câu hỏi</TableHead>
                     <TableHead>Tiến độ</TableHead>
                     <TableHead>Trạng thái</TableHead>
@@ -349,7 +349,7 @@ export function StudentMonitoring() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{student.class}</TableCell>
+                      <TableCell>{student.major}</TableCell>
                       <TableCell>{student.questionsAsked}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">

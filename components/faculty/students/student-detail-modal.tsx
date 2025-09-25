@@ -39,11 +39,12 @@ import {
   X,
 } from "lucide-react"
 
-interface Student {
+interface StudentDetail {
   id: string
   name: string
   email: string
-  class: string
+  major?: string
+  class?: string
   avatar: string
   lastActive: string
   questionsAsked: number
@@ -59,7 +60,7 @@ interface Student {
 }
 
 interface StudentDetailModalProps {
-  student: Student | null
+  student: StudentDetail | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -171,7 +172,7 @@ Giảng viên`
 👤 Thông tin sinh viên:
 - Tên: ${student.name}
 - ID: ${student.id}
-- Lớp: ${student.class}
+- Ngành: ${student.major || (student as any).class || ''}
 - Email: ${student.email}
 
 📊 Tình hình học tập:
@@ -208,9 +209,11 @@ Giảng viên`
                   <Badge variant="secondary" className="bg-white/20 text-white border-0">
                     ID: {student.id}
                   </Badge>
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0">
-                    {student.class}
-                  </Badge>
+                  {(student.major || (student as any).class) && (
+                    <Badge variant="secondary" className="bg-white/20 text-white border-0">
+                      {student.major || (student as any).class}
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>

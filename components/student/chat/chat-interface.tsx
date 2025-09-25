@@ -515,7 +515,23 @@ export function ChatInterface() {
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setFlagOpen(false)}>Hủy</Button>
-            <Button onClick={() => { setFlagOpen(false); alert('✅ Đã đánh dấu (mô phỏng)'); }}>Xác nhận</Button>
+            <Button onClick={() => {
+              try {
+                const stored = typeof window !== 'undefined' ? localStorage.getItem('hannah-flagged-conversations') : null
+                const list = stored ? JSON.parse(stored) : []
+                const conversation = {
+                  id: `${selectedSession}-${Date.now()}`,
+                  sessionId: selectedSession,
+                  title: (mockSessions.find((s: ChatSession) => s.id === selectedSession)?.title) || 'Cuộc trò chuyện',
+                  flaggedAt: new Date().toISOString(),
+                  messages,
+                }
+                list.unshift(conversation)
+                localStorage.setItem('hannah-flagged-conversations', JSON.stringify(list))
+                alert('✅ Đã đánh dấu cuộc trò chuyện (mô phỏng).')
+              } catch {}
+              setFlagOpen(false)
+            }}>Xác nhận</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
