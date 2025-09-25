@@ -194,10 +194,10 @@ export function KnowledgeBaseOld() {
   const getStatusBadge = (status: string) => {
     return status === "published" ? (
       <Badge variant="default" className="bg-green-600">
-        Published
+        Đã xuất bản
       </Badge>
     ) : (
-      <Badge variant="secondary">Draft</Badge>
+      <Badge variant="secondary">Nháp</Badge>
     )
   }
 

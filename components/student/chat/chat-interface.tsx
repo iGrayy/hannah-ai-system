@@ -119,6 +119,7 @@ export function ChatInterface() {
   const [codeSnippet, setCodeSnippet] = useState("")
   const [codeLanguage, setCodeLanguage] = useState("javascript")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const lastUserMessageRef = useRef<string>("")
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -141,6 +142,7 @@ export function ChatInterface() {
 
     setMessages(prev => [...prev, newMessage])
     setInputValue("")
+    lastUserMessageRef.current = newMessage.content
     
     // Simulate Hannah typing
     setIsTyping(true)
@@ -155,6 +157,29 @@ export function ChatInterface() {
       setMessages(prev => [...prev, hannahResponse])
       setIsTyping(false)
     }, 2000)
+  }
+
+  const handleFlagAiMessage = (aiMessage: Message) => {
+    try {
+      const stored = localStorage.getItem("hannah-flagged-responses")
+      const list = stored ? JSON.parse(stored) : []
+      const item = {
+        id: Date.now().toString(),
+        student: { name: "Student", id: "SV001", avatar: "/placeholder-user.jpg" },
+        question: lastUserMessageRef.current || "(Không xác định)",
+        aiResponse: aiMessage.content,
+        confidence: 0.3,
+        date: new Date().toISOString(),
+        status: "pending",
+        priority: "high",
+      }
+      list.unshift(item)
+      localStorage.setItem("hannah-flagged-responses", JSON.stringify(list))
+      alert("🚩 Đã báo sai/thiếu kiến thức. Phản hồi sẽ xuất hiện trong mục Faculty → Quản lý phản hồi.")
+    } catch (e) {
+      console.error("Flag error", e)
+      alert("Không thể báo lỗi lúc này.")
+    }
   }
 
   const formatTime = (date: Date) => {
@@ -299,6 +324,19 @@ export function ChatInterface() {
                   }`}>
                     {formatTime(message.timestamp)}
                   </p>
+                  {message.sender === 'hannah' && (
+                    <div className="mt-1 flex justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => handleFlagAiMessage(message)}
+                        title="Báo sai/thiếu kiến thức"
+                      >
+                        🚩 Báo sai/thiếu
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

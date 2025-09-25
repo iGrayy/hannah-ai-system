@@ -53,10 +53,10 @@ interface FAQ {
 const mockFAQs: FAQ[] = [
   {
     id: "1",
-    question: "How do I reset my password?",
-    answer: "To reset your password, go to the login page and click 'Forgot Password'. Enter your email address and follow the instructions sent to your email.",
-    category: "Account",
-    tags: ["password", "login", "account"],
+    question: "Làm thế nào để đặt lại mật khẩu?",
+    answer: "Để đặt lại mật khẩu, vào trang đăng nhập và bấm 'Quên mật khẩu'. Nhập email và làm theo hướng dẫn được gửi qua email.",
+    category: "Tài khoản",
+    tags: ["mật khẩu", "đăng nhập", "tài khoản"],
     priority: 1,
     isActive: true,
     createdAt: "2024-01-15",
@@ -65,10 +65,10 @@ const mockFAQs: FAQ[] = [
   },
   {
     id: "2",
-    question: "What are the system requirements?",
-    answer: "The system requires a modern web browser (Chrome, Firefox, Safari, Edge) and a stable internet connection. No additional software installation is required.",
-    category: "Technical",
-    tags: ["requirements", "browser", "technical"],
+    question: "Yêu cầu hệ thống là gì?",
+    answer: "Hệ thống cần trình duyệt hiện đại (Chrome, Firefox, Safari, Edge) và kết nối Internet ổn định. Không cần cài thêm phần mềm.",
+    category: "Kỹ thuật",
+    tags: ["yêu cầu", "trình duyệt", "kỹ thuật"],
     priority: 2,
     isActive: true,
     createdAt: "2024-01-10",
@@ -77,10 +77,10 @@ const mockFAQs: FAQ[] = [
   },
   {
     id: "3",
-    question: "How do I contact support?",
-    answer: "You can contact support through the help desk portal, email support@hannah.edu, or call our support hotline at (555) 123-4567 during business hours.",
-    category: "Support",
-    tags: ["support", "contact", "help"],
+    question: "Liên hệ hỗ trợ như thế nào?",
+    answer: "Bạn có thể liên hệ qua cổng help desk, email support@hannah.edu, hoặc gọi hotline (555) 123-4567 trong giờ làm việc.",
+    category: "Hỗ trợ",
+    tags: ["hỗ trợ", "liên hệ", "trợ giúp"],
     priority: 1,
     isActive: true,
     createdAt: "2024-01-12",
@@ -241,8 +241,8 @@ export function CustomFAQManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Custom FAQ Management</h1>
-          <p className="text-muted-foreground">Manage frequently asked questions and custom responses</p>
+          <h1 className="text-3xl font-bold">Quản lý FAQ tùy chỉnh</h1>
+          <p className="text-muted-foreground">Quản lý câu hỏi thường gặp và phản hồi tùy chỉnh</p>
         </div>
         <div className="flex gap-2">
           <FileUpload
@@ -253,7 +253,7 @@ export function CustomFAQManagement() {
           >
             <Button variant="outline" size="sm">
               <Upload className="h-4 w-4 mr-2" />
-              Bulk Import
+              Nhập khẩu hàng loạt
             </Button>
           </FileUpload>
           <Button
@@ -262,11 +262,11 @@ export function CustomFAQManagement() {
             onClick={() => alert("📊 Exporting all FAQs to CSV...")}
           >
             <Download className="h-4 w-4 mr-2" />
-            Export All
+            Xuất tất cả
           </Button>
           <Button size="sm" onClick={() => setIsAddingFAQ(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add FAQ
+            Thêm FAQ
           </Button>
         </div>
       </div>
@@ -287,8 +287,8 @@ export function CustomFAQManagement() {
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search FAQs by question, answer, or tags..."
+              <Input
+                placeholder="Tìm FAQ theo câu hỏi, câu trả lời hoặc thẻ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -298,10 +298,10 @@ export function CustomFAQManagement() {
             <div className="flex gap-2">
               <Select value={filterCategory} onValueChange={setFilterCategory}>
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by category" />
+                  <SelectValue placeholder="Lọc theo danh mục" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">Tất cả danh mục</SelectItem>
                   {categories.map(category => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -309,12 +309,12 @@ export function CustomFAQManagement() {
               </Select>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder="Lọc theo trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                  <SelectItem value="active">Đang sử dụng</SelectItem>
+                  <SelectItem value="inactive">Tạm ẩn</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -325,8 +325,8 @@ export function CustomFAQManagement() {
       {/* FAQ List */}
       <Card>
         <CardHeader>
-          <CardTitle>FAQ List ({filteredFAQs.length})</CardTitle>
-          <CardDescription>Manage your frequently asked questions and custom responses</CardDescription>
+          <CardTitle>Danh sách FAQ ({filteredFAQs.length})</CardTitle>
+          <CardDescription>Quản lý câu hỏi thường gặp và phản hồi tùy chỉnh</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -339,12 +339,12 @@ export function CustomFAQManagement() {
                     onSelectionChange={(_, selected) => handleSelectAll(selected)}
                   />
                 </TableHead>
-                <TableHead>Question</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Tags</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Câu hỏi</TableHead>
+                <TableHead>Danh mục</TableHead>
+                <TableHead>Thẻ</TableHead>
+                <TableHead>Lượt dùng</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -385,7 +385,7 @@ export function CustomFAQManagement() {
                   </TableCell>
                   <TableCell>
                     <Badge variant={faq.isActive ? "default" : "secondary"}>
-                      {faq.isActive ? "Active" : "Inactive"}
+                      {faq.isActive ? "Đang sử dụng" : "Tạm ẩn"}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -435,61 +435,61 @@ export function CustomFAQManagement() {
       <Dialog open={isAddingFAQ} onOpenChange={setIsAddingFAQ}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Add New FAQ</DialogTitle>
-            <DialogDescription>Create a new frequently asked question and answer</DialogDescription>
+            <DialogTitle>Thêm FAQ mới</DialogTitle>
+            <DialogDescription>Tạo câu hỏi thường gặp và câu trả lời mới</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Question</label>
+              <label className="text-sm font-medium">Câu hỏi</label>
               <Input
                 value={newFAQ.question}
                 onChange={(e) => setNewFAQ({ ...newFAQ, question: e.target.value })}
-                placeholder="Enter the question..."
+                placeholder="Nhập câu hỏi..."
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Answer</label>
+              <label className="text-sm font-medium">Câu trả lời</label>
               <RichTextEditorWithPreview
                 value={newFAQ.answer}
                 onChange={(value) => setNewFAQ({ ...newFAQ, answer: value })}
-                placeholder="Enter the answer..."
+                placeholder="Nhập câu trả lời..."
                 minHeight={200}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Category</label>
+                <label className="text-sm font-medium">Danh mục</label>
                 <Select value={newFAQ.category} onValueChange={(value) => setNewFAQ({ ...newFAQ, category: value })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Chọn danh mục" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
-                    <SelectItem value="General">General</SelectItem>
-                    <SelectItem value="Technical">Technical</SelectItem>
-                    <SelectItem value="Account">Account</SelectItem>
-                    <SelectItem value="Support">Support</SelectItem>
+                    <SelectItem value="General">Chung</SelectItem>
+                    <SelectItem value="Technical">Kỹ thuật</SelectItem>
+                    <SelectItem value="Account">Tài khoản</SelectItem>
+                    <SelectItem value="Support">Hỗ trợ</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium">Tags (comma-separated)</label>
+                <label className="text-sm font-medium">Thẻ (phân tách bằng dấu phẩy)</label>
                 <Input
                   value={newFAQ.tags}
                   onChange={(e) => setNewFAQ({ ...newFAQ, tags: e.target.value })}
-                  placeholder="tag1, tag2, tag3..."
+                  placeholder="the1, the2, the3..."
                 />
               </div>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsAddingFAQ(false)}>
-                Cancel
+                Hủy
               </Button>
               <Button onClick={handleAddFAQ}>
                 <Save className="h-4 w-4 mr-2" />
-                Save FAQ
+                Lưu FAQ
               </Button>
             </div>
           </div>
@@ -500,20 +500,20 @@ export function CustomFAQManagement() {
       <Dialog open={!!editingFAQ} onOpenChange={() => setEditingFAQ(null)}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Edit FAQ</DialogTitle>
-            <DialogDescription>Update the frequently asked question and answer</DialogDescription>
+            <DialogTitle>Chỉnh sửa FAQ</DialogTitle>
+            <DialogDescription>Cập nhật câu hỏi thường gặp và câu trả lời</DialogDescription>
           </DialogHeader>
           {editingFAQ && (
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Question</label>
+                <label className="text-sm font-medium">Câu hỏi</label>
                 <Input
                   value={editingFAQ.question}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Answer</label>
+                <label className="text-sm font-medium">Câu trả lời</label>
                 <RichTextEditorWithPreview
                   value={editingFAQ.answer}
                   onChange={(value) => setEditingFAQ({ ...editingFAQ, answer: value })}
@@ -522,7 +522,7 @@ export function CustomFAQManagement() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Category</label>
+                  <label className="text-sm font-medium">Danh mục</label>
                   <Select 
                     value={editingFAQ.category} 
                     onValueChange={(value) => setEditingFAQ({ ...editingFAQ, category: value })}
@@ -538,7 +538,7 @@ export function CustomFAQManagement() {
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Tags (comma-separated)</label>
+                  <label className="text-sm font-medium">Thẻ (phân tách bằng dấu phẩy)</label>
                   <Input
                     value={editingFAQ.tags.join(", ")}
                     onChange={(e) => setEditingFAQ({ 
@@ -550,11 +550,11 @@ export function CustomFAQManagement() {
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setEditingFAQ(null)}>
-                  Cancel
+                  Hủy
                 </Button>
                 <Button onClick={handleUpdateFAQ}>
                   <Save className="h-4 w-4 mr-2" />
-                  Update FAQ
+                  Cập nhật FAQ
                 </Button>
               </div>
             </div>

@@ -121,7 +121,30 @@ export function ResponseManagement() {
     getSelectedItems,
   } = useBulkSelection(responses)
 
-  const filteredResponses = responses.filter((response) => {
+  // Merge flagged responses from Student chat (localStorage) as pending items
+  const flagged: Response[] = (() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem('hannah-flagged-responses') : null
+      if (!raw) return []
+      const arr = JSON.parse(raw)
+      return (arr as any[]).map((r, idx) => ({
+        id: `flag-${r.id || idx}`,
+        student: r.student,
+        question: r.question,
+        aiResponse: r.aiResponse,
+        confidence: r.confidence || 0.3,
+        date: r.date || new Date().toISOString(),
+        status: 'pending',
+        priority: 'high',
+      }))
+    } catch {
+      return []
+    }
+  })()
+
+  const combined = [...flagged, ...responses]
+
+  const filteredResponses = combined.filter((response) => {
     const matchesStatus = filterStatus === "all" || response.status === filterStatus
     const matchesSearch =
       response.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -169,7 +192,7 @@ export function ResponseManagement() {
     }),
     {
       id: "approve",
-      label: "Approve Selected",
+      label: "Phê duyệt đã chọn",
       icon: CheckCircle,
       variant: "default" as const,
       onClick: (ids: string[]) => {
@@ -182,7 +205,7 @@ export function ResponseManagement() {
     },
     {
       id: "reject",
-      label: "Reject Selected",
+      label: "Từ chối đã chọn",
       icon: XCircle,
       variant: "destructive" as const,
       onClick: (ids: string[]) => {
@@ -206,21 +229,21 @@ export function ResponseManagement() {
         return (
           <Badge variant="secondary">
             <Clock className="w-3 h-3 mr-1" />
-            Pending
+            Đang chờ duyệt
           </Badge>
         )
       case "approved":
         return (
           <Badge variant="default" className="bg-green-600">
             <CheckCircle className="w-3 h-3 mr-1" />
-            Approved
+            Đã phê duyệt
           </Badge>
         )
       case "rejected":
         return (
           <Badge variant="destructive">
             <XCircle className="w-3 h-3 mr-1" />
-            Rejected
+            Đã từ chối
           </Badge>
         )
       default:
@@ -233,19 +256,19 @@ export function ResponseManagement() {
       case "high":
         return (
           <Badge variant="destructive" className="text-xs">
-            High
+            Cao
           </Badge>
         )
       case "medium":
         return (
           <Badge variant="secondary" className="text-xs">
-            Medium
+            Trung bình
           </Badge>
         )
       case "low":
         return (
           <Badge variant="outline" className="text-xs">
-            Low
+            Thấp
           </Badge>
         )
       default:
@@ -258,16 +281,16 @@ export function ResponseManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Response Management</h1>
-          <p className="text-muted-foreground">Review AI responses and manage custom FAQ content</p>
+          <h1 className="text-3xl font-bold text-balance">Quản lý phản hồi</h1>
+          <p className="text-muted-foreground">Duyệt phản hồi AI và quản lý FAQ tùy chỉnh</p>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="responses" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="responses">AI Response Review</TabsTrigger>
-          <TabsTrigger value="faq">Custom FAQ Management</TabsTrigger>
+          <TabsTrigger value="responses">Duyệt phản hồi AI</TabsTrigger>
+          <TabsTrigger value="faq">Quản lý FAQ tùy chỉnh</TabsTrigger>
         </TabsList>
 
         <TabsContent value="responses" className="space-y-6">
@@ -286,7 +309,7 @@ export function ResponseManagement() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            Filter Responses
+            Lọc phản hồi
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -295,7 +318,7 @@ export function ResponseManagement() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Search by question content or student name..."
+                  placeholder="Tìm theo nội dung câu hỏi hoặc tên sinh viên..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -304,19 +327,19 @@ export function ResponseManagement() {
             </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder="Lọc theo trạng thái" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Responses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="all">Tất cả phản hồi</SelectItem>
+                <SelectItem value="pending">Đang chờ duyệt</SelectItem>
+                <SelectItem value="approved">Đã phê duyệt</SelectItem>
+                <SelectItem value="rejected">Đã từ chối</SelectItem>
               </SelectContent>
             </Select>
             <DateRangePickerWithPresets
               date={dateRange}
               onDateChange={setDateRange}
-              placeholder="Filter by date range"
+              placeholder="Lọc theo khoảng thời gian"
             />
           </div>
         </CardContent>
@@ -325,8 +348,8 @@ export function ResponseManagement() {
       {/* Response List */}
       <Card>
         <CardHeader>
-          <CardTitle>AI Responses ({filteredResponses.length})</CardTitle>
-          <CardDescription>Click on any response to view details and take action</CardDescription>
+          <CardTitle>Phản hồi AI ({filteredResponses.length})</CardTitle>
+          <CardDescription>Nhấp vào phản hồi để xem chi tiết và xử lý</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -339,13 +362,13 @@ export function ResponseManagement() {
                     onSelectionChange={(_, selected) => handleSelectAll(selected)}
                   />
                 </TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead>Question</TableHead>
-                <TableHead>Confidence</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Sinh viên</TableHead>
+                <TableHead>Câu hỏi</TableHead>
+                <TableHead>Độ tin cậy</TableHead>
+                <TableHead>Ưu tiên</TableHead>
+                <TableHead>Thời gian</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -466,7 +489,7 @@ export function ResponseManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-500" />
-              <span className="text-sm font-medium">Approved</span>
+              <span className="text-sm font-medium">Đã phê duyệt</span>
             </div>
             <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.status === "approved").length}</p>
           </CardContent>
@@ -476,7 +499,7 @@ export function ResponseManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <XCircle className="h-4 w-4 text-red-500" />
-              <span className="text-sm font-medium">Rejected</span>
+              <span className="text-sm font-medium">Đã từ chối</span>
             </div>
             <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.status === "rejected").length}</p>
           </CardContent>
@@ -486,7 +509,7 @@ export function ResponseManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">High Priority</span>
+              <span className="text-sm font-medium">Ưu tiên cao</span>
             </div>
             <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.priority === "high").length}</p>
           </CardContent>

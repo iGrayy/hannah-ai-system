@@ -163,13 +163,13 @@ export function StudentMonitoring() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-100 text-green-800">Active</Badge>
+        return <Badge className="bg-green-100 text-green-800">Đang hoạt động</Badge>
       case "inactive":
-        return <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
+        return <Badge className="bg-gray-100 text-gray-800">Không hoạt động</Badge>
       case "struggling":
-        return <Badge className="bg-red-100 text-red-800">Struggling</Badge>
+        return <Badge className="bg-red-100 text-red-800">Gặp khó khăn</Badge>
       case "excelling":
-        return <Badge className="bg-blue-100 text-blue-800">Excelling</Badge>
+        return <Badge className="bg-blue-100 text-blue-800">Xuất sắc</Badge>
       default:
         return null
     }
@@ -195,8 +195,8 @@ export function StudentMonitoring() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Student Monitoring</h1>
-          <p className="text-slate-600">Track student progress and identify learning patterns</p>
+          <h1 className="text-3xl font-bold">Theo dõi sinh viên</h1>
+          <p className="text-slate-600">Theo dõi tiến độ và nhận diện mô hình học tập</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -205,7 +205,7 @@ export function StudentMonitoring() {
             onClick={() => alert("📊 Đang tạo báo cáo tiến độ học tập của sinh viên... Sẽ xuất file PDF sau 3 giây!")}
           >
             <FileText className="h-4 w-4 mr-2" />
-            Export Report
+            Xuất báo cáo
           </Button>
           <Button
             size="sm"
@@ -217,7 +217,7 @@ export function StudentMonitoring() {
             }}
           >
             <Send className="h-4 w-4 mr-2" />
-            Send Message
+            Gửi tin nhắn
           </Button>
         </div>
       </div>
@@ -226,52 +226,52 @@ export function StudentMonitoring() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số sinh viên</CardTitle>
             <Users className="h-4 w-4 text-slate-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">156</div>
             <p className="text-xs text-slate-600">
-              <span className="text-green-500">+8</span> new this month
+              <span className="text-green-500">+8</span> mới trong tháng
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
+            <CardTitle className="text-sm font-medium">Sinh viên hoạt động</CardTitle>
             <Activity className="h-4 w-4 text-slate-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">142</div>
             <p className="text-xs text-slate-600">
-              <span className="text-green-500">91%</span> engagement rate
+              <span className="text-green-500">91%</span> tỉ lệ tương tác
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Progress</CardTitle>
+            <CardTitle className="text-sm font-medium">Tiến độ trung bình</CardTitle>
             <TrendingUp className="h-4 w-4 text-slate-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">73%</div>
             <p className="text-xs text-slate-600">
-              <span className="text-green-500">+5%</span> from last month
+              <span className="text-green-500">+5%</span> so với tháng trước
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Need Attention</CardTitle>
+            <CardTitle className="text-sm font-medium">Cần chú ý</CardTitle>
             <AlertCircle className="h-4 w-4 text-slate-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12</div>
             <p className="text-xs text-slate-600">
-              <span className="text-red-500">8%</span> of total students
+              <span className="text-red-500">8%</span> tổng số sinh viên
             </p>
           </CardContent>
         </Card>
@@ -283,36 +283,36 @@ export function StudentMonitoring() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Student List</CardTitle>
-              <CardDescription>Monitor individual student progress and activity</CardDescription>
+              <CardTitle>Danh sách sinh viên</CardTitle>
+              <CardDescription>Theo dõi tiến độ và hoạt động từng sinh viên</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
               <div className="flex gap-4 mb-4">
                 <Input
-                  placeholder="Search students..."
+                  placeholder="Tìm sinh viên..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="max-w-sm"
                 />
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Status" />
+                    <SelectValue placeholder="Trạng thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="struggling">Struggling</SelectItem>
-                    <SelectItem value="excelling">Excelling</SelectItem>
+                    <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                    <SelectItem value="active">Đang hoạt động</SelectItem>
+                    <SelectItem value="inactive">Không hoạt động</SelectItem>
+                    <SelectItem value="struggling">Gặp khó khăn</SelectItem>
+                    <SelectItem value="excelling">Xuất sắc</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={classFilter} onValueChange={setClassFilter}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Class" />
+                    <SelectValue placeholder="Lớp" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Classes</SelectItem>
+                    <SelectItem value="all">Tất cả lớp</SelectItem>
                     <SelectItem value="CS2023A">CS2023A</SelectItem>
                     <SelectItem value="CS2023B">CS2023B</SelectItem>
                   </SelectContent>
@@ -323,13 +323,13 @@ export function StudentMonitoring() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Student</TableHead>
-                    <TableHead>Class</TableHead>
-                    <TableHead>Questions</TableHead>
-                    <TableHead>Progress</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Active</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Sinh viên</TableHead>
+                    <TableHead>Lớp</TableHead>
+                    <TableHead>Câu hỏi</TableHead>
+                    <TableHead>Tiến độ</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Hoạt động gần nhất</TableHead>
+                    <TableHead>Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -370,7 +370,7 @@ export function StudentMonitoring() {
                             setDetailModalOpen(true)
                           }}
                         >
-                          View Details
+                          Xem chi tiết
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -384,9 +384,9 @@ export function StudentMonitoring() {
         {/* Activity Chart */}
         <div>
           <Card>
-            <CardHeader>
-              <CardTitle>Weekly Activity</CardTitle>
-              <CardDescription>Student engagement patterns</CardDescription>
+              <CardHeader>
+              <CardTitle>Hoạt động theo tuần</CardTitle>
+              <CardDescription>Mức độ tương tác của sinh viên</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>

@@ -72,21 +72,21 @@ export function ResponseDetailModal({
         return (
           <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
             <Clock className="h-3 w-3 mr-1" />
-            Pending
+            Đang chờ duyệt
           </Badge>
         )
       case "approved":
         return (
           <Badge variant="secondary" className="bg-green-100 text-green-800">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Approved
+            Đã phê duyệt
           </Badge>
         )
       case "rejected":
         return (
           <Badge variant="secondary" className="bg-red-100 text-red-800">
             <XCircle className="h-3 w-3 mr-1" />
-            Rejected
+            Đã từ chối
           </Badge>
         )
       default:
@@ -97,11 +97,11 @@ export function ResponseDetailModal({
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
-        return <Badge variant="destructive">High Priority</Badge>
+        return <Badge variant="destructive">Ưu tiên cao</Badge>
       case "medium":
-        return <Badge variant="secondary">Medium Priority</Badge>
+        return <Badge variant="secondary">Ưu tiên trung bình</Badge>
       case "low":
-        return <Badge variant="outline">Low Priority</Badge>
+        return <Badge variant="outline">Ưu tiên thấp</Badge>
       default:
         return null
     }
@@ -147,7 +147,7 @@ export function ResponseDetailModal({
 
         <div className="flex-1 overflow-y-auto px-1">
           <div className="space-y-6 py-2">
-          {/* Student Info */}
+          {/* Thông tin sinh viên */}
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
@@ -167,7 +167,7 @@ export function ResponseDetailModal({
             </div>
           </div>
 
-          {/* Question */}
+          {/* Câu hỏi */}
           <div>
             <Label className="text-base font-semibold flex items-center gap-2 mb-2">
               <User className="h-4 w-4" />
@@ -178,14 +178,14 @@ export function ResponseDetailModal({
             </div>
           </div>
 
-          {/* AI Response */}
+          {/* Phản hồi của AI */}
           <div>
             <Label className="text-base font-semibold flex items-center gap-2 mb-2">
               <MessageSquare className="h-4 w-4" />
               Phản hồi của Hannah AI
               <Badge variant="outline" className="ml-2">
                 <TrendingUp className="h-3 w-3 mr-1" />
-                {response.confidence}% confidence
+                Độ tin cậy {response.confidence}%
               </Badge>
             </Label>
             
@@ -239,7 +239,7 @@ export function ResponseDetailModal({
             </div>
           </div>
 
-          {/* Reject Reason (if rejecting) */}
+          {/* Lý do từ chối (nếu từ chối) */}
           {response.status === "pending" && (
             <div>
               <Label htmlFor="reject-reason" className="text-sm font-medium">
@@ -272,7 +272,7 @@ export function ResponseDetailModal({
                 className="text-indigo-600 border-indigo-200 hover:bg-indigo-50"
               >
                 <BookOpenCheck className="h-4 w-4 mr-2" />
-                Xem trong KB
+                Bổ sung kiến thức
               </Button>
             </div>
 
