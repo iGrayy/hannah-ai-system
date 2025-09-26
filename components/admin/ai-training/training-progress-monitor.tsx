@@ -85,8 +85,8 @@ export function TrainingProgressMonitor({
             timestamp: new Date().toLocaleTimeString(),
             level: Math.random() < 0.1 ? "warning" : "info",
             message: Math.random() < 0.5 
-              ? `Epoch ${newEpoch}/${prev.totalEpochs} - Loss: ${newLoss.toFixed(4)}, Accuracy: ${(newAccuracy * 100).toFixed(2)}%`
-              : `Processing batch ${Math.floor(Math.random() * 100) + 1}/100`
+              ? `Epoch ${newEpoch}/${prev.totalEpochs} - Loss: ${newLoss.toFixed(4)}, Độ chính xác: ${(newAccuracy * 100).toFixed(2)}%`
+              : `Đang xử lý batch ${Math.floor(Math.random() * 100) + 1}/100`
           })
         }
 

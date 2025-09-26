@@ -122,14 +122,24 @@ export function AITrainingManagement() {
   const [showDatasetUpload, setShowDatasetUpload] = useState(false)
   const [monitoringSession, setMonitoringSession] = useState<TrainingSession | null>(null)
 
+  const formatDataSize = (size: number): string => {
+    if (size < 1000) {
+      return `${size} B`
+    } else if (size < 1000000) {
+      return `${(size / 1000).toFixed(1)} MB`
+    } else {
+      return `${(size / 1000000).toFixed(1)} MB`
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "running":
-        return <Badge className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />Running</Badge>
+        return <Badge className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />Đang chạy</Badge>
       case "completed":
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Hoàn thành</Badge>
       case "failed":
-        return <Badge className="bg-red-100 text-red-800"><AlertCircle className="h-3 w-3 mr-1" />Failed</Badge>
+        return <Badge className="bg-red-100 text-red-800"><AlertCircle className="h-3 w-3 mr-1" />Thất bại</Badge>
       case "paused":
         return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Tạm dừng</Badge>
       // hỗ trợ dữ liệu cũ nếu có 'pending'
@@ -143,11 +153,11 @@ export function AITrainingManagement() {
   const getDatasetTypeBadge = (type: string) => {
     switch (type) {
       case "qa_pairs":
-        return <Badge variant="outline">Q&A Pairs</Badge>
+        return <Badge variant="outline">Cặp Hỏi-Đáp</Badge>
       case "conversations":
-        return <Badge variant="outline">Conversations</Badge>
+        return <Badge variant="outline">Hội thoại</Badge>
       case "documents":
-        return <Badge variant="outline">Documents</Badge>
+        return <Badge variant="outline">Tài liệu</Badge>
       default:
         return null
     }
@@ -221,7 +231,7 @@ export function AITrainingManagement() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Database className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium">Training Data</span>
+              <span className="text-sm font-medium">Dữ liệu huấn luyện</span>
             </div>
             <p className="text-2xl font-bold mt-2">{datasets.length}</p>
           </CardContent>
@@ -275,7 +285,7 @@ export function AITrainingManagement() {
                           <span className="text-sm">{session.progress}%</span>
                         </div>
                       </TableCell>
-                      <TableCell>{session.datasetSize.toLocaleString()}</TableCell>
+                      <TableCell>{formatDataSize(session.datasetSize)}</TableCell>
                       <TableCell>{(session.accuracy * 100).toFixed(1)}%</TableCell>
                       <TableCell>{session.loss.toFixed(3)}</TableCell>
                       <TableCell>
@@ -307,7 +317,7 @@ export function AITrainingManagement() {
         <TabsContent value="datasets" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Training Data</CardTitle>
+              <CardTitle>Dữ liệu huấn luyện</CardTitle>
               <CardDescription>Quản lý dữ liệu dùng cho huấn luyện AI</CardDescription>
             </CardHeader>
             <CardContent>
@@ -334,7 +344,7 @@ export function AITrainingManagement() {
                     <TableRow key={dataset.id}>
                       <TableCell className="font-medium">{dataset.name}</TableCell>
                       <TableCell>{getDatasetTypeBadge(dataset.type)}</TableCell>
-                      <TableCell>{dataset.size.toLocaleString()} mục</TableCell>
+                      <TableCell>{formatDataSize(dataset.size)}</TableCell>
                       <TableCell>{dataset.lastUpdated}</TableCell>
                       <TableCell>
                         <Badge variant={dataset.status === "ready" ? "default" : "secondary"}>

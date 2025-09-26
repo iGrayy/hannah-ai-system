@@ -68,6 +68,28 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
   const [dragActive, setDragActive] = useState(false)
   const [currentStep, setCurrentStep] = useState(1) // 1: Info, 2: Upload, 3: Preview, 4: Complete
 
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) {
+      return `${bytes} B`
+    } else if (bytes < 1024 * 1024) {
+      return `${(bytes / 1024).toFixed(1)} KB`
+    } else if (bytes < 1024 * 1024 * 1024) {
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    } else {
+      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+    }
+  }
+
+  const formatDataSize = (size: number): string => {
+    if (size < 1000) {
+      return `${size} mục`
+    } else if (size < 1000000) {
+      return `${(size / 1000).toFixed(1)}K mục`
+    } else {
+      return `${(size / 1000000).toFixed(1)}M mục`
+    }
+  }
+
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -354,7 +376,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
                           <div>
                             <p className="font-medium">{uploadFile.file.name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {(uploadFile.file.size / 1024).toFixed(1)} KB
+                              {formatFileSize(uploadFile.file.size)}
                             </p>
                           </div>
                         </div>
@@ -366,7 +388,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
                           )}
                           {uploadFile.status === "completed" && (
                             <Badge variant="outline" className="text-green-600">
-                              {uploadFile.preview?.length} mục
+                              {formatDataSize(uploadFile.preview?.length || 0)}
                             </Badge>
                           )}
                           <Button
@@ -400,7 +422,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <h3 className="text-xl font-bold mb-2">Dataset sẵn sàng!</h3>
-              <p className="text-muted-foreground">Xử lý thành công {totalItems} mục từ {uploadFiles.length} tệp</p>
+              <p className="text-muted-foreground">Xử lý thành công {formatDataSize(totalItems)} từ {uploadFiles.length} tệp</p>
             </div>
 
             <Card>
@@ -411,7 +433,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="font-medium">Tên:</span> {datasetInfo.name}</div>
                   <div><span className="font-medium">Loại:</span> {datasetInfo.type}</div>
-                  <div><span className="font-medium">Tổng mục:</span> {totalItems}</div>
+                  <div><span className="font-medium">Tổng mục:</span> {formatDataSize(totalItems)}</div>
                   <div><span className="font-medium">Số tệp:</span> {uploadFiles.length}</div>
                 </div>
               </CardContent>

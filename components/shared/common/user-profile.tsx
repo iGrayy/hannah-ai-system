@@ -55,7 +55,7 @@ export function UserProfile() {
     email: user?.email || "",
     phone: "+84 123 456 789",
     address: "123 Đường ABC, Quận 1, TP.HCM",
-    bio: "Giảng viên khoa Công nghệ Thông tin với 10 năm kinh nghiệm giảng dạy.",
+    bio: "Giảng viên ngành Công nghệ Thông tin với 10 năm kinh nghiệm giảng dạy.",
     department: "Computer Science",
     position: user?.role === "admin" ? "System Administrator" : "Faculty Member",
     joinDate: "2020-09-01",
@@ -241,7 +241,7 @@ export function UserProfile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="department">Khoa/Phòng ban</Label>
+                      <Label htmlFor="department">Ngành/Phòng ban</Label>
                       <Input
                         id="department"
                         value={profileData.department}

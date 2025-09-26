@@ -211,14 +211,7 @@ export function AdminUserManagement() {
           <p className="text-muted-foreground">Quản lý tài khoản, vai trò và quyền truy cập cho hệ thống Hannah</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => alert("📁 Chức năng import users từ CSV/Excel sẽ được triển khai sau!")}
-          >
-            <Upload className="h-4 w-4 mr-2" />
-            Nhập người dùng
-          </Button>
+          
           <Button size="sm" onClick={() => setIsAddingUser(true)}>
             <UserPlus className="h-4 w-4 mr-2" />
             Thêm người dùng
@@ -286,7 +279,7 @@ export function AdminUserManagement() {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      placeholder="Tìm người dùng theo tên, email hoặc khoa..."
+                      placeholder="Tìm người dùng theo tên, email hoặc ngành..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -330,7 +323,7 @@ export function AdminUserManagement() {
                   <TableRow>
                     <TableHead>Người dùng</TableHead>
                     <TableHead>Vai trò</TableHead>
-                    <TableHead>Khoa</TableHead>
+                    <TableHead>Ngành</TableHead>
                     <TableHead>Trạng thái</TableHead>
                     <TableHead>Đăng nhập gần nhất</TableHead>
                     <TableHead>Thao tác</TableHead>
@@ -397,7 +390,7 @@ export function AdminUserManagement() {
 
                                   <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                      <label className="text-sm font-medium">Khoa</label>
+                                      <label className="text-sm font-medium">Ngành</label>
                                       <p className="text-sm text-muted-foreground">{selectedUser.department}</p>
                                     </div>
                                     <div>
@@ -408,18 +401,21 @@ export function AdminUserManagement() {
 
                                   <div>
                                     <label className="text-sm font-medium mb-2 block">Quyền</label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      {allPermissions.map((permission) => (
-                                        <div key={permission.id} className="flex items-center space-x-2">
-                                          <Checkbox
-                                            id={permission.id}
-                                            checked={selectedUser.permissions.includes(permission.id)}
-                                          />
-                                          <label htmlFor={permission.id} className="text-sm">
-                                            {permission.name}
-                                          </label>
+                                    <div className="space-y-2">
+                                      {selectedUser.permissions.length > 0 ? (
+                                        selectedUser.permissions.map((permissionId) => {
+                                          const permission = allPermissions.find(p => p.id === permissionId)
+                                          return permission ? (
+                                            <div key={permissionId} className="text-sm font-bold text-green-700">
+                                              • {permission.name}
+                                            </div>
+                                          ) : null
+                                        })
+                                      ) : (
+                                        <div className="text-sm text-muted-foreground italic">
+                                          Không có quyền nào được cấp
                                         </div>
-                                      ))}
+                                      )}
                                     </div>
                                   </div>
 
