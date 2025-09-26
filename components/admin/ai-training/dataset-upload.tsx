@@ -34,10 +34,10 @@ interface UploadFile {
 }
 
 const DATASET_TYPES = [
-  { value: "qa_pairs", label: "Q&A Pairs", description: "Question-Answer pairs for training" },
-  { value: "conversations", label: "Conversations", description: "Multi-turn conversation data" },
-  { value: "documents", label: "Documents", description: "Text documents for knowledge extraction" },
-  { value: "code_examples", label: "Code Examples", description: "Programming code with explanations" }
+  { value: "qa_pairs", label: "Cặp Hỏi - Đáp", description: "Cặp Câu hỏi - Trả lời cho huấn luyện" },
+  { value: "conversations", label: "Hội thoại", description: "Dữ liệu hội thoại nhiều lượt" },
+  { value: "documents", label: "Tài liệu", description: "Văn bản để trích xuất tri thức" },
+  { value: "code_examples", label: "Ví dụ mã", description: "Mã nguồn kèm giải thích" }
 ]
 
 const SAMPLE_DATA = {
@@ -67,6 +67,28 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([])
   const [dragActive, setDragActive] = useState(false)
   const [currentStep, setCurrentStep] = useState(1) // 1: Info, 2: Upload, 3: Preview, 4: Complete
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) {
+      return `${bytes} B`
+    } else if (bytes < 1024 * 1024) {
+      return `${(bytes / 1024).toFixed(1)} KB`
+    } else if (bytes < 1024 * 1024 * 1024) {
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    } else {
+      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+    }
+  }
+
+  const formatDataSize = (size: number): string => {
+    if (size < 1000) {
+      return `${size} mục`
+    } else if (size < 1000000) {
+      return `${(size / 1000).toFixed(1)}K mục`
+    } else {
+      return `${(size / 1000000).toFixed(1)}M mục`
+    }
+  }
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -129,7 +151,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
 
     try {
       const text = await uploadFile.file.text()
-      let data: any[]
+      let data: any[] = []
       let errors: string[] = []
 
       if (uploadFile.file.name.endsWith('.json')) {
@@ -153,7 +175,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
       if (datasetInfo.type === "qa_pairs") {
         data.forEach((item, i) => {
           if (!item.question || !item.answer) {
-            errors.push(`Row ${i + 1}: Missing question or answer`)
+            errors.push(`Dòng ${i + 1}: Thiếu câu hỏi hoặc câu trả lời`)
           }
         })
       }
@@ -172,7 +194,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
         i === index ? { 
           ...f, 
           status: "error",
-          errors: ["Failed to parse file: " + (error as Error).message]
+          errors: ["Không thể phân tích tệp: " + (error as Error).message]
         } : f
       ))
     }
@@ -233,7 +255,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
         return (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Dataset Name *</Label>
+              <Label htmlFor="name">Tên Dataset *</Label>
               <Input
                 id="name"
                 value={datasetInfo.name}
@@ -243,7 +265,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="type">Dataset Type *</Label>
+              <Label htmlFor="type">Loại Dataset *</Label>
               <Select 
                 value={datasetInfo.type} 
                 onValueChange={(value) => setDatasetInfo(prev => ({ ...prev, type: value }))}
@@ -265,7 +287,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
+              <Label htmlFor="description">Mô tả *</Label>
               <Textarea
                 id="description"
                 value={datasetInfo.description}
@@ -276,7 +298,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tags">Tags (optional)</Label>
+              <Label htmlFor="tags">Thẻ (không bắt buộc)</Label>
               <Input
                 id="tags"
                 value={datasetInfo.tags}
@@ -287,7 +309,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
 
             {datasetInfo.type && (
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-2">📋 Format yêu cầu:</h4>
+                <h4 className="font-medium text-blue-900 mb-2">📋 Định dạng yêu cầu:</h4>
                 <div className="text-sm text-blue-800">
                   {datasetInfo.type === "qa_pairs" && (
                     <div>
@@ -324,17 +346,13 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
               onDrop={handleDrop}
             >
               <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-lg font-medium mb-2">
-                Drag & drop files here, or click to select
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Supports: JSON, JSONL, CSV files
-              </p>
+              <p className="text-lg font-medium mb-2">Kéo & thả tệp vào đây, hoặc bấm để chọn</p>
+              <p className="text-sm text-muted-foreground mb-4">Hỗ trợ: JSON, JSONL, CSV</p>
               <Button
                 variant="outline"
                 onClick={() => document.getElementById('file-input')?.click()}
               >
-                Select Files
+                Chọn tệp
               </Button>
               <input
                 id="file-input"
@@ -348,7 +366,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
 
             {uploadFiles.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium">Uploaded Files:</h4>
+                <h4 className="font-medium">Các tệp đã tải lên:</h4>
                 {uploadFiles.map((uploadFile, index) => (
                   <Card key={index}>
                     <CardContent className="p-4">
@@ -358,7 +376,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
                           <div>
                             <p className="font-medium">{uploadFile.file.name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {(uploadFile.file.size / 1024).toFixed(1)} KB
+                              {formatFileSize(uploadFile.file.size)}
                             </p>
                           </div>
                         </div>
@@ -370,7 +388,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
                           )}
                           {uploadFile.status === "completed" && (
                             <Badge variant="outline" className="text-green-600">
-                              {uploadFile.preview?.length} items
+                              {formatDataSize(uploadFile.preview?.length || 0)}
                             </Badge>
                           )}
                           <Button
@@ -403,22 +421,20 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
           <div className="space-y-4">
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Dataset Ready!</h3>
-              <p className="text-muted-foreground">
-                Successfully processed {totalItems} items from {uploadFiles.length} file(s)
-              </p>
+              <h3 className="text-xl font-bold mb-2">Dataset sẵn sàng!</h3>
+              <p className="text-muted-foreground">Xử lý thành công {formatDataSize(totalItems)} từ {uploadFiles.length} tệp</p>
             </div>
 
             <Card>
               <CardHeader>
-                <CardTitle>Dataset Summary</CardTitle>
+                <CardTitle>Tóm tắt Dataset</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><span className="font-medium">Name:</span> {datasetInfo.name}</div>
-                  <div><span className="font-medium">Type:</span> {datasetInfo.type}</div>
-                  <div><span className="font-medium">Total Items:</span> {totalItems}</div>
-                  <div><span className="font-medium">Files:</span> {uploadFiles.length}</div>
+                  <div><span className="font-medium">Tên:</span> {datasetInfo.name}</div>
+                  <div><span className="font-medium">Loại:</span> {datasetInfo.type}</div>
+                  <div><span className="font-medium">Tổng mục:</span> {formatDataSize(totalItems)}</div>
+                  <div><span className="font-medium">Số tệp:</span> {uploadFiles.length}</div>
                 </div>
               </CardContent>
             </Card>
@@ -426,8 +442,8 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             {uploadFiles[0]?.preview && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Data Preview</CardTitle>
-                  <CardDescription>First few items from your dataset</CardDescription>
+                  <CardTitle className="text-lg">Xem trước dữ liệu</CardTitle>
+                  <CardDescription>Một vài mục đầu tiên từ dataset của bạn</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-50 p-4 rounded-lg max-h-64 overflow-y-auto">
@@ -454,16 +470,16 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             <div>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Database className="h-6 w-6 text-blue-600" />
-                Upload Dataset
+                Tải lên Dataset
               </CardTitle>
-              <CardDescription>Add new training data to Hannah AI</CardDescription>
+              <CardDescription>Thêm dữ liệu huấn luyện mới cho Hannah AI</CardDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </div>
 
           {/* Progress Steps */}
           <div className="flex items-center justify-between mt-6">
-            {["Info", "Upload", "Preview"].map((step, index) => (
+            {["Thông tin", "Tải lên", "Xem trước"].map((step, index) => (
               <div key={step} className="flex items-center">
                 <div className={`
                   flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium
@@ -493,21 +509,21 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
             onClick={() => setCurrentStep(prev => Math.max(prev - 1, 1))}
             disabled={currentStep === 1}
           >
-            Back
+            Quay lại
           </Button>
 
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button variant="ghost" onClick={onClose}>Hủy</Button>
             {currentStep < 3 ? (
               <Button 
                 onClick={() => setCurrentStep(prev => prev + 1)}
                 disabled={!canProceed()}
               >
-                Next
+                Tiếp theo
               </Button>
             ) : (
               <Button onClick={handleComplete} className="bg-green-600 hover:bg-green-700">
-                Complete Upload
+                Hoàn tất tải lên
               </Button>
             )}
           </div>

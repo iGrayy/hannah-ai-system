@@ -56,17 +56,17 @@ export function AdminIntegrations() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Integration Hub</h1>
-        <p className="text-muted-foreground">Manage third-party integrations and API connections</p>
+        <h1 className="text-2xl font-bold">Kết nối tích hợp</h1>
+        <p className="text-muted-foreground">Quản lý tích hợp bên thứ ba và kết nối API</p>
       </div>
 
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="all">All Integrations</TabsTrigger>
-          <TabsTrigger value="ai">AI Services</TabsTrigger>
-          <TabsTrigger value="database">Database</TabsTrigger>
-          <TabsTrigger value="communication">Communication</TabsTrigger>
-          <TabsTrigger value="storage">Storage</TabsTrigger>
+          <TabsTrigger value="all">Tất cả tích hợp</TabsTrigger>
+          <TabsTrigger value="ai">Phiên bản AI</TabsTrigger>
+          <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
+          <TabsTrigger value="communication">Liên lạc</TabsTrigger>
+          <TabsTrigger value="storage">Lưu trữ</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
@@ -86,12 +86,12 @@ export function AdminIntegrations() {
                       {integration.status === "connected" ? (
                         <>
                           <CheckCircle className="h-3 w-3 mr-1" />
-                          Connected
+                          Đã kết nối
                         </>
                       ) : (
                         <>
                           <AlertCircle className="h-3 w-3 mr-1" />
-                          Disconnected
+                          Chưa kết nối
                         </>
                       )}
                     </Badge>
@@ -106,7 +106,7 @@ export function AdminIntegrations() {
                     />
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
-                      Configure
+                      Cấu hình
                     </Button>
                   </div>
                 </CardContent>
@@ -118,11 +118,11 @@ export function AdminIntegrations() {
         <TabsContent value="ai" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5" />
-                OpenAI Configuration
+                Cấu hình OpenAI
               </CardTitle>
-              <CardDescription>Configure AI model settings and API keys</CardDescription>
+              <CardDescription>Cấu hình model AI và API key</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -135,14 +135,14 @@ export function AdminIntegrations() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="model">Default Model</Label>
+                <Label htmlFor="model">Model mặc định</Label>
                 <Input id="model" defaultValue="gpt-4" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="max-tokens">Max Tokens</Label>
+                <Label htmlFor="max-tokens">Số token tối đa</Label>
                 <Input id="max-tokens" type="number" defaultValue="2048" />
               </div>
-              <Button>Save Configuration</Button>
+              <Button>Lưu cấu hình</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -150,11 +150,11 @@ export function AdminIntegrations() {
         <TabsContent value="database" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5" />
-                Supabase Configuration
+                Cấu hình Supabase
               </CardTitle>
-              <CardDescription>Database connection and settings</CardDescription>
+              <CardDescription>Cài đặt và kết nối cơ sở dữ liệu</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -167,15 +167,15 @@ export function AdminIntegrations() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Connection Status</Label>
-                  <p className="text-sm text-muted-foreground">Database connection active</p>
+                  <Label>Trạng thái kết nối</Label>
+                  <p className="text-sm text-muted-foreground">Kết nối cơ sở dữ liệu hoạt động</p>
                 </div>
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Connected
+                  Đã kết nối
                 </Badge>
               </div>
-              <Button>Test Connection</Button>
+              <Button>Kiểm tra kết nối</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -186,9 +186,9 @@ export function AdminIntegrations() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mail className="h-5 w-5" />
-                  SendGrid Email
+                  Gửi Email SendGrid
                 </CardTitle>
-                <CardDescription>Email delivery configuration</CardDescription>
+              <CardDescription>Cấu hình gửi email</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -196,10 +196,10 @@ export function AdminIntegrations() {
                   <Input id="sendgrid-key" type="password" placeholder="SG...." />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="from-email">From Email</Label>
+                <Label htmlFor="from-email">Email gửi đi</Label>
                   <Input id="from-email" type="email" placeholder="noreply@hannah.edu" />
                 </div>
-                <Button>Connect SendGrid</Button>
+                <Button>Kết nối SendGrid</Button>
               </CardContent>
             </Card>
 
@@ -207,20 +207,20 @@ export function AdminIntegrations() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5" />
-                  Slack Integration
+                  Tích hợp Slack
                 </CardTitle>
-                <CardDescription>Team notifications and alerts</CardDescription>
+              <CardDescription>Thông báo và cảnh báo cho nhóm</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="slack-webhook">Webhook URL</Label>
+                <Label htmlFor="slack-webhook">Webhook URL</Label>
                   <Input id="slack-webhook" defaultValue="https://hooks.slack.com/services/..." />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="slack-channel">Default Channel</Label>
+                <Label htmlFor="slack-channel">Kênh mặc định</Label>
                   <Input id="slack-channel" defaultValue="#hannah-alerts" />
                 </div>
-                <Button>Update Settings</Button>
+                <Button>Cập nhật cài đặt</Button>
               </CardContent>
             </Card>
           </div>
@@ -229,11 +229,11 @@ export function AdminIntegrations() {
         <TabsContent value="storage" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                 <Cloud className="h-5 w-5" />
-                AWS S3 Storage
+                Lưu trữ AWS S3
               </CardTitle>
-              <CardDescription>Cloud storage for files and media</CardDescription>
+              <CardDescription>Lưu trữ đám mây cho tệp và media</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -245,14 +245,14 @@ export function AdminIntegrations() {
                 <Input id="aws-secret-key" type="password" placeholder="..." />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="aws-bucket">Bucket Name</Label>
+                <Label htmlFor="aws-bucket">Tên bucket</Label>
                 <Input id="aws-bucket" placeholder="hannah-storage" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="aws-region">Region</Label>
+                <Label htmlFor="aws-region">Vùng</Label>
                 <Input id="aws-region" defaultValue="us-east-1" />
               </div>
-              <Button>Connect AWS S3</Button>
+              <Button>Kết nối AWS S3</Button>
             </CardContent>
           </Card>
         </TabsContent>

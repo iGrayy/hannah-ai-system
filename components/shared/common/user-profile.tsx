@@ -55,9 +55,9 @@ export function UserProfile() {
     email: user?.email || "",
     phone: "+84 123 456 789",
     address: "123 Đường ABC, Quận 1, TP.HCM",
-    bio: "Giảng viên khoa Công nghệ Thông tin với 10 năm kinh nghiệm giảng dạy.",
-    department: "Computer Science",
-    position: user?.role === "admin" ? "System Administrator" : "Faculty Member",
+    bio: "Giảng viên ngành Công nghệ Thông tin với 10 năm kinh nghiệm giảng dạy.",
+    department: "Khoa học Máy tính",
+    position: user?.role === "admin" ? "Quản trị viên Hệ thống" : "Thành viên Giảng viên",
     joinDate: "2020-09-01",
   })
 
@@ -143,7 +143,7 @@ export function UserProfile() {
               <CardTitle>{profileData.name}</CardTitle>
               <CardDescription>{profileData.position}</CardDescription>
               <Badge className="w-fit mx-auto mt-2">
-                {user?.role === "admin" ? "Administrator" : "Faculty"}
+                {user?.role === "admin" ? "Quản trị viên" : "Giảng viên"}
               </Badge>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -166,33 +166,7 @@ export function UserProfile() {
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Thống kê hoạt động
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Câu hỏi đã trả lời</span>
-                <span className="font-semibold">1,247</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Sinh viên hỗ trợ</span>
-                <span className="font-semibold">156</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Đánh giá trung bình</span>
-                <span className="font-semibold">4.8/5</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Thời gian online</span>
-                <span className="font-semibold">89h</span>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Quick Stats removed per requirement */}
         </div>
 
         {/* Main Content */}
@@ -241,7 +215,7 @@ export function UserProfile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="department">Khoa/Phòng ban</Label>
+                      <Label htmlFor="department">Ngành/Phòng ban</Label>
                       <Input
                         id="department"
                         value={profileData.department}

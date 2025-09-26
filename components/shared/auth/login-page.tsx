@@ -9,13 +9,19 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAuth } from "@/contexts/auth-context"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Loader2, GraduationCap } from "lucide-react"
 
 export function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const { login, isLoading } = useAuth()
+  const { login, isLoading, registerStudent, requestPasswordReset } = useAuth()
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false)
+  const [isForgotOpen, setIsForgotOpen] = useState(false)
+  const [registerData, setRegisterData] = useState({ name: "", email: "", password: "" })
+  const [forgotEmail, setForgotEmail] = useState("")
+  const [actionMessage, setActionMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,13 +94,30 @@ export function LoginPage() {
                 "Đăng nhập vào hệ thống"
               )}
             </Button>
+
+            <Button
+              type="button"
+              onClick={() => setIsRegisterOpen(true)}
+              className="w-full bg-white text-slate-700 font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 border border-slate-300 hover:bg-slate-50 mt-3"
+              disabled={isLoading}
+            >
+              Đăng ký (Student)
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => setIsForgotOpen(true)}
+              className="w-full text-slate-600 hover:text-slate-800 underline mt-2 text-sm text-left"
+            >
+              Quên mật khẩu?
+            </button>
           </form>
 
           <div className="mt-6 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl border border-slate-200">
             <p className="text-sm font-semibold text-slate-700 mb-3">🔑 Tài khoản demo:</p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between p-2 bg-white rounded-lg">
-                <span className="font-medium text-slate-700">Admin:</span>
+                <span className="font-medium text-slate-700">Quản trị viên:</span>
                 <span className="text-slate-600">admin@hannah.edu / 123456</span>
               </div>
               <div className="flex items-center justify-between p-2 bg-white rounded-lg">
@@ -107,6 +130,76 @@ export function LoginPage() {
               </div>
             </div>
           </div>
+
+          <>
+            <Dialog open={isForgotOpen} onOpenChange={setIsForgotOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Quên mật khẩu</DialogTitle>
+                  <DialogDescription>Nhập email để nhận liên kết đặt lại mật khẩu.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">Email</Label>
+                  <Input id="forgot-email" type="email" placeholder="email@hannah.edu" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} />
+                </div>
+                {actionMessage && <p className="text-sm text-slate-600">{actionMessage}</p>}
+                <DialogFooter>
+                  <Button
+                    onClick={async () => {
+                      setActionMessage("")
+                      const ok = await requestPasswordReset(forgotEmail)
+                      setActionMessage(ok ? "Đã gửi email đặt lại mật khẩu (mô phỏng)." : "Email không tồn tại trong hệ thống.")
+                      if (ok) {
+                        setTimeout(() => setIsForgotOpen(false), 900)
+                      }
+                    }}
+                    className="bg-slate-700 text-white"
+                  >
+                    Gửi liên kết
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Tạo tài khoản Student</DialogTitle>
+                  <DialogDescription>Chỉ áp dụng cho vai trò Student (mô phỏng).</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-name">Họ và tên</Label>
+                    <Input id="reg-name" value={registerData.name} onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })} placeholder="Nguyễn Văn A" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-email">Email</Label>
+                    <Input id="reg-email" type="email" value={registerData.email} onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })} placeholder="student@hannah.edu" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-pass">Mật khẩu</Label>
+                    <Input id="reg-pass" type="password" value={registerData.password} onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })} placeholder="Tối thiểu 6 ký tự" />
+                  </div>
+                </div>
+                {actionMessage && <p className="text-sm text-slate-600">{actionMessage}</p>}
+                <DialogFooter>
+                  <Button
+                    onClick={async () => {
+                      setActionMessage("")
+                      const ok = await registerStudent(registerData)
+                      setActionMessage(ok ? "Đăng ký thành công! Đang đăng nhập..." : "Đăng ký thất bại. Email có thể đã tồn tại hoặc dữ liệu không hợp lệ.")
+                      if (ok) {
+                        setTimeout(() => setIsRegisterOpen(false), 900)
+                      }
+                    }}
+                    className="bg-slate-700 text-white"
+                  >
+                    Đăng ký
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </>
         </CardContent>
       </Card>
     </div>

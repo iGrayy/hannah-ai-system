@@ -19,30 +19,30 @@ export function AdminPerformance() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Performance Monitor</h1>
-        <p className="text-muted-foreground">Real-time system performance and health metrics</p>
+        <h1 className="text-2xl font-bold">Giám sát hiệu năng</h1>
+        <p className="text-muted-foreground">Hiệu năng hệ thống theo thời gian thực</p>
       </div>
 
       {/* System Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Status</CardTitle>
+            <CardTitle className="text-sm font-medium">Trạng thái hệ thống</CardTitle>
             <Server className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-green-100 text-green-800">
-                Online
+                Trực tuyến
               </Badge>
-              <span className="text-sm text-muted-foreground">99.9% uptime</span>
+              <span className="text-sm text-muted-foreground">99.9% thời gian hoạt động</span>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
+            <CardTitle className="text-sm font-medium">Mức dùng CPU</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -53,7 +53,7 @@ export function AdminPerformance() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
+            <CardTitle className="text-sm font-medium">Mức dùng bộ nhớ</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -64,12 +64,12 @@ export function AdminPerformance() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+            <CardTitle className="text-sm font-medium">Người dùng hoạt động</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,247</div>
-            <p className="text-xs text-muted-foreground">+12% from yesterday</p>
+            <p className="text-xs text-muted-foreground">+12% so với hôm qua</p>
           </CardContent>
         </Card>
       </div>
@@ -78,8 +78,8 @@ export function AdminPerformance() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>CPU & Memory Usage</CardTitle>
-            <CardDescription>Last 24 hours performance metrics</CardDescription>
+            <CardTitle>Mức dùng CPU & Bộ nhớ</CardTitle>
+            <CardDescription>Chỉ số 24 giờ gần nhất</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -89,7 +89,7 @@ export function AdminPerformance() {
                 <YAxis />
                 <Tooltip />
                 <Line type="monotone" dataKey="cpu" stroke="#8884d8" name="CPU %" />
-                <Line type="monotone" dataKey="memory" stroke="#82ca9d" name="Memory %" />
+                <Line type="monotone" dataKey="memory" stroke="#82ca9d" name="Bộ nhớ %" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -97,8 +97,8 @@ export function AdminPerformance() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Request Volume</CardTitle>
-            <CardDescription>API requests per hour</CardDescription>
+            <CardTitle>Lưu lượng yêu cầu</CardTitle>
+            <CardDescription>Số request API mỗi giờ</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -120,20 +120,20 @@ export function AdminPerformance() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Response Times
+              Thời gian phản hồi
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm">Average Response</span>
+              <span className="text-sm">Trung bình</span>
               <span className="font-medium">245ms</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">95th Percentile</span>
+              <span className="text-sm">Phần vị 95</span>
               <span className="font-medium">892ms</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">99th Percentile</span>
+              <span className="text-sm">Phần vị 99</span>
               <span className="font-medium">1.2s</span>
             </div>
           </CardContent>
@@ -143,20 +143,20 @@ export function AdminPerformance() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Database Metrics
+              Chỉ số CSDL
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm">Active Connections</span>
+              <span className="text-sm">Kết nối hoạt động</span>
               <span className="font-medium">15/20</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">Query Time (avg)</span>
+              <span className="text-sm">Thời gian truy vấn (TB)</span>
               <span className="font-medium">12ms</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">Cache Hit Rate</span>
+              <span className="text-sm">Tỉ lệ cache hit</span>
               <span className="font-medium">94.2%</span>
             </div>
           </CardContent>
@@ -166,20 +166,20 @@ export function AdminPerformance() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="h-5 w-5" />
-              AI Performance
+              Hiệu năng AI
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm">Avg Generation Time</span>
+              <span className="text-sm">Thời gian sinh trung bình</span>
               <span className="font-medium">1.8s</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">Success Rate</span>
+              <span className="text-sm">Tỉ lệ thành công</span>
               <span className="font-medium">98.7%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">Token Usage</span>
+              <span className="text-sm">Mức dùng token</span>
               <span className="font-medium">2.1M/day</span>
             </div>
           </CardContent>

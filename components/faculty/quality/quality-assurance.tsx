@@ -62,7 +62,7 @@ const mockConversations: Conversation[] = [
   {
     id: "1",
     student: { name: "Nguyen Van A", id: "SV001", avatar: "/placeholder.svg" },
-    topic: "Binary Search Trees",
+    topic: "Cây tìm kiếm nhị phân",
     messagesCount: 12,
     duration: "25 min",
     qualityScore: 85,
@@ -74,7 +74,7 @@ const mockConversations: Conversation[] = [
   {
     id: "2",
     student: { name: "Tran Thi B", id: "SV002", avatar: "/placeholder.svg" },
-    topic: "Database Normalization",
+    topic: "Chuẩn hóa Cơ sở dữ liệu",
     messagesCount: 8,
     duration: "15 min",
     qualityScore: 45,
@@ -86,7 +86,7 @@ const mockConversations: Conversation[] = [
   {
     id: "3",
     student: { name: "Le Van C", id: "SV003", avatar: "/placeholder.svg" },
-    topic: "Object-Oriented Programming",
+    topic: "Lập trình Hướng đối tượng",
     messagesCount: 20,
     duration: "45 min",
     qualityScore: 92,
@@ -98,9 +98,9 @@ const mockConversations: Conversation[] = [
 ]
 
 const qualityMetrics: QualityMetric[] = [
-  { name: "Average Response Accuracy", value: 87, change: +3, status: "good" },
-  { name: "Student Satisfaction", value: 4.2, change: +0.1, status: "good" },
-  { name: "Response Time (avg)", value: 2.3, change: -0.2, status: "good" },
+  { name: "Độ chính xác phản hồi trung bình", value: 87, change: +3, status: "good" },
+  { name: "Sự hài lòng của sinh viên", value: 4.2, change: +0.1, status: "good" },
+  { name: "Thời gian phản hồi (trung bình)", value: 2.3, change: -0.2, status: "good" },
   { name: "Intervention Rate", value: 12, change: +2, status: "warning" },
 ]
 
@@ -114,13 +114,13 @@ export function QualityAssurance() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-blue-100 text-blue-800">Active</Badge>
+        return <Badge className="bg-blue-100 text-blue-800">Đang hoạt động</Badge>
       case "flagged":
-        return <Badge className="bg-yellow-100 text-yellow-800">Flagged</Badge>
+        return <Badge className="bg-yellow-100 text-yellow-800">Đã gắn cờ</Badge>
       case "completed":
-        return <Badge className="bg-green-100 text-green-800">Completed</Badge>
+        return <Badge className="bg-green-100 text-green-800">Hoàn tất</Badge>
       case "intervention_needed":
-        return <Badge className="bg-red-100 text-red-800">Needs Intervention</Badge>
+        return <Badge className="bg-red-100 text-red-800">Cần can thiệp</Badge>
       default:
         return null
     }
@@ -149,8 +149,8 @@ export function QualityAssurance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Quality Assurance</h1>
-          <p className="text-slate-600">Monitor conversation quality and AI performance</p>
+          <h1 className="text-3xl font-bold">Đảm bảo chất lượng</h1>
+          <p className="text-slate-600">Giám sát chất lượng hội thoại và hiệu năng AI</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -162,14 +162,14 @@ export function QualityAssurance() {
             }}
           >
             <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
+            Làm mới
           </Button>
           <Button
             size="sm"
             onClick={() => alert("🚩 Có 3 cuộc hội thoại được đánh dấu cần xem xét. Chuyển đến queue?")}
           >
             <Flag className="h-4 w-4 mr-2" />
-            Review Flagged
+            Xem mục gắn cờ
           </Button>
         </div>
       </div>
@@ -203,23 +203,23 @@ export function QualityAssurance() {
       {/* Main Content */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList>
-          <TabsTrigger value="monitoring">Live Monitoring</TabsTrigger>
-          <TabsTrigger value="metrics">Quality Metrics</TabsTrigger>
-          <TabsTrigger value="intervention">Intervention Queue</TabsTrigger>
+          <TabsTrigger value="monitoring">Theo dõi trực tiếp</TabsTrigger>
+          <TabsTrigger value="metrics">Chỉ số chất lượng</TabsTrigger>
+          <TabsTrigger value="intervention">Hàng đợi can thiệp</TabsTrigger>
         </TabsList>
 
         <TabsContent value="monitoring" className="space-y-4">
           {/* Filters */}
           <Card>
-            <CardHeader>
-              <CardTitle>Real-time Conversations</CardTitle>
-              <CardDescription>Monitor ongoing and recent conversations</CardDescription>
+          <CardHeader>
+            <CardTitle>Hội thoại theo thời gian thực</CardTitle>
+            <CardDescription>Giám sát hội thoại đang diễn ra và gần đây</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex gap-4 mb-4">
                 <div className="flex-1">
                   <Input
-                    placeholder="Search by student name or topic..."
+                    placeholder="Tìm theo tên sinh viên hoặc chủ đề..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="max-w-sm"
@@ -227,14 +227,14 @@ export function QualityAssurance() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder="Lọc theo trạng thái" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="flagged">Flagged</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="intervention_needed">Needs Intervention</SelectItem>
+                    <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                    <SelectItem value="active">Đang hoạt động</SelectItem>
+                    <SelectItem value="flagged">Đã gắn cờ</SelectItem>
+                    <SelectItem value="completed">Hoàn tất</SelectItem>
+                    <SelectItem value="intervention_needed">Cần can thiệp</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -243,13 +243,13 @@ export function QualityAssurance() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Student</TableHead>
-                    <TableHead>Topic</TableHead>
-                    <TableHead>Messages</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Quality Score</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Sinh viên</TableHead>
+                    <TableHead>Chủ đề</TableHead>
+                    <TableHead>Tin nhắn</TableHead>
+                    <TableHead>Thời lượng</TableHead>
+                    <TableHead>Điểm chất lượng</TableHead>
+                    <TableHead>Trạng thái</TableHead>
+                    <TableHead>Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -312,13 +312,13 @@ export function QualityAssurance() {
         <TabsContent value="metrics" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Quality Metrics Dashboard</CardTitle>
-              <CardDescription>Detailed quality analysis and trends</CardDescription>
+              <CardTitle>Bảng chỉ số chất lượng</CardTitle>
+              <CardDescription>Phân tích chi tiết và xu hướng chất lượng</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
                 <BarChart3 className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-500">Quality metrics dashboard coming soon...</p>
+                <p className="text-slate-500">Bảng chỉ số chất lượng sẽ sớm có...</p>
               </div>
             </CardContent>
           </Card>
@@ -327,13 +327,13 @@ export function QualityAssurance() {
         <TabsContent value="intervention" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Intervention Queue</CardTitle>
-              <CardDescription>Conversations requiring human intervention</CardDescription>
+              <CardTitle>Hàng đợi can thiệp</CardTitle>
+              <CardDescription>Hội thoại cần con người can thiệp</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
                 <AlertTriangle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <p className="text-slate-500">No conversations requiring intervention at the moment</p>
+                <p className="text-slate-500">Hiện không có hội thoại cần can thiệp</p>
               </div>
             </CardContent>
           </Card>
@@ -362,7 +362,7 @@ export function QualityAssurance() {
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold">{selectedConversation.qualityScore}%</div>
-                    <p className="text-indigo-100 text-sm">Quality Score</p>
+                    <p className="text-indigo-100 text-sm">Điểm chất lượng</p>
                   </div>
                 </div>
               </div>
@@ -374,10 +374,10 @@ export function QualityAssurance() {
                   {/* Quick Stats */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                      <div className="text-center">
+                          <div className="text-center">
                         <MessageSquare className="h-8 w-8 text-blue-500 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-gray-900">{selectedConversation.messagesCount}</p>
-                        <p className="text-sm text-gray-600">Messages</p>
+                            <p className="text-sm text-gray-600">Tin nhắn</p>
                       </div>
                     </div>
 
@@ -385,7 +385,7 @@ export function QualityAssurance() {
                       <div className="text-center">
                         <Clock className="h-8 w-8 text-green-500 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-gray-900">{selectedConversation.duration}</p>
-                        <p className="text-sm text-gray-600">Duration</p>
+                            <p className="text-sm text-gray-600">Thời lượng</p>
                       </div>
                     </div>
 
@@ -393,7 +393,7 @@ export function QualityAssurance() {
                       <div className="text-center">
                         <Zap className="h-8 w-8 text-orange-500 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-gray-900">{selectedConversation.aiResponses}</p>
-                        <p className="text-sm text-gray-600">AI Responses</p>
+                            <p className="text-sm text-gray-600">Phản hồi AI</p>
                       </div>
                     </div>
 
@@ -401,7 +401,7 @@ export function QualityAssurance() {
                       <div className="text-center">
                         <Users className="h-8 w-8 text-purple-500 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-gray-900">{selectedConversation.humanInterventions}</p>
-                        <p className="text-sm text-gray-600">Interventions</p>
+                            <p className="text-sm text-gray-600">Can thiệp</p>
                       </div>
                     </div>
                   </div>
@@ -409,19 +409,19 @@ export function QualityAssurance() {
                   {/* Conversation Topic & Status */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gradient-to-r from-blue-500 to-cyan-600 p-4 text-white">
-                      <h3 className="text-lg font-bold">📚 Conversation Overview</h3>
+                      <h3 className="text-lg font-bold">📚 Tổng quan hội thoại</h3>
                     </div>
                     <div className="p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold text-gray-800 mb-2">Topic</h4>
+                          <h4 className="font-semibold text-gray-800 mb-2">Chủ đề</h4>
                           <p className="text-gray-600 bg-gray-50 p-3 rounded-lg">{selectedConversation.topic}</p>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-800 mb-2">Status</h4>
+                          <h4 className="font-semibold text-gray-800 mb-2">Trạng thái</h4>
                           <div className="flex items-center gap-2">
                             {getStatusBadge(selectedConversation.status)}
-                            <span className="text-sm text-gray-500">Last activity: {selectedConversation.lastActivity}</span>
+                            <span className="text-sm text-gray-500">Hoạt động gần nhất: {selectedConversation.lastActivity}</span>
                           </div>
                         </div>
                       </div>
@@ -431,48 +431,48 @@ export function QualityAssurance() {
                   {/* Quality Analysis */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-4 text-white">
-                      <h3 className="text-lg font-bold">📊 Quality Analysis</h3>
+                      <h3 className="text-lg font-bold">📊 Phân tích chất lượng</h3>
                     </div>
                     <div className="p-6">
                       <div className="space-y-4">
                         <div>
                           <div className="flex justify-between items-center mb-2">
-                            <span className="font-medium text-gray-700">Overall Quality Score</span>
+                            <span className="font-medium text-gray-700">Điểm chất lượng tổng</span>
                             <span className={`text-xl font-bold ${getQualityColor(selectedConversation.qualityScore)}`}>
                               {selectedConversation.qualityScore}%
                             </span>
                           </div>
                           <Progress value={selectedConversation.qualityScore} className="h-3" />
                           <p className="text-sm text-gray-500 mt-1">
-                            {selectedConversation.qualityScore >= 80 ? "🏆 Excellent quality conversation" :
-                             selectedConversation.qualityScore >= 60 ? "✅ Good quality, minor improvements needed" :
-                             "⚠️ Needs attention and improvement"}
+                            {selectedConversation.qualityScore >= 80 ? "🏆 Chất lượng xuất sắc" :
+                             selectedConversation.qualityScore >= 60 ? "✅ Chất lượng tốt, cần cải thiện nhỏ" :
+                             "⚠️ Cần chú ý và cải thiện"}
                           </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <h5 className="font-semibold text-blue-800 mb-2">Response Accuracy</h5>
+                            <h5 className="font-semibold text-blue-800 mb-2">Độ chính xác phản hồi</h5>
                             <div className="text-2xl font-bold text-blue-600">
                               {Math.min(selectedConversation.qualityScore + Math.floor(Math.random() * 10), 100)}%
                             </div>
-                            <p className="text-sm text-blue-600">AI responses were accurate</p>
+                            <p className="text-sm text-blue-600">Phản hồi AI chính xác</p>
                           </div>
 
                           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                            <h5 className="font-semibold text-green-800 mb-2">Student Engagement</h5>
+                            <h5 className="font-semibold text-green-800 mb-2">Mức độ tương tác</h5>
                             <div className="text-2xl font-bold text-green-600">
                               {Math.min(selectedConversation.qualityScore + Math.floor(Math.random() * 15), 100)}%
                             </div>
-                            <p className="text-sm text-green-600">High student participation</p>
+                            <p className="text-sm text-green-600">Mức tham gia cao</p>
                           </div>
 
                           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                            <h5 className="font-semibold text-purple-800 mb-2">Learning Outcome</h5>
+                            <h5 className="font-semibold text-purple-800 mb-2">Kết quả học tập</h5>
                             <div className="text-2xl font-bold text-purple-600">
                               {Math.min(selectedConversation.qualityScore + Math.floor(Math.random() * 8), 100)}%
                             </div>
-                            <p className="text-sm text-purple-600">Effective knowledge transfer</p>
+                            <p className="text-sm text-purple-600">Truyền đạt hiệu quả</p>
                           </div>
                         </div>
                       </div>
@@ -482,7 +482,7 @@ export function QualityAssurance() {
                   {/* Conversation Timeline */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-4 text-white">
-                      <h3 className="text-lg font-bold">💬 Conversation Timeline</h3>
+                      <h3 className="text-lg font-bold">💬 Dòng thời gian hội thoại</h3>
                     </div>
                     <div className="p-6">
                       <div className="space-y-4">
@@ -496,9 +496,9 @@ export function QualityAssurance() {
                           </Avatar>
                           <div className="flex-1 bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
                             <p className="text-sm text-gray-800">
-                              "Can you explain {selectedConversation.topic.toLowerCase()} concepts to me? I'm having trouble understanding the basics."
+                              "Bạn có thể giải thích khái niệm {selectedConversation.topic.toLowerCase()} không? Mình đang gặp khó khăn với phần cơ bản."
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                            <p className="text-xs text-gray-500 mt-1">2 giờ trước</p>
                           </div>
                         </div>
 
@@ -508,9 +508,9 @@ export function QualityAssurance() {
                           </div>
                           <div className="flex-1 bg-purple-50 p-3 rounded-lg border-l-4 border-purple-500">
                             <p className="text-sm text-gray-800">
-                              "I'd be happy to help you understand {selectedConversation.topic.toLowerCase()}! Let me break it down into key concepts..."
+                              "Mình sẽ giúp bạn hiểu {selectedConversation.topic.toLowerCase()}! Hãy chia nhỏ ra các ý chính..."
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">2 hours ago • AI Response</p>
+                            <p className="text-xs text-gray-500 mt-1">2 giờ trước • Phản hồi AI</p>
                           </div>
                         </div>
 
@@ -523,16 +523,16 @@ export function QualityAssurance() {
                           </Avatar>
                           <div className="flex-1 bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
                             <p className="text-sm text-gray-800">
-                              "That makes much more sense now! Can you give me a practical example?"
+                              "Giờ mình đã hiểu hơn! Bạn có ví dụ thực tế không?"
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                            <p className="text-xs text-gray-500 mt-1">2 giờ trước</p>
                           </div>
                         </div>
 
                         <div className="text-center py-2">
                           <Button variant="outline" size="sm">
                             <MessageSquare className="h-4 w-4 mr-2" />
-                            View Full Conversation ({selectedConversation.messagesCount} messages)
+                            Xem toàn bộ hội thoại ({selectedConversation.messagesCount} tin nhắn)
                           </Button>
                         </div>
                       </div>
@@ -549,7 +549,7 @@ export function QualityAssurance() {
                     onClick={() => setIsDetailModalOpen(false)}
                     className="w-full sm:w-auto"
                   >
-                    Close
+                    Đóng
                   </Button>
 
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -559,14 +559,14 @@ export function QualityAssurance() {
                         className="w-full sm:w-auto bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
                       >
                         <Flag className="h-4 w-4 mr-2" />
-                        Review & Intervene
+                        Xem xét & Can thiệp
                       </Button>
                     )}
                     <Button
                       className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Mark as Reviewed
+                      Đánh dấu đã xem xét
                     </Button>
                   </div>
                 </div>

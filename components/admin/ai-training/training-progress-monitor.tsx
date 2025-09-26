@@ -85,8 +85,8 @@ export function TrainingProgressMonitor({
             timestamp: new Date().toLocaleTimeString(),
             level: Math.random() < 0.1 ? "warning" : "info",
             message: Math.random() < 0.5 
-              ? `Epoch ${newEpoch}/${prev.totalEpochs} - Loss: ${newLoss.toFixed(4)}, Accuracy: ${(newAccuracy * 100).toFixed(2)}%`
-              : `Processing batch ${Math.floor(Math.random() * 100) + 1}/100`
+              ? `Epoch ${newEpoch}/${prev.totalEpochs} - Loss: ${newLoss.toFixed(4)}, Độ chính xác: ${(newAccuracy * 100).toFixed(2)}%`
+              : `Đang xử lý batch ${Math.floor(Math.random() * 100) + 1}/100`
           })
         }
 
@@ -120,13 +120,13 @@ export function TrainingProgressMonitor({
   const getStatusBadge = () => {
     switch (currentSession.status) {
       case "running":
-        return <Badge className="bg-blue-100 text-blue-800"><Activity className="h-3 w-3 mr-1 animate-pulse" />Running</Badge>
+        return <Badge className="bg-blue-100 text-blue-800"><Activity className="h-3 w-3 mr-1 animate-pulse" />Đang chạy</Badge>
       case "paused":
-        return <Badge className="bg-yellow-100 text-yellow-800"><Pause className="h-3 w-3 mr-1" />Paused</Badge>
+        return <Badge className="bg-yellow-100 text-yellow-800"><Pause className="h-3 w-3 mr-1" />Tạm dừng</Badge>
       case "completed":
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Hoàn thành</Badge>
       case "failed":
-        return <Badge className="bg-red-100 text-red-800"><AlertCircle className="h-3 w-3 mr-1" />Failed</Badge>
+        return <Badge className="bg-red-100 text-red-800"><AlertCircle className="h-3 w-3 mr-1" />Lỗi</Badge>
       default:
         return null
     }
@@ -144,7 +144,7 @@ export function TrainingProgressMonitor({
   }
 
   const estimatedTimeRemaining = () => {
-    if (currentSession.progress === 0) return "Calculating..."
+    if (currentSession.progress === 0) return "Đang tính..."
     const elapsed = Date.now() - new Date(currentSession.startTime).getTime()
     const remaining = (elapsed / currentSession.progress) * (100 - currentSession.progress)
     const minutes = Math.floor(remaining / (1000 * 60))
@@ -161,7 +161,7 @@ export function TrainingProgressMonitor({
                 <Zap className="h-6 w-6 text-purple-600" />
                 {currentSession.name}
               </CardTitle>
-              <CardDescription>Training Progress Monitor</CardDescription>
+              <CardDescription>Theo dõi tiến trình huấn luyện</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               {getStatusBadge()}
@@ -176,7 +176,7 @@ export function TrainingProgressMonitor({
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Overall Progress</span>
+                  <span className="text-sm font-medium">Tiến độ tổng</span>
                   <span className="text-2xl font-bold">{currentSession.progress.toFixed(1)}%</span>
                 </div>
                 <Progress value={currentSession.progress} className="mb-2" />
@@ -190,7 +190,7 @@ export function TrainingProgressMonitor({
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Accuracy</span>
+                  <span className="text-sm font-medium">Độ chính xác</span>
                   <div className="flex items-center gap-1">
                     <TrendingUp className="h-4 w-4 text-green-500" />
                     <span className="text-2xl font-bold text-green-600">
@@ -199,7 +199,7 @@ export function TrainingProgressMonitor({
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Target: 95% • Current trend: ↗️ Improving
+                  Mục tiêu: 95% • Xu hướng hiện tại: ↗️ Cải thiện
                 </div>
               </CardContent>
             </Card>
@@ -207,7 +207,7 @@ export function TrainingProgressMonitor({
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Loss</span>
+                  <span className="text-sm font-medium">Độ lỗi (Loss)</span>
                   <div className="flex items-center gap-1">
                     <TrendingDown className="h-4 w-4 text-blue-500" />
                     <span className="text-2xl font-bold text-blue-600">
@@ -216,7 +216,7 @@ export function TrainingProgressMonitor({
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Learning Rate: {currentSession.learningRate} • Decreasing ↘️
+                  Tốc độ học (LR): {currentSession.learningRate} • Giảm ↘️
                 </div>
               </CardContent>
             </Card>
@@ -226,8 +226,8 @@ export function TrainingProgressMonitor({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Training Metrics</CardTitle>
-                <CardDescription>Accuracy and Loss over epochs</CardDescription>
+                <CardTitle className="text-lg">Chỉ số huấn luyện</CardTitle>
+                <CardDescription>Accuracy và Loss theo từng epoch</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
@@ -240,14 +240,14 @@ export function TrainingProgressMonitor({
                       type="monotone" 
                       dataKey="accuracy" 
                       stroke="#10b981" 
-                      name="Training Accuracy"
+                      name="Độ chính xác huấn luyện"
                       strokeWidth={2}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="valAccuracy" 
                       stroke="#06b6d4" 
-                      name="Validation Accuracy"
+                      name="Độ chính xác kiểm định"
                       strokeWidth={2}
                       strokeDasharray="5 5"
                     />
@@ -258,8 +258,8 @@ export function TrainingProgressMonitor({
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Loss Curves</CardTitle>
-                <CardDescription>Training and validation loss</CardDescription>
+                <CardTitle className="text-lg">Đường cong Loss</CardTitle>
+                <CardDescription>Loss huấn luyện và kiểm định</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={250}>
@@ -272,14 +272,14 @@ export function TrainingProgressMonitor({
                       type="monotone" 
                       dataKey="loss" 
                       stroke="#ef4444" 
-                      name="Training Loss"
+                      name="Loss huấn luyện"
                       strokeWidth={2}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="valLoss" 
                       stroke="#f97316" 
-                      name="Validation Loss"
+                      name="Loss kiểm định"
                       strokeWidth={2}
                       strokeDasharray="5 5"
                     />
@@ -294,8 +294,8 @@ export function TrainingProgressMonitor({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg">Training Logs</CardTitle>
-                  <CardDescription>Real-time training output</CardDescription>
+                  <CardTitle className="text-lg">Nhật ký huấn luyện</CardTitle>
+                  <CardDescription>Luồng kết quả theo thời gian thực</CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="flex items-center gap-2 text-sm">
@@ -305,7 +305,7 @@ export function TrainingProgressMonitor({
                       onChange={(e) => setAutoScroll(e.target.checked)}
                       className="rounded"
                     />
-                    Auto-scroll
+                    Tự cuộn
                   </label>
                 </div>
               </div>
@@ -326,7 +326,7 @@ export function TrainingProgressMonitor({
                 ))}
                 {currentSession.logs.length === 0 && (
                   <div className="text-gray-500 text-center py-8">
-                    Waiting for training logs...
+                    Đang chờ nhật ký huấn luyện...
                   </div>
                 )}
               </div>
@@ -338,28 +338,28 @@ export function TrainingProgressMonitor({
         <div className="border-t p-6 flex justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
-            Started: {new Date(currentSession.startTime).toLocaleString()}
+            Bắt đầu: {new Date(currentSession.startTime).toLocaleString()}
           </div>
 
           <div className="flex gap-2">
             {currentSession.status === "running" && (
               <Button variant="outline" onClick={onPause}>
                 <Pause className="h-4 w-4 mr-2" />
-                Pause
+                Tạm dừng
               </Button>
             )}
             {currentSession.status === "paused" && (
               <Button variant="outline" onClick={onResume}>
                 <Play className="h-4 w-4 mr-2" />
-                Resume
+                Tiếp tục
               </Button>
             )}
             <Button variant="destructive" onClick={onStop}>
               <Square className="h-4 w-4 mr-2" />
-              Stop Training
+              Dừng huấn luyện
             </Button>
             <Button variant="ghost" onClick={onClose}>
-              Close Monitor
+              Đóng
             </Button>
           </div>
         </div>

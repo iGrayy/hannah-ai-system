@@ -18,21 +18,21 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
   const activeSection = propActiveSection || localActiveSection
 
   const facultyNavItems = [
-    { id: "dashboard", label: "Dashboard & Analytics" },
-    { id: "responses", label: "Response Management" },
-    { id: "knowledge", label: "Knowledge Base" },
-    { id: "quality", label: "Quality Assurance" },
-    { id: "students", label: "Student Monitoring" },
+    { id: "dashboard", label: "Bảng điều khiển & Phân tích" },
+    { id: "responses", label: "Quản lý phản hồi" },
+    { id: "knowledge", label: "Kho tri thức" },
+    { id: "quality", label: "Đảm bảo chất lượng" },
+    { id: "students", label: "Theo dõi sinh viên" },
   ]
 
   const adminNavItems = [
-    { id: "users", label: "User Management" },
-    { id: "system", label: "System Configuration" },
-    { id: "performance", label: "Performance Monitor" },
-    { id: "analytics", label: "Advanced Analytics" },
-    { id: "security", label: "Security & Compliance" },
-    { id: "integrations", label: "Integration Hub" },
-    { id: "ai-training", label: "AI Training" },
+    { id: "users", label: "Quản lý người dùng" },
+    { id: "system", label: "Cấu hình hệ thống" },
+    { id: "performance", label: "Giám sát hiệu năng" },
+    { id: "analytics", label: "Phân tích" },
+    { id: "security", label: "Bảo mật & Tuân thủ" },
+    { id: "integrations", label: "Kết nối tích hợp" },
+    { id: "ai-training", label: "Quản lí dữ liệu" },
   ]
 
   const currentNavItems = user?.role === "faculty" ? facultyNavItems : adminNavItems
@@ -88,15 +88,15 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
 
           {/* Center */}
           <div className="flex items-center gap-2 bg-gradient-to-r from-slate-600 to-slate-700 text-white px-4 py-2 rounded-full shadow-sm">
-            {user?.role === "faculty" ? (
+              {user?.role === "faculty" ? (
               <>
                 <GraduationCap className="h-4 w-4" />
-                <span className="text-sm font-medium">Faculty Module</span>
+                <span className="text-sm font-medium">Mô-đun Giảng viên</span>
               </>
             ) : (
               <>
                 <Database className="h-4 w-4" />
-                <span className="text-sm font-medium">Admin Module</span>
+                <span className="text-sm font-medium">Mô-đun Quản trị viên</span>
               </>
             )}
           </div>
@@ -180,7 +180,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
               <div className="p-6 flex-shrink-0">
                 <div className="mb-6 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200 animate-in fade-in-0 slide-in-from-top-2 duration-500 delay-100">
                   <h3 className="text-sm font-bold text-slate-700 mb-1">
-                    {user?.role === "faculty" ? "Faculty Module" : "Admin Module"}
+                    {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Mô-đun Quản trị viên"}
                   </h3>
                   <p className="text-xs text-slate-600">Quản lý hệ thống Hannah AI</p>
                 </div>

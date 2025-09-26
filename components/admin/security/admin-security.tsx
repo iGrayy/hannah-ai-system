@@ -62,53 +62,53 @@ export function AdminSecurity() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Security & Compliance</h1>
-        <p className="text-muted-foreground">Monitor security events and compliance status</p>
+        <h1 className="text-2xl font-bold">Bảo mật & Tuân thủ</h1>
+        <p className="text-muted-foreground">Theo dõi sự kiện bảo mật và trạng thái tuân thủ</p>
       </div>
 
       {/* Security Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Security Score</CardTitle>
+            <CardTitle className="text-sm font-medium">Điểm bảo mật</CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">92/100</div>
-            <p className="text-xs text-muted-foreground">Excellent security posture</p>
+            <p className="text-xs text-muted-foreground">Mức độ bảo mật xuất sắc</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
+            <CardTitle className="text-sm font-medium">Phiên hoạt động</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">47</div>
-            <p className="text-xs text-muted-foreground">Currently logged in users</p>
+            <p className="text-xs text-muted-foreground">Số người dùng đang đăng nhập</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Failed Logins</CardTitle>
+            <CardTitle className="text-sm font-medium">Đăng nhập thất bại</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">Last 24 hours</p>
+            <p className="text-xs text-muted-foreground">24 giờ gần nhất</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">2FA Enabled</CardTitle>
+            <CardTitle className="text-sm font-medium">Bật 2FA</CardTitle>
             <Lock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">89%</div>
-            <p className="text-xs text-muted-foreground">Of admin accounts</p>
+            <p className="text-xs text-muted-foreground">Tài khoản admin đã bật</p>
           </CardContent>
         </Card>
       </div>
@@ -117,11 +117,11 @@ export function AdminSecurity() {
       <div className="space-y-4">
         <Alert>
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Security Warning</AlertTitle>
+          <AlertTitle>Cảnh báo bảo mật</AlertTitle>
           <AlertDescription>
-            3 failed login attempts detected from IP 192.168.1.100 in the last hour.
+            Phát hiện 3 lần đăng nhập thất bại từ IP 192.168.1.100 trong 1 giờ qua.
             <Button variant="link" className="p-0 h-auto ml-2">
-              Investigate
+              Điều tra
             </Button>
           </AlertDescription>
         </Alert>
@@ -130,8 +130,8 @@ export function AdminSecurity() {
       {/* Compliance Status */}
       <Card>
         <CardHeader>
-          <CardTitle>Compliance Checks</CardTitle>
-          <CardDescription>Current compliance status across security domains</CardDescription>
+          <CardTitle>Kiểm tra tuân thủ</CardTitle>
+          <CardDescription>Trạng thái tuân thủ hiện tại theo các hạng mục bảo mật</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -160,7 +160,7 @@ export function AdminSecurity() {
                         : ""
                   }
                 >
-                  {check.status === "passed" ? "Passed" : check.status === "warning" ? "Warning" : "Failed"}
+                  {check.status === "passed" ? "Đạt" : check.status === "warning" ? "Cảnh báo" : "Không đạt"}
                 </Badge>
               </div>
             ))}
@@ -173,20 +173,20 @@ export function AdminSecurity() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Recent Security Events
+            Sự kiện bảo mật gần đây
           </CardTitle>
-          <CardDescription>Latest security-related activities and events</CardDescription>
+          <CardDescription>Hoạt động và sự kiện liên quan đến bảo mật mới nhất</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Type</TableHead>
-                <TableHead>User</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Loại</TableHead>
+                <TableHead>Người dùng</TableHead>
+                <TableHead>Hành động</TableHead>
+                <TableHead>Thời gian</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

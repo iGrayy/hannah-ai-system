@@ -40,7 +40,7 @@ interface Resource {
 const mockResources: Resource[] = [
   {
     id: "1",
-    title: "JavaScript Fundamentals Complete Guide",
+    title: "Hướng dẫn hoàn chỉnh Cơ bản JavaScript",
     description: "Master the basics of JavaScript including variables, functions, objects, and more. Perfect for beginners starting their programming journey.",
     type: "document",
     category: "JavaScript",
@@ -54,7 +54,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "2",
-    title: "React Hooks Deep Dive",
+    title: "Tìm hiểu sâu React Hooks",
     description: "Comprehensive tutorial on React Hooks including useState, useEffect, useContext, and custom hooks with practical examples.",
     type: "tutorial",
     category: "React",
@@ -68,10 +68,10 @@ const mockResources: Resource[] = [
   },
   {
     id: "3",
-    title: "Database Design Principles",
+    title: "Nguyên lý Thiết kế Cơ sở dữ liệu",
     description: "Learn how to design efficient and scalable databases. Covers normalization, relationships, and best practices.",
     type: "document",
-    category: "Database",
+    category: "Cơ sở dữ liệu",
     difficulty: "intermediate",
     duration: "45m read",
     rating: 4.7,
@@ -82,7 +82,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "4",
-    title: "Python Data Structures Implementation",
+    title: "Triển khai Cấu trúc dữ liệu Python",
     description: "Complete implementation of common data structures in Python with explanations and time complexity analysis.",
     type: "code",
     category: "Python",
@@ -96,7 +96,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "5",
-    title: "Web Security Best Practices",
+    title: "Thực hành tốt nhất Bảo mật Web",
     description: "Essential security practices for web developers. Learn about HTTPS, authentication, authorization, and common vulnerabilities.",
     type: "article",
     category: "Security",
@@ -172,15 +172,15 @@ export function LearningResources() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Learning Resources</h1>
-              <p className="text-gray-600">Curated materials to enhance your learning journey</p>
+              <h1 className="text-2xl font-bold text-gray-900">Tài nguyên học tập</h1>
+              <p className="text-gray-600">Tài liệu chọn lọc giúp bạn học hiệu quả hơn</p>
             </div>
             
             {/* Search Bar */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Search resources..."
+                placeholder="Tìm kiếm tài nguyên..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -192,7 +192,7 @@ export function LearningResources() {
           <div className="flex flex-wrap gap-4 mt-6">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Category" />
+                <SelectValue placeholder="Danh mục" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map(category => (
@@ -203,12 +203,12 @@ export function LearningResources() {
 
             <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Difficulty" />
+                <SelectValue placeholder="Độ khó" />
               </SelectTrigger>
               <SelectContent>
                 {difficulties.map(difficulty => (
                   <SelectItem key={difficulty} value={difficulty}>
-                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                    {difficulty === 'All' ? 'Tất cả' : difficulty === 'beginner' ? 'Cơ bản' : difficulty === 'intermediate' ? 'Trung cấp' : difficulty === 'advanced' ? 'Nâng cao' : difficulty}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -216,7 +216,7 @@ export function LearningResources() {
 
             <Select value={selectedType} onValueChange={setSelectedType}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Type" />
+                <SelectValue placeholder="Loại" />
               </SelectTrigger>
               <SelectContent>
                 {types.map(type => (
@@ -229,7 +229,7 @@ export function LearningResources() {
 
             <Button variant="outline" size="sm">
               <Filter className="h-4 w-4 mr-2" />
-              More Filters
+              Bộ lọc khác
             </Button>
           </div>
         </div>
@@ -253,7 +253,7 @@ export function LearningResources() {
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
-                      Open
+                      Mở
                     </Button>
                   </div>
                   <div className="absolute top-3 left-3">
@@ -307,7 +307,7 @@ export function LearningResources() {
                   <div className="flex gap-2">
                     <Button className="flex-1" size="sm">
                       <BookOpen className="h-4 w-4 mr-2" />
-                      Open
+                      Mở
                     </Button>
                     <Button variant="outline" size="sm">
                       <Download className="h-4 w-4" />
@@ -321,8 +321,8 @@ export function LearningResources() {
           {filteredResources.length === 0 && (
             <div className="text-center py-12">
               <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No resources found</h3>
-              <p className="text-gray-500">Try adjusting your search or filters</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy tài nguyên</h3>
+              <p className="text-gray-500">Hãy thử thay đổi từ khóa hoặc bộ lọc</p>
             </div>
           )}
         </div>

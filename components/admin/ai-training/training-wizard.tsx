@@ -67,6 +67,31 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  const formatDataSize = (size: number): string => {
+    if (size < 1000) {
+      return `${size} mục`
+    } else if (size < 1000000) {
+      return `${(size / 1000).toFixed(1)}K mục`
+    } else {
+      return `${(size / 1000000).toFixed(1)}M mục`
+    }
+  }
+
+  const getDatasetTypeLabel = (type: string): string => {
+    switch (type) {
+      case "qa_pairs":
+        return "Cặp Hỏi-Đáp"
+      case "conversations":
+        return "Hội thoại"
+      case "documents":
+        return "Tài liệu"
+      case "code_examples":
+        return "Ví dụ mã"
+      default:
+        return type
+    }
+  }
+
   const validateStep = (step: number): boolean => {
     const newErrors: Record<string, string> = {}
 
@@ -159,8 +184,8 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
         return (
           <div className="space-y-4">
             <div className="mb-4">
-              <h3 className="font-medium mb-2">Chọn Datasets để Training *</h3>
-              <p className="text-sm text-muted-foreground">Chọn một hoặc nhiều datasets để train model</p>
+              <h3 className="font-medium mb-2">Chọn Dataset để huấn luyện *</h3>
+              <p className="text-sm text-muted-foreground">Chọn một hoặc nhiều dataset để huấn luyện mô hình</p>
               {errors.datasets && <p className="text-sm text-red-500 mt-1">{errors.datasets}</p>}
             </div>
 
@@ -185,17 +210,17 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                         <div>
                           <h4 className="font-medium">{dataset.name}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {dataset.size.toLocaleString()} items • {dataset.type}
+                            {formatDataSize(dataset.size)} • {getDatasetTypeLabel(dataset.type)}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <Badge variant="outline" className="mb-1">
-                          Quality: {dataset.quality}%
+                          Chất lượng: {dataset.quality}%
                         </Badge>
                         <div className="text-xs text-muted-foreground">
-                          {dataset.quality >= 90 ? "Excellent" : 
-                           dataset.quality >= 80 ? "Good" : "Fair"}
+                          {dataset.quality >= 90 ? "Xuất sắc" : 
+                           dataset.quality >= 80 ? "Tốt" : "Khá"}
                         </div>
                       </div>
                     </div>
@@ -207,13 +232,12 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
             {config.datasetIds.length > 0 && (
               <div className="bg-green-50 p-4 rounded-lg">
                 <h4 className="font-medium text-green-900 mb-2">
-                  ✅ Đã chọn {config.datasetIds.length} dataset(s)
+                  ✅ Đã chọn {config.datasetIds.length} dataset
                 </h4>
                 <p className="text-sm text-green-800">
-                  Tổng: {mockDatasets
+                  Tổng: {formatDataSize(mockDatasets
                     .filter(d => config.datasetIds.includes(d.id))
-                    .reduce((sum, d) => sum + d.size, 0)
-                    .toLocaleString()} items
+                    .reduce((sum, d) => sum + d.size, 0))}
                 </p>
               </div>
             )}
@@ -224,12 +248,12 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="font-medium mb-4">Cấu hình Training Parameters</h3>
+              <h3 className="font-medium mb-4">Cấu hình tham số huấn luyện</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="modelType">Model Type</Label>
+                <Label htmlFor="modelType">Loại mô hình</Label>
                 <Select 
                   value={config.modelType} 
                   onValueChange={(value) => setConfig(prev => ({ ...prev, modelType: value }))}
@@ -238,7 +262,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="transformer">Transformer (Recommended)</SelectItem>
+                    <SelectItem value="transformer">Transformer (Khuyến nghị)</SelectItem>
                     <SelectItem value="lstm">LSTM</SelectItem>
                     <SelectItem value="bert">BERT</SelectItem>
                     <SelectItem value="gpt">GPT-style</SelectItem>
@@ -247,7 +271,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="learningRate">Learning Rate</Label>
+                <Label htmlFor="learningRate">Tốc độ học (Learning Rate)</Label>
                 <Input
                   id="learningRate"
                   type="number"
@@ -260,7 +284,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="batchSize">Batch Size</Label>
+                <Label htmlFor="batchSize">Kích thước lô (Batch Size)</Label>
                 <Select 
                   value={config.batchSize.toString()} 
                   onValueChange={(value) => setConfig(prev => ({ ...prev, batchSize: parseInt(value) }))}
@@ -270,7 +294,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="16">16</SelectItem>
-                    <SelectItem value="32">32 (Recommended)</SelectItem>
+                    <SelectItem value="32">32 (Khuyến nghị)</SelectItem>
                     <SelectItem value="64">64</SelectItem>
                     <SelectItem value="128">128</SelectItem>
                   </SelectContent>
@@ -278,7 +302,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="epochs">Epochs</Label>
+                <Label htmlFor="epochs">Số epoch</Label>
                 <Input
                   id="epochs"
                   type="number"
@@ -292,7 +316,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="validationSplit">Validation Split (%)</Label>
+              <Label htmlFor="validationSplit">Tỉ lệ validation (%)</Label>
               <div className="flex items-center gap-4">
                 <Input
                   id="validationSplit"
@@ -315,7 +339,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
               <ul className="text-sm text-yellow-800 space-y-1">
                 <li>• Training có thể mất từ 30 phút đến vài giờ</li>
                 <li>• Không tắt trình duyệt trong quá trình training</li>
-                <li>• Có thể theo dõi progress real-time</li>
+                <li>• Có thể theo dõi tiến độ theo thời gian thực</li>
               </ul>
             </div>
           </div>
@@ -349,12 +373,12 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                     <p className="text-muted-foreground">{config.modelType}</p>
                   </div>
                   <div>
-                    <span className="font-medium">Datasets:</span>
-                    <p className="text-muted-foreground">{selectedDatasets.length} datasets</p>
+                    <span className="font-medium">Dataset:</span>
+                    <p className="text-muted-foreground">{selectedDatasets.length} dataset</p>
                   </div>
                   <div>
-                    <span className="font-medium">Tổng data:</span>
-                    <p className="text-muted-foreground">{totalItems.toLocaleString()} items</p>
+                    <span className="font-medium">Tổng dữ liệu:</span>
+                    <p className="text-muted-foreground">{formatDataSize(totalItems)}</p>
                   </div>
                   <div>
                     <span className="font-medium">Epochs:</span>
@@ -392,8 +416,8 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-xl">Training Wizard</CardTitle>
-              <CardDescription>Tạo training session mới cho Hannah AI</CardDescription>
+              <CardTitle className="text-xl">Trình hướng dẫn huấn luyện</CardTitle>
+              <CardDescription>Tạo phiên huấn luyện mới cho Hannah AI</CardDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>✕</Button>
           </div>
@@ -454,7 +478,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
             ) : (
               <Button onClick={handleComplete} className="bg-green-600 hover:bg-green-700">
                 <Play className="h-4 w-4 mr-2" />
-                Bắt đầu Training
+                Bắt đầu huấn luyện
               </Button>
             )}
           </div>

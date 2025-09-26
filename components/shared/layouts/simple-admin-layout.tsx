@@ -66,15 +66,15 @@ export function SimpleAdminLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="hover:bg-gray-100">
                   <User className="mr-2 h-4 w-4" />
-                  Profile
+                  Hồ sơ
                 </DropdownMenuItem>
                 <DropdownMenuItem className="hover:bg-gray-100">
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  Cài đặt
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
@@ -82,7 +82,7 @@ export function SimpleAdminLayout({ children }: { children: React.ReactNode }) {
                   className="text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+                  Đăng xuất
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -104,17 +104,17 @@ export function SimpleAdminLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="p-4">
             <h3 className="text-sm font-medium text-gray-500 mb-4">
-              {user?.role === "faculty" ? "Faculty Module" : "Admin Module"}
+              {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Mô-đun Quản trị"}
             </h3>
             <nav className="space-y-2">
               <Button variant="ghost" className="w-full justify-start">
-                Dashboard
+                Bảng điều khiển
               </Button>
               <Button variant="ghost" className="w-full justify-start">
-                Users
+                Người dùng
               </Button>
               <Button variant="ghost" className="w-full justify-start">
-                Settings
+                Cài đặt
               </Button>
             </nav>
           </div>
@@ -123,9 +123,9 @@ export function SimpleAdminLayout({ children }: { children: React.ReactNode }) {
         {/* Main Content */}
         <main className="flex-1 p-6">
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold mb-4">Main Content</h2>
-            <p>Sidebar is: {sidebarOpen ? "Open" : "Closed"}</p>
-            <p>User: {user?.name} ({user?.role})</p>
+            <h2 className="text-2xl font-bold mb-4">Nội dung chính</h2>
+            <p>Trạng thái sidebar: {sidebarOpen ? "Mở" : "Đóng"}</p>
+            <p>Người dùng: {user?.name} ({user?.role})</p>
             {children}
           </div>
         </main>

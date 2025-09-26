@@ -44,7 +44,7 @@ const mockQueries: AssignmentQuery[] = [
   {
     id: "2",
     question: "What are the key principles of database normalization and why is it important?",
-    subject: "Database",
+    subject: "Cơ sở dữ liệu",
     createdAt: new Date(Date.now() - 1000 * 60 * 30),
     status: "pending",
   },
@@ -73,7 +73,7 @@ export function AssignmentHelp() {
     const query: AssignmentQuery = {
       id: Date.now().toString(),
       question: newQuery.question,
-      subject: newQuery.subject || "General",
+      subject: newQuery.subject || "Chung",
       createdAt: new Date(),
       status: "pending",
       attachments: selectedFiles.length > 0 ? selectedFiles.map(f => f.name) : undefined,
@@ -108,22 +108,22 @@ export function AssignmentHelp() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Assignment Help</h1>
-                <p className="text-gray-600">Get clarification and guidance on your assignments</p>
+                <h1 className="text-2xl font-bold text-gray-900">Hỗ trợ bài tập</h1>
+                <p className="text-gray-600">Nhận giải thích và hướng dẫn cho bài tập của bạn</p>
               </div>
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-amber-500" />
                 <span className="text-sm text-amber-700 font-medium">
-                  Hannah provides guidance, not direct solutions
+                  Hannah chỉ hướng dẫn, không cung cấp lời giải trực tiếp
                 </span>
               </div>
             </div>
 
-            <TabsList className="grid w-full grid-cols-3 max-w-md">
-              <TabsTrigger value="ask">Ask Question</TabsTrigger>
-              <TabsTrigger value="history">My Questions</TabsTrigger>
-              <TabsTrigger value="tips">Study Tips</TabsTrigger>
-            </TabsList>
+              <TabsList className="grid w-full grid-cols-3 max-w-md">
+                <TabsTrigger value="ask">Đặt câu hỏi</TabsTrigger>
+                <TabsTrigger value="history">Câu hỏi của tôi</TabsTrigger>
+                <TabsTrigger value="tips">Mẹo học tập</TabsTrigger>
+              </TabsList>
           </div>
         </div>
 
@@ -134,22 +134,22 @@ export function AssignmentHelp() {
                 {/* Disclaimer */}
                 <Alert className="border-amber-200 bg-amber-50">
                   <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  <AlertDescription className="text-amber-800">
-                    <strong>Important:</strong> Hannah will help you understand concepts and provide guidance, 
-                    but won't solve assignments directly. This ensures you learn and maintain academic integrity.
-                  </AlertDescription>
+                <AlertDescription className="text-amber-800">
+                  <strong>Quan trọng:</strong> Hannah giúp bạn hiểu khái niệm và định hướng, 
+                  nhưng sẽ không giải bài tập trực tiếp. Điều này giúp bạn học thực sự và đảm bảo tính trung thực học thuật.
+                </AlertDescription>
                 </Alert>
 
                 {/* Quick Topics */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-yellow-500" />
-                      Quick Question Starters
-                    </CardTitle>
-                    <CardDescription>
-                      Click on a template to get started with your question
-                    </CardDescription>
+                      <CardTitle className="flex items-center gap-2">
+                        <Lightbulb className="h-5 w-5 text-yellow-500" />
+                        Gợi ý câu hỏi nhanh
+                      </CardTitle>
+                      <CardDescription>
+                        Nhấn vào mẫu để bắt đầu đặt câu hỏi
+                      </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -170,25 +170,25 @@ export function AssignmentHelp() {
                 {/* Question Form */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Ask Your Question</CardTitle>
+                    <CardTitle>Đặt câu hỏi của bạn</CardTitle>
                     <CardDescription>
-                      Describe what you need help understanding or clarifying
+                      Mô tả nội dung bạn cần giải thích hoặc làm rõ
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Subject/Topic</label>
+                      <label className="text-sm font-medium mb-2 block">Môn/Chủ đề</label>
                       <Input
-                        placeholder="e.g., JavaScript, Database Design, Algorithms..."
+                        placeholder="VD: JavaScript, Thiết kế CSDL, Giải thuật..."
                         value={newQuery.subject}
                         onChange={(e) => setNewQuery(prev => ({ ...prev, subject: e.target.value }))}
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Your Question</label>
+                      <label className="text-sm font-medium mb-2 block">Câu hỏi của bạn</label>
                       <Textarea
-                        placeholder="Describe what you need help understanding. Be specific about which concepts are unclear or what you're struggling with..."
+                        placeholder="Mô tả phần bạn cần hỗ trợ. Hãy cụ thể về phần chưa rõ hoặc bạn đang vướng..."
                         className="min-h-32"
                         value={newQuery.question}
                         onChange={(e) => setNewQuery(prev => ({ ...prev, question: e.target.value }))}
@@ -197,7 +197,7 @@ export function AssignmentHelp() {
 
                     <div>
                       <label className="text-sm font-medium mb-2 block">
-                        Upload Assignment (Optional)
+                        Tải bài tập lên (tuỳ chọn)
                       </label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer">
                         <div className="flex flex-col items-center gap-2">
@@ -207,10 +207,10 @@ export function AssignmentHelp() {
                             <FileText className="h-6 w-6 text-gray-400" />
                           </div>
                           <p className="text-sm text-gray-600">
-                            Drop your assignment files here or <span className="text-blue-600">browse</span>
+                          Kéo thả tệp vào đây hoặc <span className="text-blue-600">chọn tệp</span>
                           </p>
                           <p className="text-xs text-gray-500">
-                            Supported: PDF, DOC, TXT, JPG, PNG (Max 10MB each)
+                          Hỗ trợ: PDF, DOC, TXT, JPG, PNG (Tối đa 10MB mỗi tệp)
                           </p>
                         </div>
                       </div>
@@ -225,7 +225,7 @@ export function AssignmentHelp() {
                                 size="sm"
                                 onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
                               >
-                                Remove
+                                Gỡ bỏ
                               </Button>
                             </div>
                           ))}
@@ -240,11 +240,11 @@ export function AssignmentHelp() {
                         className="flex-1"
                       >
                         <Send className="h-4 w-4 mr-2" />
-                        Ask Hannah
+                        Hỏi Hannah
                       </Button>
                       <Button variant="outline">
                         <MessageSquare className="h-4 w-4 mr-2" />
-                        Chat Instead
+                        Chat thay thế
                       </Button>
                     </div>
                   </CardContent>
@@ -267,19 +267,19 @@ export function AssignmentHelp() {
                               {query.status === "answered" ? (
                                 <>
                                   <CheckCircle className="h-3 w-3 mr-1" />
-                                  Answered
+                                  Đã trả lời
                                 </>
                               ) : (
                                 <>
                                   <Clock className="h-3 w-3 mr-1" />
-                                  Pending
+                                  Đang chờ
                                 </>
                               )}
                             </Badge>
                           </div>
                           <CardTitle className="text-lg">{query.question}</CardTitle>
                           <CardDescription>
-                            Asked {query.createdAt.toLocaleDateString()} at {query.createdAt.toLocaleTimeString()}
+                            Hỏi lúc {query.createdAt.toLocaleDateString()} {query.createdAt.toLocaleTimeString()}
                           </CardDescription>
                         </div>
                       </div>
@@ -291,18 +291,18 @@ export function AssignmentHelp() {
                             <div className="h-6 w-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                               <span className="text-white text-xs font-bold">H</span>
                             </div>
-                            <span className="font-medium text-blue-900">Hannah's Response</span>
+                            <span className="font-medium text-blue-900">Phản hồi của Hannah</span>
                           </div>
                           <p className="text-blue-800 text-sm leading-relaxed">{query.response}</p>
                         </div>
                         <div className="flex gap-2 mt-4">
                           <Button variant="outline" size="sm">
                             <MessageSquare className="h-4 w-4 mr-2" />
-                            Follow Up
+                            Hỏi thêm
                           </Button>
                           <Button variant="outline" size="sm">
                             <BookOpen className="h-4 w-4 mr-2" />
-                            Related Resources
+                            Tài nguyên liên quan
                           </Button>
                         </div>
                       </CardContent>
@@ -313,8 +313,8 @@ export function AssignmentHelp() {
                 {queries.length === 0 && (
                   <div className="text-center py-12">
                     <HelpCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No questions yet</h3>
-                    <p className="text-gray-500">Start by asking your first question!</p>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có câu hỏi</h3>
+                    <p className="text-gray-500">Bắt đầu bằng cách đặt câu hỏi đầu tiên của bạn!</p>
                   </div>
                 )}
               </div>

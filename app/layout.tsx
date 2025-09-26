@@ -4,8 +4,8 @@ import "./globals.css"
 import { AuthProvider } from "@/contexts/auth-context"
 
 export const metadata: Metadata = {
-  title: "Hannah - AI Learning Assistant Admin",
-  description: "Admin dashboard for Hannah AI Learning Assistant for Software Engineering Education",
+  title: "Hannah - Bảng điều khiển Quản trị viên",
+  description: "Bảng điều khiển Quản trị viên cho Hannah AI phục vụ đào tạo Kỹ thuật Phần mềm",
     generator: 'v0.app'
 }
 

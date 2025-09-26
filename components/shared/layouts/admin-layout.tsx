@@ -49,7 +49,7 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
   console.log("[v0] AdminLayout - activeSection:", activeSection, "user role:", user?.role)
 
   const facultyNavItems = [
-    { id: "dashboard", label: "Dashboard & Analytics", icon: BarChart3 },
+    { id: "dashboard", label: "Bảng điều khiển & Phân tích", icon: BarChart3 },
     { id: "responses", label: "Response Management", icon: MessageSquare },
     { id: "knowledge", label: "Knowledge Base", icon: BookOpen },
     { id: "quality", label: "Quality Assurance", icon: Shield },
@@ -118,8 +118,8 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
               ) : (
                 <>
                   <Database className="h-3 w-3" />
-                  <span className="hidden sm:inline">Admin Module</span>
-                  <span className="sm:hidden">Admin</span>
+                  <span className="hidden sm:inline">Mô-đun Quản trị viên</span>
+                  <span className="sm:hidden">QTV</span>
                 </>
               )}
             </Badge>
@@ -209,7 +209,7 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
           <div className="p-4">
             <div className="mb-4">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                {user?.role === "faculty" ? "Faculty Module" : "Admin Module"}
+                {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Mô-đun Quản trị viên"}
               </h3>
             </div>
             <nav className="space-y-1">

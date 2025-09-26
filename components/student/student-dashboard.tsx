@@ -4,6 +4,7 @@ import { useState } from "react"
 import { StudentLayout } from "./layout/student-layout"
 import { ChatInterface } from "./chat/chat-interface"
 import { LearningResources } from "./resources/learning-resources"
+import { StudentProjects } from "./project/student-projects"
 
 export function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("chat")
@@ -14,6 +15,8 @@ export function StudentDashboard() {
         return <ChatInterface />
       case "resources":
         return <LearningResources />
+      case "projects":
+        return <StudentProjects />
       default:
         return <ChatInterface />
     }

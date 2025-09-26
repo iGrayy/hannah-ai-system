@@ -54,14 +54,14 @@ export function FacultyDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Faculty Dashboard</h1>
-          <p className="text-muted-foreground">Monitor Hannah's AI responses and student interactions</p>
+          <h1 className="text-3xl font-bold text-balance">Bảng điều khiển Giảng viên</h1>
+          <p className="text-muted-foreground">Theo dõi phản hồi AI và tương tác của sinh viên</p>
         </div>
         <div className="flex gap-2">
           <DateRangePickerWithPresets
             date={dateRange}
             onDateChange={setDateRange}
-            placeholder="Select date range"
+            placeholder="Chọn khoảng thời gian"
           />
           <Button
             variant="outline"
@@ -69,13 +69,13 @@ export function FacultyDashboard() {
             onClick={() => alert("📊 Đang xuất báo cáo PDF... Sẽ tải xuống sau 3 giây!")}
           >
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            Xuất báo cáo
           </Button>
           <Button
             size="sm"
             onClick={() => alert("📝 Có 12 phản hồi đang chờ phê duyệt. Chuyển đến trang Review?")}
           >
-            Review Pending
+            Chờ duyệt
           </Button>
         </div>
       </div>
@@ -84,33 +84,33 @@ export function FacultyDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Questions</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số câu hỏi</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">2,847</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-500">+12%</span> from last month
+              <span className="text-green-500">+12%</span> so với tháng trước
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
+            <CardTitle className="text-sm font-medium">Sinh viên hoạt động</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">342</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-500">+8%</span> from last week
+              <span className="text-green-500">+8%</span> so với tuần trước
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">AI Accuracy</CardTitle>
+            <CardTitle className="text-sm font-medium">Độ chính xác của AI</CardTitle>
             <Brain className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -121,14 +121,14 @@ export function FacultyDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <CardTitle className="text-sm font-medium">Đang chờ duyệt</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">23</div>
             <p className="text-xs text-muted-foreground">
               <Badge variant="secondary" className="text-xs">
-                High Priority: 5
+                Ưu tiên cao: 5
               </Badge>
             </p>
           </CardContent>
@@ -140,8 +140,8 @@ export function FacultyDashboard() {
         {/* Question Trends */}
         <Card>
           <CardHeader>
-            <CardTitle>Question Trends</CardTitle>
-            <CardDescription>Monthly question volume over time</CardDescription>
+            <CardTitle>Xu hướng câu hỏi</CardTitle>
+            <CardDescription>Khối lượng câu hỏi theo thời gian (tháng)</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -159,8 +159,8 @@ export function FacultyDashboard() {
         {/* Question Types */}
         <Card>
           <CardHeader>
-            <CardTitle>Question Distribution</CardTitle>
-            <CardDescription>Types of questions asked by students</CardDescription>
+            <CardTitle>Phân bố loại câu hỏi</CardTitle>
+            <CardDescription>Các loại câu hỏi sinh viên hay hỏi</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -195,9 +195,9 @@ export function FacultyDashboard() {
 
       {/* Top Topics */}
       <Card>
-        <CardHeader>
-          <CardTitle>Most Asked Topics</CardTitle>
-          <CardDescription>Top 5 subjects students ask about most</CardDescription>
+          <CardHeader>
+          <CardTitle>Chủ đề được hỏi nhiều nhất</CardTitle>
+          <CardDescription>Top 5 chủ đề được hỏi nhiều</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
@@ -218,14 +218,14 @@ export function FacultyDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
-              Review Responses
+              Duyệt phản hồi
             </CardTitle>
-            <CardDescription>Check AI responses that need faculty approval</CardDescription>
+            <CardDescription>Kiểm tra phản hồi AI chờ giảng viên duyệt</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">23</span>
-              <Badge variant="destructive">Urgent</Badge>
+              <Badge variant="destructive">Khẩn cấp</Badge>
             </div>
           </CardContent>
         </Card>
@@ -234,14 +234,14 @@ export function FacultyDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              Update Knowledge Base
+              Cập nhật kho tri thức
             </CardTitle>
-            <CardDescription>Add new content and update existing materials</CardDescription>
+            <CardDescription>Thêm nội dung mới và cập nhật tài liệu hiện có</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Last updated</span>
-              <span className="text-sm">2 hours ago</span>
+              <span className="text-sm text-muted-foreground">Cập nhật gần nhất</span>
+              <span className="text-sm">2 giờ trước</span>
             </div>
           </CardContent>
         </Card>
@@ -250,9 +250,9 @@ export function FacultyDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Student Analytics
+              Phân tích sinh viên
             </CardTitle>
-            <CardDescription>View detailed student progress and engagement</CardDescription>
+            <CardDescription>Xem tiến độ và mức độ tương tác chi tiết</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">

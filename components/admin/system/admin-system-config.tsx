@@ -16,18 +16,19 @@ export function AdminSystemConfig() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">System Configuration</h1>
-          <p className="text-muted-foreground">Manage system settings and configurations</p>
+          <h1 className="text-2xl font-bold">Cấu hình hệ thống</h1>
+          <p className="text-muted-foreground">Quản trị cài đặt và cấu hình hệ thống</p>
         </div>
-        <Button>Save Changes</Button>
+        <Button>Lưu thay đổi</Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="ai">AI Settings</TabsTrigger>
-          <TabsTrigger value="database">Database</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="general">Chung</TabsTrigger>
+          <TabsTrigger value="ai">Phiên bản</TabsTrigger>
+          <TabsTrigger value="kb-structure">Cấu trúc Kiến thức</TabsTrigger>
+          <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
+          <TabsTrigger value="security">Bảo mật</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -35,23 +36,23 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                General Settings
+                Cài đặt chung
               </CardTitle>
-              <CardDescription>Basic system configuration</CardDescription>
+              <CardDescription>Cấu hình cơ bản của hệ thống</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="system-name">System Name</Label>
+                  <Label htmlFor="system-name">Tên hệ thống</Label>
                   <Input id="system-name" defaultValue="Hannah AI Assistant" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="system-version">Version</Label>
+                  <Label htmlFor="system-version">Phiên bản</Label>
                   <Input id="system-version" defaultValue="1.0.0" disabled />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="system-description">System Description</Label>
+                  <Label htmlFor="system-description">Mô tả hệ thống</Label>
                 <Textarea
                   id="system-description"
                   defaultValue="AI Learning Assistant for Software Engineering Education"
@@ -60,8 +61,8 @@ export function AdminSystemConfig() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
-                  <p className="text-sm text-muted-foreground">Enable maintenance mode for system updates</p>
+                  <Label htmlFor="maintenance-mode">Chế độ bảo trì</Label>
+                  <p className="text-sm text-muted-foreground">Bật chế độ bảo trì khi cập nhật hệ thống</p>
                 </div>
                 <Switch id="maintenance-mode" />
               </div>
@@ -74,14 +75,14 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bot className="h-5 w-5" />
-                AI Model Configuration
+                Dữ liệu huấn luyện & tham số mô hình
               </CardTitle>
-              <CardDescription>Configure AI model parameters and behavior</CardDescription>
+              <CardDescription>Quản lý dữ liệu huấn luyện và tham số mô hình</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="ai-model">AI Model</Label>
+                  <Label htmlFor="ai-model">Chọn mô hình</Label>
                   <Select defaultValue="gpt-4">
                     <SelectTrigger>
                       <SelectValue />
@@ -94,12 +95,12 @@ export function AdminSystemConfig() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="temperature">Temperature</Label>
+                  <Label htmlFor="temperature">Nhiệt (Temperature)</Label>
                   <Input id="temperature" type="number" defaultValue="0.7" min="0" max="1" step="0.1" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="max-tokens">Max Tokens</Label>
+                <Label htmlFor="max-tokens">Số token tối đa</Label>
                 <Input id="max-tokens" type="number" defaultValue="2048" />
               </div>
               <div className="space-y-2">
@@ -110,6 +111,39 @@ export function AdminSystemConfig() {
                   rows={4}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>Tải dữ liệu huấn luyện (CSV/JSON)</Label>
+                <Input type="file" accept=".csv,.json" />
+                <p className="text-xs text-muted-foreground">Tải dữ liệu huấn luyện để làm giàu mô hình (mô phỏng)</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="kb-structure" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Cấu trúc Knowledge Base
+              </CardTitle>
+              <CardDescription>Quản lý danh mục, chủ đề và phân cấp tri thức</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Tạo danh mục</Label>
+                  <div className="flex gap-2">
+                    <Input placeholder="Tên danh mục" />
+                    <Button>Thêm</Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Chủ đề</Label>
+                  <Input placeholder="VD: Cấu trúc dữ liệu, Giải thuật..." />
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">Lưu ý: Đây là UI mô phỏng để quản lý cấu trúc KB.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -119,36 +153,36 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5" />
-                Database Configuration
+                Cấu hình cơ sở dữ liệu
               </CardTitle>
-              <CardDescription>Database connection and performance settings</CardDescription>
+              <CardDescription>Cài đặt kết nối và hiệu năng cơ sở dữ liệu</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Connection Status</Label>
+                <Label>Trạng thái kết nối</Label>
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      Connected
+                      Đã kết nối
                     </Badge>
                     <span className="text-sm text-muted-foreground">PostgreSQL 14.2</span>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Pool Size</Label>
+                  <Label>Kích thước pool</Label>
                   <Input type="number" defaultValue="20" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Backup Schedule</Label>
+                <Label>Lịch sao lưu</Label>
                 <Select defaultValue="daily">
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="daily">Daily</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="hourly">Hàng giờ</SelectItem>
+                    <SelectItem value="daily">Hàng ngày</SelectItem>
+                    <SelectItem value="weekly">Hàng tuần</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -161,39 +195,39 @@ export function AdminSystemConfig() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Security Settings
+                Cài đặt bảo mật
               </CardTitle>
-              <CardDescription>Security and compliance configuration</CardDescription>
+              <CardDescription>Cấu hình bảo mật và tuân thủ</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Two-Factor Authentication</Label>
-                    <p className="text-sm text-muted-foreground">Require 2FA for all admin accounts</p>
+                    <Label>Xác thực hai lớp</Label>
+                    <p className="text-sm text-muted-foreground">Yêu cầu 2FA cho tất cả tài khoản admin</p>
                   </div>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Session Timeout</Label>
-                    <p className="text-sm text-muted-foreground">Auto logout after inactivity</p>
+                    <Label>Thời gian hết hạn phiên</Label>
+                    <p className="text-sm text-muted-foreground">Tự động đăng xuất khi không hoạt động</p>
                   </div>
                   <Select defaultValue="30">
                     <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="15">15 min</SelectItem>
-                      <SelectItem value="30">30 min</SelectItem>
-                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="15">15 phút</SelectItem>
+                      <SelectItem value="30">30 phút</SelectItem>
+                      <SelectItem value="60">1 giờ</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label>Audit Logging</Label>
-                    <p className="text-sm text-muted-foreground">Log all admin actions</p>
+                    <Label>Ghi nhật ký kiểm toán</Label>
+                    <p className="text-sm text-muted-foreground">Ghi lại mọi hành động của admin</p>
                   </div>
                   <Switch defaultChecked />
                 </div>

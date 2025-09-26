@@ -54,21 +54,21 @@ interface Recommendation {
 const mockAchievements: Achievement[] = [
   {
     id: "1",
-    title: "First Steps",
+    title: "Bước đầu",
     description: "Complete your first lesson",
     icon: "🎯",
     unlockedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
   },
   {
     id: "2",
-    title: "Code Warrior",
+    title: "Chiến binh Code",
     description: "Write 100 lines of code",
     icon: "⚔️",
     unlockedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
   },
   {
     id: "3",
-    title: "Streak Master",
+    title: "Bậc thầy chuỗi",
     description: "Study for 7 consecutive days",
     icon: "🔥",
     progress: 5,
@@ -76,8 +76,8 @@ const mockAchievements: Achievement[] = [
   },
   {
     id: "4",
-    title: "JavaScript Ninja",
-    description: "Master JavaScript fundamentals",
+    title: "Ninja JavaScript",
+    description: "Thành thạo cơ bản JavaScript",
     icon: "🥷",
     progress: 8,
     maxProgress: 10,
@@ -87,18 +87,18 @@ const mockAchievements: Achievement[] = [
 const mockLearningPaths: LearningPath[] = [
   {
     id: "1",
-    title: "JavaScript Fundamentals",
+    title: "Cơ bản JavaScript",
     description: "Master the basics of JavaScript programming",
     totalLessons: 15,
     completedLessons: 12,
     estimatedTime: "4 weeks",
     difficulty: "beginner",
-    category: "Programming",
+    category: "Lập trình",
   },
   {
     id: "2",
-    title: "React Development",
-    description: "Build modern web applications with React",
+    title: "Phát triển React",
+    description: "Xây dựng ứng dụng web hiện đại với React",
     totalLessons: 20,
     completedLessons: 5,
     estimatedTime: "6 weeks",
@@ -188,8 +188,8 @@ export function ProgressTracking() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Progress Tracking</h1>
-                <p className="text-gray-600">Monitor your learning journey and achievements</p>
+                <h1 className="text-2xl font-bold text-gray-900">Theo dõi tiến độ</h1>
+                <p className="text-gray-600">Theo dõi hành trình học tập và thành tích của bạn</p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-center">
@@ -197,23 +197,23 @@ export function ProgressTracking() {
                     <Flame className="h-5 w-5 text-orange-500" />
                     <span className="text-2xl font-bold text-gray-900">{currentStreak}</span>
                   </div>
-                  <p className="text-sm text-gray-500">Day Streak</p>
+                  <p className="text-sm text-gray-500">Chuỗi ngày học</p>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center gap-1">
                     <Trophy className="h-5 w-5 text-yellow-500" />
                     <span className="text-2xl font-bold text-gray-900">{totalAchievements}</span>
                   </div>
-                  <p className="text-sm text-gray-500">Achievements</p>
+                  <p className="text-sm text-gray-500">Thành tích</p>
                 </div>
               </div>
             </div>
 
             <TabsList className="grid w-full grid-cols-4 max-w-2xl">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="paths">Learning Paths</TabsTrigger>
-              <TabsTrigger value="achievements">Achievements</TabsTrigger>
-              <TabsTrigger value="recommendations">For You</TabsTrigger>
+              <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+              <TabsTrigger value="paths">Lộ trình học</TabsTrigger>
+              <TabsTrigger value="achievements">Thành tích</TabsTrigger>
+              <TabsTrigger value="recommendations">Gợi ý cho bạn</TabsTrigger>
             </TabsList>
           </div>
         </div>
@@ -226,54 +226,54 @@ export function ProgressTracking() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Overall Progress</CardTitle>
+                      <CardTitle className="text-sm font-medium">Tiến độ tổng thể</CardTitle>
                       <BarChart3 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{overallProgress}%</div>
                       <Progress value={overallProgress} className="mt-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        Great progress! Keep it up!
+                        Tiến bộ tuyệt vời! Tiếp tục nhé!
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Weekly Goal</CardTitle>
+                      <CardTitle className="text-sm font-medium">Mục tiêu tuần</CardTitle>
                       <Target className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{weeklyProgress}h</div>
                       <Progress value={(weeklyProgress / weeklyGoal) * 100} className="mt-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        {weeklyProgress} of {weeklyGoal} hours this week
+                        {weeklyProgress} trên {weeklyGoal} giờ trong tuần
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+                      <CardTitle className="text-sm font-medium">Chuỗi hiện tại</CardTitle>
                       <Flame className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{currentStreak} days</div>
+                      <div className="text-2xl font-bold">{currentStreak} ngày</div>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Your longest streak: 12 days
+                        Chuỗi dài nhất của bạn: 12 ngày
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Achievements</CardTitle>
+                      <CardTitle className="text-sm font-medium">Thành tích</CardTitle>
                       <Award className="h-4 w-4 text-yellow-500" />
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{totalAchievements}</div>
                       <p className="text-xs text-muted-foreground mt-2">
-                        {mockAchievements.length - totalAchievements} more to unlock
+                        Còn {mockAchievements.length - totalAchievements} để mở khóa
                       </p>
                     </CardContent>
                   </Card>
@@ -281,33 +281,33 @@ export function ProgressTracking() {
 
                 {/* Recent Activity */}
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
-                    <CardDescription>Your learning activity over the past week</CardDescription>
+                    <CardHeader>
+                    <CardTitle>Hoạt động gần đây</CardTitle>
+                    <CardDescription>Hoạt động học tập trong tuần qua</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 bg-green-500 rounded-full"></div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium">Completed "JavaScript Functions" lesson</p>
-                          <p className="text-xs text-gray-500">2 hours ago</p>
+                          <p className="text-sm font-medium">Hoàn thành bài "JavaScript Functions"</p>
+                          <p className="text-xs text-gray-500">2 giờ trước</p>
                         </div>
                         <Badge variant="outline">+50 XP</Badge>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium">Started "React Components" module</p>
-                          <p className="text-xs text-gray-500">1 day ago</p>
+                          <p className="text-sm font-medium">Bắt đầu mô-đun "React Components"</p>
+                          <p className="text-xs text-gray-500">1 ngày trước</p>
                         </div>
                         <Badge variant="outline">New</Badge>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium">Unlocked "Code Warrior" achievement</p>
-                          <p className="text-xs text-gray-500">2 days ago</p>
+                          <p className="text-sm font-medium">Mở khóa thành tích "Code Warrior"</p>
+                          <p className="text-xs text-gray-500">2 ngày trước</p>
                         </div>
                         <Badge className="bg-yellow-100 text-yellow-800">🏆 Achievement</Badge>
                       </div>
@@ -340,7 +340,7 @@ export function ProgressTracking() {
                           <p className="text-2xl font-bold">
                             {Math.round((path.completedLessons / path.totalLessons) * 100)}%
                           </p>
-                          <p className="text-sm text-gray-500">Complete</p>
+                          <p className="text-sm text-gray-500">Hoàn thành</p>
                         </div>
                       </div>
                     </CardHeader>
@@ -348,15 +348,15 @@ export function ProgressTracking() {
                       <div className="space-y-4">
                         <Progress value={(path.completedLessons / path.totalLessons) * 100} />
                         <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>{path.completedLessons} of {path.totalLessons} lessons completed</span>
-                          <span>Est. {path.estimatedTime}</span>
+                          <span>{path.completedLessons}/{path.totalLessons} bài đã hoàn thành</span>
+                          <span>Ước tính {path.estimatedTime}</span>
                         </div>
                         <div className="flex gap-2">
                           <Button size="sm">
-                            {path.completedLessons === 0 ? "Start Learning" : "Continue"}
+                            {path.completedLessons === 0 ? "Bắt đầu học" : "Tiếp tục"}
                           </Button>
                           <Button variant="outline" size="sm">
-                            View Details
+                            Xem chi tiết
                           </Button>
                         </div>
                       </div>
@@ -422,7 +422,7 @@ export function ProgressTracking() {
                         <div className="flex items-start gap-3">
                           {getTypeIcon(rec.type)}
                           <div>
-                            <CardTitle className="text-lg">{rec.title}</CardTitle>
+                        <CardTitle className="text-lg">{rec.title}</CardTitle>
                             <CardDescription className="mt-1">
                               {rec.description}
                             </CardDescription>
@@ -440,9 +440,9 @@ export function ProgressTracking() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <div className="flex gap-2">
-                        <Button size="sm">Start Now</Button>
-                        <Button variant="outline" size="sm">Save for Later</Button>
+                        <div className="flex gap-2">
+                          <Button size="sm">Bắt đầu ngay</Button>
+                          <Button variant="outline" size="sm">Lưu để sau</Button>
                       </div>
                     </CardContent>
                   </Card>

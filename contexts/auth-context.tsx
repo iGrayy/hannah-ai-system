@@ -18,6 +18,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
   isLoading: boolean
+  registerStudent: (params: { name: string; email: string; password: string }) => Promise<boolean>
+  requestPasswordReset: (email: string) => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -26,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const mockUsers: User[] = [
   {
     id: "1",
-    name: "Admin User",
+    name: "Người dùng Quản trị",
     email: "admin@hannah.edu",
     role: "admin", // Default admin role for admin login
     avatar: "/faculty-avatar.jpg",
@@ -102,6 +104,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false
   }
 
+  // Đăng ký (chỉ cho student) - mô phỏng
+  const registerStudent: AuthContextType["registerStudent"] = async ({ name, email, password }) => {
+    setIsLoading(true)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Mật khẩu demo tối thiểu 6 ký tự
+      if (!email || !password || password.length < 6) {
+        setIsLoading(false)
+        return false
+      }
+
+      const newStudent: User = {
+        id: Math.random().toString(36).slice(2),
+        name: name || email.split("@")[0],
+        email,
+        role: "student",
+        avatar: "/placeholder-user.jpg",
+      }
+
+      // Lưu localStorage danh sách student đã đăng ký (mô phỏng backend)
+      const stored = localStorage.getItem("hannah-registered-students")
+      const list: User[] = stored ? JSON.parse(stored) : []
+      const exists = list.some((u) => u.email === email)
+      if (exists) {
+        setIsLoading(false)
+        return false
+      }
+      const updated = [...list, newStudent]
+      localStorage.setItem("hannah-registered-students", JSON.stringify(updated))
+
+      // Tự động đăng nhập sau khi đăng ký
+      setUser(newStudent)
+      setIsLoading(false)
+      return true
+    } catch (e) {
+      setIsLoading(false)
+      return false
+    }
+  }
+
+  // Quên mật khẩu - mô phỏng gửi email reset
+  const requestPasswordReset: AuthContextType["requestPasswordReset"] = async (email: string) => {
+    setIsLoading(true)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800))
+
+      // Kiểm tra tồn tại trong mock hoặc danh sách đã đăng ký
+      const inMock = mockUsers.some((u) => u.email === email)
+      const stored = localStorage.getItem("hannah-registered-students")
+      const list: User[] = stored ? JSON.parse(stored) : []
+      const inRegistered = list.some((u) => u.email === email)
+
+      setIsLoading(false)
+      return inMock || inRegistered
+    } catch (e) {
+      setIsLoading(false)
+      return false
+    }
+  }
+
   const logout = () => {
     console.log("[v0] User logged out")
     setUser(null)
@@ -109,7 +172,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/"
   }
 
-  return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login, logout, isLoading, registerStudent, requestPasswordReset }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
