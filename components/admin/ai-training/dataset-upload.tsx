@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { formatFileSize, formatDataSize } from "./utils"
 import { 
   Upload, 
   FileText, 
@@ -68,27 +69,7 @@ export function DatasetUpload({ onClose, onUploadComplete }: DatasetUploadProps)
   const [dragActive, setDragActive] = useState(false)
   const [currentStep, setCurrentStep] = useState(1) // 1: Info, 2: Upload, 3: Preview, 4: Complete
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) {
-      return `${bytes} B`
-    } else if (bytes < 1024 * 1024) {
-      return `${(bytes / 1024).toFixed(1)} KB`
-    } else if (bytes < 1024 * 1024 * 1024) {
-      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-    } else {
-      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
-    }
-  }
 
-  const formatDataSize = (size: number): string => {
-    if (size < 1000) {
-      return `${size} mục`
-    } else if (size < 1000000) {
-      return `${(size / 1000).toFixed(1)}K mục`
-    } else {
-      return `${(size / 1000000).toFixed(1)}M mục`
-    }
-  }
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault()

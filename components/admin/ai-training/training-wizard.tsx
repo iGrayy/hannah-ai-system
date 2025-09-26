@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { formatDataSize } from "./utils"
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -31,11 +32,27 @@ interface TrainingConfig {
   name: string
   description: string
   datasetIds: string[]
-  modelType: string
+
+  // ChatRTX Configuration
+  baseModel: "mistral-7b-instruct" | "llama2-7b-chat" | "codellama-7b-instruct"
+  trainingMethod: "lora" | "qlora" | "full_fine_tuning"
+  quantization: "4bit" | "8bit" | "fp16"
+
+  // LoRA Parameters
+  loraRank: number
+  loraAlpha: number
+  loraDropout: number
+
+  // Training Parameters
   learningRate: number
   batchSize: number
   epochs: number
   validationSplit: number
+  maxTokens: number
+
+  // Hardware Settings
+  gpuLayers: number
+  useFlashAttention: boolean
 }
 
 const STEPS = [
@@ -46,10 +63,12 @@ const STEPS = [
 ]
 
 const mockDatasets = [
-  { id: "1", name: "CS Q&A Dataset", size: 15420, type: "qa_pairs", quality: 95 },
-  { id: "2", name: "Student Conversations", size: 8750, type: "conversations", quality: 88 },
-  { id: "3", name: "Course Materials", size: 12300, type: "documents", quality: 92 },
-  { id: "4", name: "Programming Examples", size: 6800, type: "code_examples", quality: 90 }
+  { id: "1", name: "SE Curriculum Knowledge Base", size: 25420, type: "qa_pairs", quality: 95, chatrtx_ready: true },
+  { id: "2", name: "Student-Hannah Conversations", size: 18750, type: "conversations", quality: 88, chatrtx_ready: true },
+  { id: "3", name: "Programming Code Examples", size: 12300, type: "documents", quality: 92, chatrtx_ready: true },
+  { id: "4", name: "Faculty Approved Responses", size: 8900, type: "qa_pairs", quality: 94, chatrtx_ready: true },
+  { id: "5", name: "Assignment Help Guidelines", size: 5600, type: "documents", quality: 90, chatrtx_ready: false },
+  { id: "6", name: "Database Systems Course", size: 7200, type: "qa_pairs", quality: 91, chatrtx_ready: true }
 ]
 
 export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
@@ -58,24 +77,30 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
     name: "",
     description: "",
     datasetIds: [],
-    modelType: "transformer",
-    learningRate: 0.001,
-    batchSize: 32,
-    epochs: 10,
-    validationSplit: 0.2
+
+    // ChatRTX defaults
+    baseModel: "mistral-7b-instruct",
+    trainingMethod: "qlora",
+    quantization: "4bit",
+
+    // LoRA defaults
+    loraRank: 16,
+    loraAlpha: 32,
+    loraDropout: 0.1,
+
+    // Training defaults
+    learningRate: 2e-4,
+    batchSize: 4,
+    epochs: 5,
+    validationSplit: 0.2,
+    maxTokens: 4096,
+
+    // Hardware defaults
+    gpuLayers: 32,
+    useFlashAttention: true
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  const formatDataSize = (size: number): string => {
-    if (size < 1000) {
-      return `${size} mục`
-    } else if (size < 1000000) {
-      return `${(size / 1000).toFixed(1)}K mục`
-    } else {
-      return `${(size / 1000000).toFixed(1)}M mục`
-    }
-  }
 
   const getDatasetTypeLabel = (type: string): string => {
     switch (type) {
@@ -203,9 +228,9 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <Checkbox 
+                        <Checkbox
                           checked={config.datasetIds.includes(dataset.id)}
-                          onChange={() => handleDatasetToggle(dataset.id)}
+                          onCheckedChange={() => handleDatasetToggle(dataset.id)}
                         />
                         <div>
                           <h4 className="font-medium">{dataset.name}</h4>
@@ -248,89 +273,185 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="font-medium mb-4">Cấu hình tham số huấn luyện</h3>
+              <h3 className="font-medium mb-4">Cấu hình ChatRTX Training</h3>
+              <p className="text-sm text-muted-foreground">
+                Cấu hình model và tham số training cho Hannah AI với NVIDIA ChatRTX
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="modelType">Loại mô hình</Label>
-                <Select 
-                  value={config.modelType} 
-                  onValueChange={(value) => setConfig(prev => ({ ...prev, modelType: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="transformer">Transformer (Khuyến nghị)</SelectItem>
-                    <SelectItem value="lstm">LSTM</SelectItem>
-                    <SelectItem value="bert">BERT</SelectItem>
-                    <SelectItem value="gpt">GPT-style</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="learningRate">Tốc độ học (Learning Rate)</Label>
-                <Input
-                  id="learningRate"
-                  type="number"
-                  step="0.0001"
-                  value={config.learningRate}
-                  onChange={(e) => setConfig(prev => ({ ...prev, learningRate: parseFloat(e.target.value) }))}
-                  className={errors.learningRate ? "border-red-500" : ""}
-                />
-                {errors.learningRate && <p className="text-sm text-red-500">{errors.learningRate}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="batchSize">Kích thước lô (Batch Size)</Label>
-                <Select 
-                  value={config.batchSize.toString()} 
-                  onValueChange={(value) => setConfig(prev => ({ ...prev, batchSize: parseInt(value) }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="16">16</SelectItem>
-                    <SelectItem value="32">32 (Khuyến nghị)</SelectItem>
-                    <SelectItem value="64">64</SelectItem>
-                    <SelectItem value="128">128</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="epochs">Số epoch</Label>
-                <Input
-                  id="epochs"
-                  type="number"
-                  min="1"
-                  value={config.epochs}
-                  onChange={(e) => setConfig(prev => ({ ...prev, epochs: parseInt(e.target.value) }))}
-                  className={errors.epochs ? "border-red-500" : ""}
-                />
-                {errors.epochs && <p className="text-sm text-red-500">{errors.epochs}</p>}
+            {/* Base Model Selection */}
+            <div className="space-y-4">
+              <h4 className="font-medium">Base Model Selection</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { value: "mistral-7b-instruct", label: "Mistral-7B", desc: "Tốt nhất cho SE Q&A", size: "7B params" },
+                  { value: "llama2-7b-chat", label: "Llama2-7B", desc: "Cân bằng performance", size: "7B params" },
+                  { value: "codellama-7b-instruct", label: "CodeLlama-7B", desc: "Chuyên về code", size: "7B params" }
+                ].map((model) => (
+                  <Card
+                    key={model.value}
+                    className={`cursor-pointer transition-all ${
+                      config.baseModel === model.value
+                        ? 'ring-2 ring-blue-500 bg-blue-50'
+                        : 'hover:shadow-md'
+                    }`}
+                    onClick={() => setConfig(prev => ({ ...prev, baseModel: model.value as any }))}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox checked={config.baseModel === model.value} />
+                        <h5 className="font-medium">{model.label}</h5>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-1">{model.desc}</p>
+                      <Badge variant="outline" className="text-xs">{model.size}</Badge>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="validationSplit">Tỉ lệ validation (%)</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  id="validationSplit"
-                  type="number"
-                  min="0.1"
-                  max="0.5"
-                  step="0.05"
-                  value={config.validationSplit}
-                  onChange={(e) => setConfig(prev => ({ ...prev, validationSplit: parseFloat(e.target.value) }))}
-                  className="w-32"
-                />
-                <span className="text-sm text-muted-foreground">
-                  {(config.validationSplit * 100).toFixed(0)}% data sẽ dùng để validation
-                </span>
+            {/* Training Method */}
+            <div className="space-y-4">
+              <h4 className="font-medium">Training Method</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { value: "qlora", label: "QLoRA", desc: "4-bit quantization + LoRA", memory: "~8GB VRAM" },
+                  { value: "lora", label: "LoRA", desc: "Low-rank adaptation", memory: "~12GB VRAM" },
+                  { value: "full_fine_tuning", label: "Full Fine-tuning", desc: "Train all parameters", memory: "~20GB VRAM" }
+                ].map((method) => (
+                  <Card
+                    key={method.value}
+                    className={`cursor-pointer transition-all ${
+                      config.trainingMethod === method.value
+                        ? 'ring-2 ring-green-500 bg-green-50'
+                        : 'hover:shadow-md'
+                    }`}
+                    onClick={() => setConfig(prev => ({ ...prev, trainingMethod: method.value as any }))}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Checkbox checked={config.trainingMethod === method.value} />
+                        <h5 className="font-medium">{method.label}</h5>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-1">{method.desc}</p>
+                      <Badge variant="outline" className="text-xs">{method.memory}</Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* LoRA Configuration */}
+            {(config.trainingMethod === "lora" || config.trainingMethod === "qlora") && (
+              <div className="space-y-4">
+                <h4 className="font-medium">LoRA Configuration</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="loraRank">LoRA Rank (r)</Label>
+                    <Select
+                      value={config.loraRank.toString()}
+                      onValueChange={(value) => setConfig(prev => ({ ...prev, loraRank: parseInt(value) }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="8">8 (Nhanh, ít memory)</SelectItem>
+                        <SelectItem value="16">16 (Khuyến nghị)</SelectItem>
+                        <SelectItem value="32">32 (Chất lượng cao)</SelectItem>
+                        <SelectItem value="64">64 (Tốt nhất)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="loraAlpha">LoRA Alpha (α)</Label>
+                    <Input
+                      id="loraAlpha"
+                      type="number"
+                      value={config.loraAlpha}
+                      onChange={(e) => setConfig(prev => ({ ...prev, loraAlpha: parseInt(e.target.value) }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="loraDropout">LoRA Dropout</Label>
+                    <Input
+                      id="loraDropout"
+                      type="number"
+                      step="0.01"
+                      value={config.loraDropout}
+                      onChange={(e) => setConfig(prev => ({ ...prev, loraDropout: parseFloat(e.target.value) }))}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Training Parameters */}
+            <div className="space-y-4">
+              <h4 className="font-medium">Training Parameters</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="learningRate">Tốc độ học (Learning Rate)</Label>
+                  <Input
+                    id="learningRate"
+                    type="number"
+                    step="0.0001"
+                    value={config.learningRate}
+                    onChange={(e) => setConfig(prev => ({ ...prev, learningRate: parseFloat(e.target.value) }))}
+                    className={errors.learningRate ? "border-red-500" : ""}
+                  />
+                  {errors.learningRate && <p className="text-sm text-red-500">{errors.learningRate}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="batchSize">Kích thước lô (Batch Size)</Label>
+                  <Select
+                    value={config.batchSize.toString()}
+                    onValueChange={(value) => setConfig(prev => ({ ...prev, batchSize: parseInt(value) }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="4">4 (Khuyến nghị cho QLoRA)</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="16">16</SelectItem>
+                      <SelectItem value="32">32</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="epochs">Số epoch</Label>
+                  <Input
+                    id="epochs"
+                    type="number"
+                    min="1"
+                    value={config.epochs}
+                    onChange={(e) => setConfig(prev => ({ ...prev, epochs: parseInt(e.target.value) }))}
+                    className={errors.epochs ? "border-red-500" : ""}
+                  />
+                  {errors.epochs && <p className="text-sm text-red-500">{errors.epochs}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="validationSplit">Tỉ lệ validation (%)</Label>
+                  <div className="flex items-center gap-4">
+                    <Input
+                      id="validationSplit"
+                      type="number"
+                      min="0.1"
+                      max="0.5"
+                      step="0.05"
+                      value={config.validationSplit}
+                      onChange={(e) => setConfig(prev => ({ ...prev, validationSplit: parseFloat(e.target.value) }))}
+                      className="w-32"
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {(config.validationSplit * 100).toFixed(0)}% data sẽ dùng để validation
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -370,7 +491,7 @@ export function TrainingWizard({ onClose, onComplete }: TrainingWizardProps) {
                   </div>
                   <div>
                     <span className="font-medium">Model:</span>
-                    <p className="text-muted-foreground">{config.modelType}</p>
+                    <p className="text-muted-foreground">{config.baseModel}</p>
                   </div>
                   <div>
                     <span className="font-medium">Dataset:</span>

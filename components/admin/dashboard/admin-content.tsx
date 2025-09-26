@@ -12,6 +12,9 @@ import { AdminIntegrations } from "../system/admin-integrations"
 import { AdminAnalytics } from "../analytics/admin-analytics"
 import { AdminSecurity } from "../security/admin-security"
 import { AITrainingManagement } from "../ai-training/ai-training-management"
+import { AdminDashboard } from "./admin-dashboard"
+import { KnowledgeBaseManagement } from "../knowledge/knowledge-base-management"
+import { ContentManagement } from "../content/content-management"
 
 // Faculty components (will be imported from faculty module)
 import { FacultyDashboard } from "../../faculty/dashboard/faculty-dashboard"
@@ -25,7 +28,7 @@ import { UserProfile } from "../../shared/common/user-profile"
 
 export function AdminContent() {
   const { user } = useAuth()
-  const [activeSection, setActiveSection] = useState(user?.role === "admin" ? "users" : "dashboard")
+  const [activeSection, setActiveSection] = useState(user?.role === "admin" ? "dashboard" : "dashboard")
 
   const renderContent = () => {
     if (user?.role === "faculty") {
@@ -48,6 +51,8 @@ export function AdminContent() {
     } else {
       // Admin role
       switch (activeSection) {
+        case "dashboard":
+          return <AdminDashboard />
         case "users":
           return <AdminUserManagement />
         case "system":
@@ -62,10 +67,14 @@ export function AdminContent() {
           return <AdminIntegrations />
         case "ai-training":
           return <AITrainingManagement />
+        case "knowledge":
+          return <KnowledgeBaseManagement />
+        case "content":
+          return <ContentManagement />
         case "profile":
           return <UserProfile />
         default:
-          return <AdminUserManagement />
+          return <AdminDashboard />
       }
     }
   }
