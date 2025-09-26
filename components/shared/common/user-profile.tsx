@@ -166,33 +166,7 @@ export function UserProfile() {
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Thống kê hoạt động
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Câu hỏi đã trả lời</span>
-                <span className="font-semibold">1,247</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Sinh viên hỗ trợ</span>
-                <span className="font-semibold">156</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Đánh giá trung bình</span>
-                <span className="font-semibold">4.8/5</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Thời gian online</span>
-                <span className="font-semibold">89h</span>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Quick Stats removed per requirement */}
         </div>
 
         {/* Main Content */}
