@@ -62,7 +62,7 @@ const mockConversations: Conversation[] = [
   {
     id: "1",
     student: { name: "Nguyen Van A", id: "SV001", avatar: "/placeholder.svg" },
-    topic: "Binary Search Trees",
+    topic: "Cây tìm kiếm nhị phân",
     messagesCount: 12,
     duration: "25 min",
     qualityScore: 85,
@@ -74,7 +74,7 @@ const mockConversations: Conversation[] = [
   {
     id: "2",
     student: { name: "Tran Thi B", id: "SV002", avatar: "/placeholder.svg" },
-    topic: "Database Normalization",
+    topic: "Chuẩn hóa Cơ sở dữ liệu",
     messagesCount: 8,
     duration: "15 min",
     qualityScore: 45,
@@ -86,7 +86,7 @@ const mockConversations: Conversation[] = [
   {
     id: "3",
     student: { name: "Le Van C", id: "SV003", avatar: "/placeholder.svg" },
-    topic: "Object-Oriented Programming",
+    topic: "Lập trình Hướng đối tượng",
     messagesCount: 20,
     duration: "45 min",
     qualityScore: 92,
@@ -98,9 +98,9 @@ const mockConversations: Conversation[] = [
 ]
 
 const qualityMetrics: QualityMetric[] = [
-  { name: "Average Response Accuracy", value: 87, change: +3, status: "good" },
-  { name: "Student Satisfaction", value: 4.2, change: +0.1, status: "good" },
-  { name: "Response Time (avg)", value: 2.3, change: -0.2, status: "good" },
+  { name: "Độ chính xác phản hồi trung bình", value: 87, change: +3, status: "good" },
+  { name: "Sự hài lòng của sinh viên", value: 4.2, change: +0.1, status: "good" },
+  { name: "Thời gian phản hồi (trung bình)", value: 2.3, change: -0.2, status: "good" },
   { name: "Intervention Rate", value: 12, change: +2, status: "warning" },
 ]
 

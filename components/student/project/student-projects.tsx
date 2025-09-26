@@ -174,7 +174,7 @@ export function StudentProjects() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Sonnet 4">Sonnet 4</SelectItem>
-                    <SelectItem value="Haiku">Haiku</SelectItem>
+                    <SelectItem value="Haiku">Thơ Haiku</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

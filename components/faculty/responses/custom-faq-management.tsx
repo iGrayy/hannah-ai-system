@@ -145,7 +145,7 @@ export function CustomFAQManagement() {
         id: Date.now().toString(),
         question: newFAQ.question,
         answer: newFAQ.answer,
-        category: newFAQ.category || "General",
+        category: newFAQ.category || "Chung",
         tags: newFAQ.tags.split(",").map(tag => tag.trim()).filter(Boolean),
         priority: faqs.length + 1,
         isActive: true,
@@ -203,7 +203,7 @@ export function CustomFAQManagement() {
     }),
     {
       id: "activate",
-      label: "Activate",
+      label: "Kích hoạt",
       icon: Eye,
       variant: "default" as const,
       onClick: (ids: string[]) => {
@@ -216,7 +216,7 @@ export function CustomFAQManagement() {
     },
     {
       id: "deactivate",
-      label: "Deactivate",
+      label: "Vô hiệu hóa",
       icon: X,
       variant: "outline" as const,
       onClick: (ids: string[]) => {

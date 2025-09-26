@@ -56,8 +56,8 @@ export function UserProfile() {
     phone: "+84 123 456 789",
     address: "123 Đường ABC, Quận 1, TP.HCM",
     bio: "Giảng viên ngành Công nghệ Thông tin với 10 năm kinh nghiệm giảng dạy.",
-    department: "Computer Science",
-    position: user?.role === "admin" ? "System Administrator" : "Faculty Member",
+    department: "Khoa học Máy tính",
+    position: user?.role === "admin" ? "Quản trị viên Hệ thống" : "Thành viên Giảng viên",
     joinDate: "2020-09-01",
   })
 
@@ -143,7 +143,7 @@ export function UserProfile() {
               <CardTitle>{profileData.name}</CardTitle>
               <CardDescription>{profileData.position}</CardDescription>
               <Badge className="w-fit mx-auto mt-2">
-                {user?.role === "admin" ? "Administrator" : "Faculty"}
+                {user?.role === "admin" ? "Quản trị viên" : "Giảng viên"}
               </Badge>
             </CardHeader>
             <CardContent className="space-y-4">

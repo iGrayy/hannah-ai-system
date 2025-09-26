@@ -43,14 +43,14 @@ interface ChatSession {
 const mockSessions: ChatSession[] = [
   {
     id: "1",
-    title: "JavaScript Fundamentals",
+    title: "Cơ bản JavaScript",
     lastMessage: "Great! You're understanding closures well...",
     timestamp: new Date(Date.now() - 1000 * 60 * 5),
     unread: 0,
   },
   {
     id: "2", 
-    title: "React Components",
+    title: "Component React",
     lastMessage: "Let me explain useEffect hook...",
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     unread: 2,
@@ -168,7 +168,7 @@ export function ChatInterface() {
       const list = stored ? JSON.parse(stored) : []
       const item = {
         id: Date.now().toString(),
-        student: { name: "Student", id: "SV001", avatar: "/placeholder-user.jpg" },
+        student: { name: "Sinh viên", id: "SV001", avatar: "/placeholder-user.jpg" },
         question: lastUserMessageRef.current || "(Không xác định)",
         aiResponse: aiMessage.content,
         confidence: 0.3,

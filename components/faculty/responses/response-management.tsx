@@ -82,7 +82,7 @@ const mockResponses: Response[] = [
   {
     id: "3",
     student: { name: "Le Van C", id: "SV003", avatar: "/placeholder.svg?height=32&width=32" },
-    question: "Explain Object-Oriented Programming principles",
+    question: "Giải thích các nguyên lý Lập trình Hướng đối tượng",
     aiResponse:
       "OOP has four main principles: Encapsulation, Inheritance, Polymorphism, and Abstraction. Encapsulation bundles data and methods...",
     confidence: 72,
@@ -721,7 +721,7 @@ export function ResponseManagement() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Thêm nhận xét</DialogTitle>
-                <DialogDescription>Ghi chú để bổ sung dữ liệu hoặc báo cáo cho Admin.</DialogDescription>
+                <DialogDescription>Ghi chú để bổ sung dữ liệu hoặc báo cáo cho Quản trị viên.</DialogDescription>
               </DialogHeader>
               <Textarea
                 placeholder="Nhập nhận xét..."

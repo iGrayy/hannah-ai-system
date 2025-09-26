@@ -118,17 +118,17 @@ const mockRoles: Role[] = [
 ]
 
 const allPermissions = [
-  { id: "full_access", name: "Full Access", description: "Complete system access" },
-  { id: "user_management", name: "User Management", description: "Create, edit, delete users" },
-  { id: "system_config", name: "System Configuration", description: "Modify system settings" },
-  { id: "security_settings", name: "Security Settings", description: "Manage security policies" },
-  { id: "review_responses", name: "Review Responses", description: "Review AI responses" },
-  { id: "manage_knowledge", name: "Manage Knowledge", description: "Edit knowledge base" },
-  { id: "view_analytics", name: "View Analytics", description: "Access analytics dashboard" },
-  { id: "student_monitoring", name: "Student Monitoring", description: "Monitor student progress" },
-  { id: "ask_questions", name: "Ask Questions", description: "Interact with AI assistant" },
-  { id: "view_responses", name: "View Responses", description: "See AI responses" },
-  { id: "access_materials", name: "Access Materials", description: "View learning materials" },
+  { id: "full_access", name: "Truy cập đầy đủ", description: "Truy cập toàn bộ hệ thống" },
+  { id: "user_management", name: "Quản lý người dùng", description: "Tạo, chỉnh sửa, xóa người dùng" },
+  { id: "system_config", name: "Cấu hình hệ thống", description: "Thay đổi cài đặt hệ thống" },
+  { id: "security_settings", name: "Cài đặt bảo mật", description: "Quản lý chính sách bảo mật" },
+  { id: "review_responses", name: "Xem xét phản hồi", description: "Xem và duyệt phản hồi của AI" },
+  { id: "manage_knowledge", name: "Quản lý tri thức", description: "Chỉnh sửa cơ sở tri thức" },
+  { id: "view_analytics", name: "Xem phân tích", description: "Truy cập bảng phân tích" },
+  { id: "student_monitoring", name: "Giám sát sinh viên", description: "Theo dõi tiến độ sinh viên" },
+  { id: "ask_questions", name: "Đặt câu hỏi", description: "Tương tác với trợ lý AI" },
+  { id: "view_responses", name: "Xem phản hồi", description: "Xem phản hồi của AI" },
+  { id: "access_materials", name: "Truy cập tài liệu", description: "Xem tài liệu học tập" },
 ]
 
 export function AdminUserManagement() {
@@ -406,7 +406,7 @@ export function AdminUserManagement() {
                                         selectedUser.permissions.map((permissionId) => {
                                           const permission = allPermissions.find(p => p.id === permissionId)
                                           return permission ? (
-                                            <div key={permissionId} className="text-sm font-bold text-green-700">
+                                            <div key={permissionId} className="text-sm font-bold">
                                               • {permission.name}
                                             </div>
                                           ) : null
@@ -440,9 +440,7 @@ export function AdminUserManagement() {
                             </DialogContent>
                           </Dialog>
 
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
+                          {/* Loại bỏ nút sửa theo yêu cầu */}
                           <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -481,11 +479,8 @@ export function AdminUserManagement() {
                       })}
                     </div>
                   </div>
+                  {/* Giữ lại nút Cấu hình theo yêu cầu */}
                   <div className="flex gap-2 mt-4">
-                    <Button variant="outline" size="sm">
-                      <Edit className="h-4 w-4 mr-2" />
-                      Sửa
-                    </Button>
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Cấu hình

@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const mockUsers: User[] = [
   {
     id: "1",
-    name: "Admin User",
+    name: "Người dùng Quản trị",
     email: "admin@hannah.edu",
     role: "admin", // Default admin role for admin login
     avatar: "/faculty-avatar.jpg",

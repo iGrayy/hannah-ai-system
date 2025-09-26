@@ -44,7 +44,7 @@ const mockQueries: AssignmentQuery[] = [
   {
     id: "2",
     question: "What are the key principles of database normalization and why is it important?",
-    subject: "Database",
+    subject: "Cơ sở dữ liệu",
     createdAt: new Date(Date.now() - 1000 * 60 * 30),
     status: "pending",
   },
@@ -73,7 +73,7 @@ export function AssignmentHelp() {
     const query: AssignmentQuery = {
       id: Date.now().toString(),
       question: newQuery.question,
-      subject: newQuery.subject || "General",
+      subject: newQuery.subject || "Chung",
       createdAt: new Date(),
       status: "pending",
       attachments: selectedFiles.length > 0 ? selectedFiles.map(f => f.name) : undefined,

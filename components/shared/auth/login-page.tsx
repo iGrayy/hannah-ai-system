@@ -117,7 +117,7 @@ export function LoginPage() {
             <p className="text-sm font-semibold text-slate-700 mb-3">🔑 Tài khoản demo:</p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between p-2 bg-white rounded-lg">
-                <span className="font-medium text-slate-700">Admin:</span>
+                <span className="font-medium text-slate-700">Quản trị viên:</span>
                 <span className="text-slate-600">admin@hannah.edu / 123456</span>
               </div>
               <div className="flex items-center justify-between p-2 bg-white rounded-lg">

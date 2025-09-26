@@ -40,7 +40,7 @@ interface Resource {
 const mockResources: Resource[] = [
   {
     id: "1",
-    title: "JavaScript Fundamentals Complete Guide",
+    title: "Hướng dẫn hoàn chỉnh Cơ bản JavaScript",
     description: "Master the basics of JavaScript including variables, functions, objects, and more. Perfect for beginners starting their programming journey.",
     type: "document",
     category: "JavaScript",
@@ -54,7 +54,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "2",
-    title: "React Hooks Deep Dive",
+    title: "Tìm hiểu sâu React Hooks",
     description: "Comprehensive tutorial on React Hooks including useState, useEffect, useContext, and custom hooks with practical examples.",
     type: "tutorial",
     category: "React",
@@ -68,10 +68,10 @@ const mockResources: Resource[] = [
   },
   {
     id: "3",
-    title: "Database Design Principles",
+    title: "Nguyên lý Thiết kế Cơ sở dữ liệu",
     description: "Learn how to design efficient and scalable databases. Covers normalization, relationships, and best practices.",
     type: "document",
-    category: "Database",
+    category: "Cơ sở dữ liệu",
     difficulty: "intermediate",
     duration: "45m read",
     rating: 4.7,
@@ -82,7 +82,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "4",
-    title: "Python Data Structures Implementation",
+    title: "Triển khai Cấu trúc dữ liệu Python",
     description: "Complete implementation of common data structures in Python with explanations and time complexity analysis.",
     type: "code",
     category: "Python",
@@ -96,7 +96,7 @@ const mockResources: Resource[] = [
   },
   {
     id: "5",
-    title: "Web Security Best Practices",
+    title: "Thực hành tốt nhất Bảo mật Web",
     description: "Essential security practices for web developers. Learn about HTTPS, authentication, authorization, and common vulnerabilities.",
     type: "article",
     category: "Security",

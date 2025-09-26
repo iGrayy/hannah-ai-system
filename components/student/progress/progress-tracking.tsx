@@ -54,21 +54,21 @@ interface Recommendation {
 const mockAchievements: Achievement[] = [
   {
     id: "1",
-    title: "First Steps",
+    title: "Bước đầu",
     description: "Complete your first lesson",
     icon: "🎯",
     unlockedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
   },
   {
     id: "2",
-    title: "Code Warrior",
+    title: "Chiến binh Code",
     description: "Write 100 lines of code",
     icon: "⚔️",
     unlockedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
   },
   {
     id: "3",
-    title: "Streak Master",
+    title: "Bậc thầy chuỗi",
     description: "Study for 7 consecutive days",
     icon: "🔥",
     progress: 5,
@@ -76,8 +76,8 @@ const mockAchievements: Achievement[] = [
   },
   {
     id: "4",
-    title: "JavaScript Ninja",
-    description: "Master JavaScript fundamentals",
+    title: "Ninja JavaScript",
+    description: "Thành thạo cơ bản JavaScript",
     icon: "🥷",
     progress: 8,
     maxProgress: 10,
@@ -87,18 +87,18 @@ const mockAchievements: Achievement[] = [
 const mockLearningPaths: LearningPath[] = [
   {
     id: "1",
-    title: "JavaScript Fundamentals",
+    title: "Cơ bản JavaScript",
     description: "Master the basics of JavaScript programming",
     totalLessons: 15,
     completedLessons: 12,
     estimatedTime: "4 weeks",
     difficulty: "beginner",
-    category: "Programming",
+    category: "Lập trình",
   },
   {
     id: "2",
-    title: "React Development",
-    description: "Build modern web applications with React",
+    title: "Phát triển React",
+    description: "Xây dựng ứng dụng web hiện đại với React",
     totalLessons: 20,
     completedLessons: 5,
     estimatedTime: "6 weeks",

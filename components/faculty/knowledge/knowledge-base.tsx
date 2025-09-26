@@ -103,7 +103,7 @@ const mockKnowledgeItems: KnowledgeItem[] = [
     tags: ["BST", "Cây", "Tìm kiếm"],
     type: "text",
     status: "published",
-    author: "Dr. Nguyen",
+    author: "TS. Nguyễn",
     createdAt: "2024-01-10",
     updatedAt: "2024-01-15",
     views: 1250,

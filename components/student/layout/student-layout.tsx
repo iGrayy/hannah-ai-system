@@ -250,7 +250,7 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
                     </div>
                     <div className="p-4 hover:bg-accent/50 transition-colors">
                       <p className="text-sm font-medium">Phản hồi từ Hannah</p>
-                      <p className="text-xs text-muted-foreground mt-1">Câu hỏi về "React Components" đã có phản hồi mới.</p>
+                      <p className="text-xs text-muted-foreground mt-1">Câu hỏi về "Component React" đã có phản hồi mới.</p>
                       <p className="text-[10px] text-muted-foreground mt-1">Hôm nay</p>
                     </div>
                     <div className="p-4 hover:bg-accent/50 transition-colors">

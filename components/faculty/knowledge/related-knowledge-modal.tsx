@@ -51,11 +51,11 @@ interface RelatedKnowledgeModalProps {
 const mockKnowledgeItems: KnowledgeItem[] = [
   {
     id: "kb-1",
-    title: "Password Reset Procedures",
+    title: "Quy trình đặt lại mật khẩu",
     content: "Complete guide on how to reset passwords in the Hannah system...",
     snippet: "To reset your password, go to the login page and click 'Forgot Password'. Enter your email address...",
     type: "article",
-    category: "Account Management",
+    category: "Quản lý tài khoản",
     tags: ["password", "login", "security"],
     status: "published",
     author: "Dr. Smith",
