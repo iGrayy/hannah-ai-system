@@ -149,8 +149,8 @@ export function QualityAssurance() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Đảm bảo chất lượng</h1>
-          <p className="text-slate-600">Giám sát chất lượng hội thoại và hiệu năng AI</p>
+          <h1 className="text-3xl font-bold">Giám sát chất lượng và độ chính xác cuộc trò chuyện</h1>
+          <p className="text-slate-600">Theo dõi chất lượng hội thoại, độ chính xác phản hồi và xác định khoảng trống kiến thức</p>
         </div>
         <div className="flex gap-2">
           <Button
