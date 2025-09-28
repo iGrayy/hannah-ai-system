@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-// Removed complex modal and multimedia components - using simplified version
+import { KnowledgeItemDetailModal } from "./knowledge-item-detail-modal"
+import { MultimediaKnowledgeBase } from "./multimedia-knowledge-base"
 import { RichTextEditorWithPreview } from "@/components/ui/rich-text-editor"
 import { FileUpload } from "@/components/ui/file-upload"
 import { BulkOperations, useBulkSelection, BulkSelectionCheckbox, commonBulkActions } from "@/components/ui/bulk-operations"
@@ -141,13 +142,8 @@ const mockKnowledgeItems: KnowledgeItem[] = [
 ]
 
 export function KnowledgeBase() {
-  // Using simplified knowledge base instead of multimedia version
-  return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Knowledge Base</h2>
-      <p className="text-muted-foreground">This component has been simplified. Use the new KnowledgeSimple component for basic functionality.</p>
-    </div>
-  )
+  // Use the new multimedia knowledge base
+  return <MultimediaKnowledgeBase />
 }
 
 export function KnowledgeBaseOld() {
@@ -241,8 +237,8 @@ export function KnowledgeBaseOld() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Tạo và cập nhật nội dung kho tri thức chuyên môn</h1>
-          <p className="text-muted-foreground">Quản lý và cập nhật tài liệu, kiến thức chuyên môn để Hannah có thể trả lời chính xác hơn</p>
+          <h1 className="text-3xl font-bold text-balance">Quản lý kho tri thức</h1>
+          <p className="text-muted-foreground">Quản lý nội dung và tài nguyên cho hệ thống tri thức của Hannah</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -521,7 +517,20 @@ export function KnowledgeBaseOld() {
         </DialogContent>
       </Dialog>
 
-      {/* Removed Knowledge Item Detail Modal - using simplified version */}
+      {/* Knowledge Item Detail Modal */}
+      <KnowledgeItemDetailModal
+        item={selectedItem}
+        open={detailModalOpen}
+        onOpenChange={setDetailModalOpen}
+        onSave={(item) => {
+          // Update item in real app
+          console.log("Saving item:", item)
+        }}
+        onDelete={(id) => {
+          // Delete item in real app
+          console.log("Deleting item:", id)
+        }}
+      />
     </div>
   )
 }

@@ -16,8 +16,8 @@ export function AdminSystemConfig() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Cài đặt hệ thống & tích hợp</h1>
-          <p className="text-muted-foreground">Quản trị cài đặt hệ thống và cấu hình tích hợp</p>
+          <h1 className="text-2xl font-bold">Cấu hình hệ thống</h1>
+          <p className="text-muted-foreground">Quản trị cài đặt và cấu hình hệ thống</p>
         </div>
         <Button>Lưu thay đổi</Button>
       </div>
