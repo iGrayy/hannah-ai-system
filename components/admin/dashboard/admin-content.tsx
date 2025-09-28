@@ -16,12 +16,12 @@ import { AdminDashboard } from "./admin-dashboard"
 import { KnowledgeBaseManagement } from "../knowledge/knowledge-base-management"
 import { ContentManagement } from "../content/content-management"
 
-// Faculty components (will be imported from faculty module)
+// Faculty components - using simplified versions
 import { FacultyDashboard } from "../../faculty/dashboard/faculty-dashboard"
 import { ResponseManagement } from "../../faculty/responses/response-management"
 import { KnowledgeBase } from "../../faculty/knowledge/knowledge-base"
-import { StudentMonitoring } from "../../faculty/students/student-monitoring"
 import { QualityAssurance } from "../../faculty/quality/quality-assurance"
+// Removed StudentMonitoring - using simplified dashboard instead
 import { UserProfile } from "../../shared/common/user-profile"
 
 
@@ -42,7 +42,7 @@ export function AdminContent() {
         case "quality":
           return <QualityAssurance />
         case "students":
-          return <StudentMonitoring />
+          return <FacultyDashboard /> // Using simplified dashboard for student overview
         case "profile":
           return <UserProfile />
         default:

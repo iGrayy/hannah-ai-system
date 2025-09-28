@@ -373,17 +373,17 @@ export function ResponseManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Quản lý phản hồi</h1>
-          <p className="text-muted-foreground">Duyệt phản hồi AI và quản lý FAQ tùy chỉnh</p>
+          <h1 className="text-3xl font-bold text-balance">Duyệt và phê duyệt phản hồi Hannah</h1>
+          <p className="text-muted-foreground">Xem xét, phê duyệt phản hồi của Hannah và thêm câu trả lời tùy chỉnh</p>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="responses" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="responses">Duyệt phản hồi AI</TabsTrigger>
-          <TabsTrigger value="faq">Quản lý FAQ tùy chỉnh</TabsTrigger>
-          <TabsTrigger value="conversations">Quản lý cuộc trò chuyện</TabsTrigger>
+          <TabsTrigger value="responses">Duyệt và phê duyệt phản hồi Hannah</TabsTrigger>
+          <TabsTrigger value="faq">Thêm phản hồi tùy chỉnh cho câu hỏi thường gặp</TabsTrigger>
+          <TabsTrigger value="conversations">Gắn cờ cuộc trò chuyện cần can thiệp</TabsTrigger>
         </TabsList>
 
         <TabsContent value="responses" className="space-y-6">

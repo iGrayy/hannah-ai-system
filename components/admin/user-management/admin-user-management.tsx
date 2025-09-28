@@ -207,8 +207,8 @@ export function AdminUserManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Quản lý người dùng</h1>
-          <p className="text-muted-foreground">Quản lý tài khoản, vai trò và quyền truy cập cho hệ thống Hannah</p>
+          <h1 className="text-3xl font-bold text-balance">Quản lý tài khoản & phân quyền</h1>
+          <p className="text-muted-foreground">Quản lý tài khoản người dùng, vai trò và phân quyền hệ thống Hannah</p>
         </div>
         <div className="flex gap-2">
           
