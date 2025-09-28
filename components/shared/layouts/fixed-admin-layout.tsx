@@ -33,9 +33,9 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
     { id: "analytics", label: "Phân tích & Báo cáo" },
     { id: "security", label: "Bảo mật & Tuân thủ" },
     { id: "integrations", label: "Kết nối tích hợp" },
-    { id: "knowledge", label: "Quản lý Knowledge Base" },
+    { id: "knowledge", label: "Quản lý kho tri thức" },
     { id: "content", label: "Quản lý nội dung" },
-    { id: "ai-training", label: "Huấn luyện AI" },
+    { id: "ai-training", label: "Huấn luyện dữ liệu" },
   ]
 
   const currentNavItems = user?.role === "faculty" ? facultyNavItems : adminNavItems
