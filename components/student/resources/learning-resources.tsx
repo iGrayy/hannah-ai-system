@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { LearningChat } from "./learning-chat"
+import { StudyAdvisorWidget } from "./study-advisor-widget"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -148,6 +149,22 @@ export function LearningResources() {
     return matchesSearch && matchesCategory && matchesDifficulty && matchesType
   })
 
+  // Compute popular topics by tag frequency weighted by views
+  const popularTopics = useMemo(() => {
+    const score: Record<string, number> = {}
+    for (const r of mockResources) {
+      for (const t of r.tags) {
+        const key = t.toLowerCase()
+        score[key] = (score[key] || 0) + Math.max(1, Math.floor(r.views / 1000))
+      }
+    }
+    const topics = Object.entries(score)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name]) => name)
+    return topics
+  }, [])
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "document": return <FileText className="h-4 w-4" />
@@ -245,6 +262,25 @@ export function LearningResources() {
               Bộ lọc khác
             </Button>
           </div>
+
+          {/* Popular topics */}
+          {popularTopics.length > 0 && (
+            <div className="mt-4">
+              <div className="text-sm text-gray-600 mb-2">Chủ đề phổ biến</div>
+              <div className="flex flex-wrap gap-2">
+                {popularTopics.map((topic) => (
+                  <button
+                    key={topic}
+                    className="px-3 py-1 text-xs rounded-full border hover:bg-gray-50 transition-colors"
+                    onClick={() => setSearchTerm(topic)}
+                    title={`Tìm nhanh theo chủ đề: ${topic}`}
+                  >
+                    #{topic}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -341,6 +377,9 @@ export function LearningResources() {
           )}
         </div>
       </div>
+
+      {/* Floating AI Study Advisor */}
+      <StudyAdvisorWidget />
     </div>
   )
 }

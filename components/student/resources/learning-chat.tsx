@@ -192,15 +192,15 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
       </div>
 
       {/* 3 Columns */}
-      <div className="flex-1 grid grid-cols-12 gap-4 p-4 max-w-7xl mx-auto w-full">
+      <div className="flex-1 grid grid-cols-12 auto-rows-fr gap-4 p-4 max-w-7xl mx-auto w-full">
         {/* Left: Roadmap */}
-        <div className="col-span-12 lg:col-span-3">
-          <Card>
+        <div className="col-span-12 lg:col-span-3 h-full">
+          <Card className="h-[calc(100vh-220px)] overflow-hidden flex flex-col">
             <CardHeader>
               <CardTitle className="text-base">Lộ trình học</CardTitle>
               <CardDescription>Danh sách chương & tiến độ</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1 overflow-y-auto">
               <div className="mb-4">
                 <Progress value={progressPercent} />
                 <p className="text-xs text-gray-500 mt-1">Hoàn thành {progressPercent}%</p>
@@ -238,8 +238,8 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
         </div>
 
         {/* Middle: Chapter Lesson Content + Summary + Quiz */}
-        <div className="col-span-12 lg:col-span-6">
-          <Card className="h-full flex flex-col">
+        <div className="col-span-12 lg:col-span-6 h-full">
+          <Card className="h-[calc(100vh-220px)] flex flex-col overflow-hidden">
             <CardHeader className="border-b">
               <div className="flex items-center justify-between">
                 <div>
@@ -249,7 +249,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                 <Badge variant="secondary" className="text-xs flex items-center gap-1"><Sparkles className="h-3 w-3" />Cá nhân hóa</Badge>
               </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-4 pt-4">
+            <CardContent className="flex-1 flex flex-col gap-4 pt-4 overflow-hidden">
               {/* Personalized Summary */}
               <div className="p-3 rounded border bg-muted/40">
                 <p className="text-sm text-gray-800">{currentChapter.summary}</p>
@@ -261,7 +261,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
               </div>
 
               {/* Chapter structured content */}
-              <ScrollArea className="flex-1 rounded border p-4 bg-white">
+              <ScrollArea className="flex-1 rounded border p-4 bg-white overflow-y-auto">
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-medium text-sm">Mục tiêu học tập</h4>
@@ -355,8 +355,8 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
         </div>
 
         {/* Right: Free Q&A */}
-        <div className="col-span-12 lg:col-span-3">
-          <Card className="h-full flex flex-col">
+        <div className="col-span-12 lg:col-span-3 h-full">
+          <Card className="h-[calc(100vh-220px)] flex flex-col overflow-hidden">
             <CardHeader className="border-b">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -372,7 +372,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                 <Badge variant="secondary" className="text-xs">Online</Badge>
               </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-3 pt-4">
+            <CardContent className="flex-1 flex flex-col gap-3 pt-4 overflow-hidden">
               {/* Quick prompts */}
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {["Giải thích lại", "Ví dụ thực tế", "Ôn tập nhanh", "Gợi ý bài tập"].map((p) => (
@@ -381,10 +381,56 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                   </Button>
                 ))}
               </div>
-              <ScrollArea className="flex-1 rounded border p-3 bg-white">
+              <ScrollArea className="flex-1 rounded border p-3 bg-white h-full overflow-y-auto">
                 <div className="space-y-3">
                   {qaMessages.length === 0 && (
-                    <p className="text-xs text-gray-500">Chưa có tin nhắn. Hãy đặt câu hỏi ở dưới.</p>
+                    <div className="text-xs text-gray-600">
+                      <div className="rounded-md border p-4 bg-gray-50 min-h-[520px] flex flex-col">
+                        <p className="font-medium text-gray-800">Gợi ý bắt đầu</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {(
+                            [
+                              "Giải thích lại nội dung chính",
+                              "Cho ví dụ thực tế dễ hiểu",
+                              "Tóm tắt điểm quan trọng",
+                            ] as string[]
+                          ).map((s) => (
+                            <Button key={s} size="sm" variant="outline" className="text-xs" onClick={() => setQaInput(s)}>
+                              {s}
+                            </Button>
+                          ))}
+                        </div>
+                        {chapterContentMap[currentChapter.id]?.objectives?.length ? (
+                          <>
+                            <p className="mt-3 font-medium text-gray-800">Liên quan chương hiện tại</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {chapterContentMap[currentChapter.id].objectives.slice(0, 3).map((o, i) => {
+                                const q = `Giải thích mục tiêu: ${o}`
+                                return (
+                                  <Button key={i} size="sm" variant="secondary" className="text-xs" onClick={() => setQaInput(q)}>
+                                    {q}
+                                  </Button>
+                                )
+                              })}
+                              {chapterContentMap[currentChapter.id].sections.slice(0, 2).map((s, i) => {
+                                const q = `Làm rõ phần: ${s.title}`
+                                return (
+                                  <Button key={`sec-${i}`} size="sm" variant="outline" className="text-xs" onClick={() => setQaInput(q)}>
+                                    {q}
+                                  </Button>
+                                )
+                              })}
+                            </div>
+                          </>
+                        ) : null}
+                        <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] text-gray-400">
+                          <div className="h-16 bg-white/60 rounded border" />
+                          <div className="h-16 bg-white/60 rounded border" />
+                          <div className="h-16 bg-white/60 rounded border" />
+                        </div>
+                        <div className="mt-auto pt-3 text-[11px] text-gray-500">Mẹo: Nhấn Enter để gửi, Shift + Enter để xuống dòng</div>
+                      </div>
+                    </div>
                   )}
                   {qaMessages.map((m, i) => (
                     <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
