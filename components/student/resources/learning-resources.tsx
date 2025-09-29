@@ -199,7 +199,7 @@ export function LearningResources() {
     <div className="h-full flex flex-col bg-gray-50">
       {/* Header & Search */}
       <div className="bg-white border-b border-gray-200 p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Tài nguyên học tập</h1>
@@ -286,7 +286,7 @@ export function LearningResources() {
 
       {/* Resources Grid */}
       <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredResources.map((resource) => (
               <Card key={resource.id} className="hover:shadow-lg transition-shadow cursor-pointer group">

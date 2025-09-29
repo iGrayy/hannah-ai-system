@@ -84,6 +84,8 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
 
   const chapters = mockChapters
   const currentChapter = chapters[activeChapterIndex]
+  const [activeTab, setActiveTab] = useState<"theory" | "quiz">("theory")
+  const [theoryCompleted, setTheoryCompleted] = useState(false)
 
   const progressPercent = useMemo(() => {
     const total = chapters.length
@@ -177,7 +179,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
     <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b p-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="w-full flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">{topicTitle}</h2>
             <p className="text-sm text-gray-500">Môn học: {subject} • Chủ đề: {topicId}</p>
@@ -192,7 +194,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
       </div>
 
       {/* 3 Columns */}
-      <div className="flex-1 grid grid-cols-12 auto-rows-fr gap-4 p-4 max-w-7xl mx-auto w-full">
+      <div className="flex-1 grid grid-cols-12 auto-rows-fr gap-4 p-4 w-full">
         {/* Left: Roadmap */}
         <div className="col-span-12 lg:col-span-3 h-full">
           <Card className="h-[calc(100vh-220px)] overflow-hidden flex flex-col">
@@ -250,106 +252,130 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
               </div>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col gap-4 pt-4 overflow-hidden">
-              {/* Personalized Summary */}
-              <div className="p-3 rounded border bg-muted/40">
-                <p className="text-sm text-gray-800">{currentChapter.summary}</p>
-                <div className="mt-2 flex gap-2">
-                  <Button variant="outline" size="sm">Xem chi tiết</Button>
-                  <Button variant="outline" size="sm">Ví dụ minh họa</Button>
-                  <Button variant="outline" size="sm">Ôn nhanh</Button>
-                </div>
-              </div>
-
-              {/* Chapter structured content */}
-              <ScrollArea className="flex-1 rounded border p-4 bg-white overflow-y-auto">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium text-sm">Mục tiêu học tập</h4>
-                    <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                      {(chapterContentMap[currentChapter.id]?.objectives || []).map((o, i) => (
-                        <li key={i}>{o}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-sm mb-2">Nội dung chính</h4>
-                    <Accordion type="single" collapsible className="w-full">
-                      {(chapterContentMap[currentChapter.id]?.sections || []).map((s, i) => (
-                        <AccordionItem key={i} value={`sec-${i}`}>
-                          <AccordionTrigger className="text-sm">{s.title}</AccordionTrigger>
-                          <AccordionContent>
-                            <p className="text-sm text-gray-700 leading-relaxed">{s.content}</p>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-sm">Điểm cần ghi nhớ</h4>
-                    <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                      {(chapterContentMap[currentChapter.id]?.keypoints || []).map((k, i) => (
-                        <li key={i}>{k}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-sm">Bài tập ngắn</h4>
-                    <ol className="list-decimal list-inside text-sm mt-2 space-y-1">
-                      {(chapterContentMap[currentChapter.id]?.exercises || []).map((e, i) => (
-                        <li key={i}>{e}</li>
-                      ))}
-                    </ol>
-                  </div>
-                </div>
-              </ScrollArea>
-
-              {/* Quiz */}
-              <div className="rounded border p-3">
+              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col overflow-hidden">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">Quiz cuối chương</h4>
-                  <Badge variant="outline" className="text-xs">3-5 câu</Badge>
-                </div>
-                <div className="space-y-3">
-                  {currentChapter.quiz.map((q) => (
-                    <div key={q.id} className="space-y-1">
-                      <p className="text-sm font-medium">{q.question}</p>
-                      {q.type === 'mcq' ? (
-                        <div className="grid grid-cols-2 gap-2">
-                          {q.options?.map((op, idx) => (
-                            <Button
-                              key={idx}
-                              variant={quizAnswers[`${currentChapter.id}:${q.id}`] === op ? 'default' : 'outline'}
-                              size="sm"
-                              onClick={() => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: op }))}
-                            >
-                              {op}
-                            </Button>
-                          ))}
-                        </div>
-                      ) : (
-                        <Input
-                          placeholder="Nhập câu trả lời ngắn"
-                          value={quizAnswers[`${currentChapter.id}:${q.id}`] || ''}
-                          onChange={(e) => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: e.target.value }))}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={handleSubmitQuiz}><PlayCircle className="h-4 w-4 mr-1" />Nộp bài</Button>
-                  {quizScore !== null && (
-                    <Badge className={quizScore >= 70 ? 'bg-green-600' : 'bg-amber-600'}>Điểm: {quizScore}</Badge>
+                  <TabsList>
+                    <TabsTrigger value="theory">Lý thuyết</TabsTrigger>
+                    <TabsTrigger
+                      value="quiz"
+                      onClick={(e) => {
+                        if (!theoryCompleted) {
+                          e.preventDefault()
+                        }
+                      }}
+                      className={!theoryCompleted ? 'opacity-50 pointer-events-none' : ''}
+                    >
+                      Quiz
+                    </TabsTrigger>
+                  </TabsList>
+                  {activeTab === 'theory' && (
+                    <Button size="sm" onClick={() => { setTheoryCompleted(true); setActiveTab('quiz') }}>Tiếp tục</Button>
                   )}
-                  <div className="flex-1" />
-                  <Button disabled={!canMarkComplete} onClick={handleMarkChapterComplete} size="sm">
-                    <CheckCircle2 className="h-4 w-4 mr-1" /> Đánh dấu hoàn thành
-                  </Button>
                 </div>
-                {quizScore !== null && (
-                  <p className="text-xs text-gray-600 mt-2">Giải thích đáp án sẽ hiển thị tại đây dựa trên bài làm của bạn.</p>
-                )}
-              </div>
+
+                <TabsContent value="theory" className="flex-1 flex flex-col overflow-hidden m-0 p-0">
+                  {/* Personalized Summary */}
+                  <div className="p-3 rounded border bg-muted/40">
+                    <p className="text-sm text-gray-800">{currentChapter.summary}</p>
+                    <div className="mt-2 flex gap-2">
+                      <Button variant="outline" size="sm">Xem chi tiết</Button>
+                      <Button variant="outline" size="sm">Ví dụ minh họa</Button>
+                      <Button variant="outline" size="sm">Ôn nhanh</Button>
+                    </div>
+                  </div>
+                  {/* Chapter structured content */}
+                  <ScrollArea className="flex-1 rounded border p-4 bg-white overflow-y-auto">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-sm">Mục tiêu học tập</h4>
+                        <ul className="list-disc list-inside text-sm mt-2 space-y-1">
+                          {(chapterContentMap[currentChapter.id]?.objectives || []).map((o, i) => (
+                            <li key={i}>{o}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm mb-2">Nội dung chính</h4>
+                        <Accordion type="single" collapsible className="w-full">
+                          {(chapterContentMap[currentChapter.id]?.sections || []).map((s, i) => (
+                            <AccordionItem key={i} value={`sec-${i}`}>
+                              <AccordionTrigger className="text-sm">{s.title}</AccordionTrigger>
+                              <AccordionContent>
+                                <p className="text-sm text-gray-700 leading-relaxed">{s.content}</p>
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
+                        </Accordion>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Điểm cần ghi nhớ</h4>
+                        <ul className="list-disc list-inside text-sm mt-2 space-y-1">
+                          {(chapterContentMap[currentChapter.id]?.keypoints || []).map((k, i) => (
+                            <li key={i}>{k}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Bài tập ngắn</h4>
+                        <ol className="list-decimal list-inside text-sm mt-2 space-y-1">
+                          {(chapterContentMap[currentChapter.id]?.exercises || []).map((e, i) => (
+                            <li key={i}>{e}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="quiz" className="flex-1 flex flex-col overflow-hidden m-0 p-0">
+                  <div className="rounded border p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-sm">Quiz cuối chương</h4>
+                      <Badge variant="outline" className="text-xs">3-5 câu</Badge>
+                    </div>
+                    <div className="space-y-3">
+                      {currentChapter.quiz.map((q) => (
+                        <div key={q.id} className="space-y-1">
+                          <p className="text-sm font-medium">{q.question}</p>
+                          {q.type === 'mcq' ? (
+                            <div className="grid grid-cols-2 gap-2">
+                              {q.options?.map((op, idx) => (
+                                <Button
+                                  key={idx}
+                                  variant={quizAnswers[`${currentChapter.id}:${q.id}`] === op ? 'default' : 'outline'}
+                                  size="sm"
+                                  onClick={() => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: op }))}
+                                >
+                                  {op}
+                                </Button>
+                              ))}
+                            </div>
+                          ) : (
+                            <Input
+                              placeholder="Nhập câu trả lời ngắn"
+                              value={quizAnswers[`${currentChapter.id}:${q.id}`] || ''}
+                              onChange={(e) => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: e.target.value }))}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={handleSubmitQuiz}><PlayCircle className="h-4 w-4 mr-1" />Nộp bài</Button>
+                      {quizScore !== null && (
+                        <Badge className={quizScore >= 70 ? 'bg-green-600' : 'bg-amber-600'}>Điểm: {quizScore}</Badge>
+                      )}
+                      <div className="flex-1" />
+                      <Button disabled={!canMarkComplete} onClick={handleMarkChapterComplete} size="sm">
+                        <CheckCircle2 className="h-4 w-4 mr-1" /> Đánh dấu hoàn thành
+                      </Button>
+                    </div>
+                    {quizScore !== null && (
+                      <p className="text-xs text-gray-600 mt-2">Giải thích đáp án sẽ hiển thị tại đây dựa trên bài làm của bạn.</p>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
