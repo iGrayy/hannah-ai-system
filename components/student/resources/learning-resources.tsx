@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { LearningChat } from "./learning-chat"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -133,6 +134,7 @@ export function LearningResources() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedDifficulty, setSelectedDifficulty] = useState("All")
   const [selectedType, setSelectedType] = useState("All")
+  const [activeTopic, setActiveTopic] = useState<Resource | null>(null)
 
   const filteredResources = mockResources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -163,6 +165,17 @@ export function LearningResources() {
       case "advanced": return "bg-red-100 text-red-800"
       default: return "bg-gray-100 text-gray-800"
     }
+  }
+
+  if (activeTopic) {
+    return (
+      <LearningChat
+        subject={activeTopic.category}
+        topicId={activeTopic.id}
+        topicTitle={activeTopic.title}
+        onExit={() => setActiveTopic(null)}
+      />
+    )
   }
 
   return (
@@ -251,6 +264,7 @@ export function LearningResources() {
                     <Button
                       size="sm"
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => setActiveTopic(resource)}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Mở
@@ -305,7 +319,7 @@ export function LearningResources() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1" size="sm">
+                    <Button className="flex-1" size="sm" onClick={() => setActiveTopic(resource)}>
                       <BookOpen className="h-4 w-4 mr-2" />
                       Mở
                     </Button>
