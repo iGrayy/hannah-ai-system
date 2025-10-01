@@ -118,7 +118,7 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
               ) : (
                 <>
                   <Database className="h-3 w-3" />
-                  <span className="hidden sm:inline">Mô-đun Quản trị viên</span>
+                  <span className="hidden sm:inline">Quản trị viên</span>
                   <span className="sm:hidden">QTV</span>
                 </>
               )}
@@ -209,7 +209,7 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
           <div className="p-4">
             <div className="mb-4">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Mô-đun Quản trị viên"}
+                {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Quản trị viên"}
               </h3>
             </div>
             <nav className="space-y-1">
