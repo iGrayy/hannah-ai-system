@@ -71,7 +71,7 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
   }, [])
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 overflow-y-auto">
       {/* Sidebar */}
       <div className={`${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300`}>
         {/* Header */}
@@ -184,7 +184,7 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-auto">
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 p-4">
           <div className="flex items-center justify-between">
@@ -278,7 +278,7 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-visible">
           {children}
         </div>
       </div>
