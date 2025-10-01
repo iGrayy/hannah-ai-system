@@ -1,6 +1,6 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 interface PDFModalProps {
   src: string
@@ -15,23 +15,14 @@ export function PDFModal({ src, title, isOpen, onClose }: PDFModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="max-w-[98vw] max-h-[98vh] w-[98vw] h-[98vh] p-0 m-0 rounded-none"
+        className="max-w-[90vw] max-h-[90vh] w-[90vw] h-[90vh] p-0 m-0 rounded-lg [&>button]:!bg-transparent [&>button]:!text-white [&>button]:!border-0 [&>button]:!hover:bg-gray-100 [&>button]:!hover:text-gray-800 [&>button]:!w-6 [&>button]:!h-6 [&>button]:!rounded-none [&>button]:!shadow-none [&>button]:!z-50 [&>button]:!top-4 [&>button]:!right-12 [&>button]:!font-bold [&>button]:!text-lg [&>button]:!border-0"
         style={{
-          position: 'fixed',
-          top: '1vh',
-          left: '1vw',
-          width: '98vw',
-          height: '98vh',
+          width: '90vw',
+          height: '90vh',
           maxWidth: 'none',
-          maxHeight: 'none',
-          transform: 'none'
+          maxHeight: 'none'
         }}
       >
-        {/* Floating mini title to save vertical space */}
-        <div className="absolute top-2 left-3 z-10 text-[11px] text-gray-700 bg-white/80 backdrop-blur px-2 py-0.5 rounded border">
-          Phần I. Introduction
-        </div>
-        
         <div className="flex-1 overflow-hidden min-h-0">
           <iframe
             src={`${src}#toolbar=1&navpanes=1&scrollbar=1&view=FitH`}
