@@ -12,6 +12,8 @@ import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { BookOpenCheck, CheckCircle2, Lock, MessageSquare, PlayCircle, Sparkles } from "lucide-react"
+import { PDFViewer } from "@/components/ui/pdf-viewer"
+import { IntroductionContent } from "./introduction-content"
 
 type QuizQuestion = {
   id: string
@@ -383,7 +385,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
          {/* Middle: Document/Quiz Content */}
          <div className="col-span-12 lg:col-span-6 h-full">
           <Card className="h-[calc(100vh-220px)] flex flex-col overflow-hidden">
-            <CardHeader className="border-b">
+            <CardHeader className="border-b flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-base">
@@ -395,73 +397,51 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-4 pt-4 overflow-hidden">
-              {(() => {
-                const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
-                
-                if (!currentSection) {
-                  return (
-                    <div className="flex-1 flex items-center justify-center text-gray-500">
-                      <div className="text-center">
-                        <BookOpenCheck className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p>Chọn một mục từ lộ trình học để bắt đầu</p>
-                      </div>
-                    </div>
-                  )
-                }
-
-                if (currentSection.type === 'document') {
-                  return (
-                    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-                      {/* PDF Viewer Placeholder - Made larger vertically */}
-                      <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center">
-                        <div className="text-center text-gray-500">
-                          <BookOpenCheck className="h-16 w-16 mx-auto mb-3" />
-                          <p className="text-base font-medium">Khung hiển thị PDF</p>
-                          <p className="text-sm">Tài liệu học tập sẽ hiển thị tại đây</p>
+            <ScrollArea className="flex-1">
+              <CardContent className="pt-4">
+                <div className="space-y-4 pr-4">
+                  {(() => {
+                    const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
+                    
+                    if (!currentSection) {
+                      return (
+                        <div className="flex items-center justify-center text-gray-500 min-h-[400px]">
+                          <div className="text-center">
+                            <BookOpenCheck className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                            <p>Chọn một mục từ lộ trình học để bắt đầu</p>
+                          </div>
                         </div>
-                      </div>
-                      
-                      {/* Text Content Below PDF */}
-                      <div className="rounded border p-4 bg-white">
+                      )
+                    }
+
+                    if (currentSection.type === 'document') {
+                      return (
                         <div className="space-y-4">
-                          <div>
-                            <h4 className="font-medium text-sm">Nội dung chính</h4>
-                            <p className="text-sm text-gray-700 leading-relaxed mt-2">
-                              {chapterContentMap[currentChapter.id]?.sections?.[0]?.content || 
-                               "Đây là nội dung lý thuyết chi tiết về chủ đề. Học viên có thể đọc và nghiên cứu tài liệu PDF ở trên, sau đó tham khảo nội dung tóm tắt ở đây."}
-                            </p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-sm">Điểm cần ghi nhớ</h4>
-                            <ul className="list-disc list-inside text-sm mt-2 space-y-1">
-                              {(chapterContentMap[currentChapter.id]?.keypoints || [
-                                "Nắm vững khái niệm cơ bản",
-                                "Hiểu cách áp dụng vào thực tế",
-                                "Lưu ý các trường hợp đặc biệt"
-                              ]).map((k, i) => (
-                                <li key={i}>{k}</li>
-                              ))}
-                            </ul>
-                          </div>
+                          {/* PDF Viewer */}
+                          <PDFViewer 
+                            src="/CSI_01.pdf#page=1&view=FitH"
+                            title="CSI_01.pdf - Phần I. Introduction"
+                            className="h-96"
+                          />
                           
-                           {/* Complete Button - Added below main content */}
-                           <div className="pt-4 border-t">
-                             <Button 
-                               className="w-full"
-                               onClick={() => handleCompleteSection(currentSection.id)}
-                             >
-                               Hoàn thành
-                             </Button>
-                           </div>
-                         </div>
-                       </div>
-                     </div>
-                   )
+                          {/* Introduction Content */}
+                          <IntroductionContent />
+                          
+                          {/* Complete Button */}
+                          <div className="pt-4 border-t">
+                            <Button 
+                              className="w-full"
+                              onClick={() => handleCompleteSection(currentSection.id)}
+                            >
+                              Hoàn thành
+                            </Button>
+                          </div>
+                        </div>
+                      )
                 } else {
                   // Quiz content
                   return (
-                    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+                    <div className="space-y-4">
                       <div className="rounded border p-3">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium text-sm">Quiz kiểm tra</h4>
@@ -470,35 +450,33 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                             <Badge variant="secondary" className="text-xs">Yêu cầu: ≥80%</Badge>
                           </div>
                         </div>
-                        <ScrollArea className="max-h-96 overflow-y-auto">
-                          <div className="space-y-3">
-                            {currentChapter.quiz.map((q) => (
-                              <div key={q.id} className="space-y-1">
-                                <p className="text-sm font-medium">{q.question}</p>
-                                {q.type === 'mcq' ? (
-                                  <div className="grid grid-cols-2 gap-2">
-                                    {q.options?.map((op, idx) => (
-                                      <Button
-                                        key={idx}
-                                        variant={quizAnswers[`${currentChapter.id}:${q.id}`] === op ? 'default' : 'outline'}
-                                        size="sm"
-                                        onClick={() => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: op }))}
-                                      >
-                                        {op}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <Input
-                                    placeholder="Nhập câu trả lời ngắn"
-                                    value={quizAnswers[`${currentChapter.id}:${q.id}`] || ''}
-                                    onChange={(e) => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: e.target.value }))}
-                                  />
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
+                        <div className="space-y-3">
+                          {currentChapter.quiz.map((q) => (
+                            <div key={q.id} className="space-y-1">
+                              <p className="text-sm font-medium">{q.question}</p>
+                              {q.type === 'mcq' ? (
+                                <div className="grid grid-cols-2 gap-2">
+                                  {q.options?.map((op, idx) => (
+                                    <Button
+                                      key={idx}
+                                      variant={quizAnswers[`${currentChapter.id}:${q.id}`] === op ? 'default' : 'outline'}
+                                      size="sm"
+                                      onClick={() => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: op }))}
+                                    >
+                                      {op}
+                                    </Button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <Input
+                                  placeholder="Nhập câu trả lời ngắn"
+                                  value={quizAnswers[`${currentChapter.id}:${q.id}`] || ''}
+                                  onChange={(e) => setQuizAnswers((prev) => ({ ...prev, [`${currentChapter.id}:${q.id}`]: e.target.value }))}
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
                         <div className="mt-3 flex items-center gap-2">
                           <Button variant="outline" size="sm" onClick={handleSubmitQuiz}>
                             <PlayCircle className="h-4 w-4 mr-1" />Nộp bài
@@ -546,8 +524,10 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                     </div>
                   )
                 }
-              })()}
-            </CardContent>
+                  })()}
+                </div>
+              </CardContent>
+            </ScrollArea>
           </Card>
         </div>
 
