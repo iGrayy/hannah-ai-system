@@ -12,8 +12,8 @@ import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { BookOpenCheck, CheckCircle2, Lock, MessageSquare, PlayCircle, Sparkles } from "lucide-react"
-import { PDFViewer } from "@/components/ui/pdf-viewer"
 import { IntroductionContent } from "./introduction-content"
+import { PDFModal } from "@/components/ui/pdf-modal"
 
 type QuizQuestion = {
   id: string
@@ -99,6 +99,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
   const [qaMessages, setQaMessages] = useState<{ sender: "ai" | "user"; content: string }[]>([])
   const [qaInput, setQaInput] = useState("")
   const [qaTyping, setQaTyping] = useState(false)
+  const [isPdfOpen, setIsPdfOpen] = useState(false)
 
   const chapters = mockChapters
   const currentChapter = chapters[activeChapterIndex]
@@ -397,9 +398,9 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                 </div>
               </div>
             </CardHeader>
-            <ScrollArea className="flex-1">
-              <CardContent className="pt-4">
-                <div className="space-y-4 pr-4">
+            <CardContent className="flex-1 flex flex-col pt-4 overflow-hidden">
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="space-y-4 pr-4 pb-4">
                   {(() => {
                     const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
                     
@@ -417,13 +418,11 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                     if (currentSection.type === 'document') {
                       return (
                         <div className="space-y-4">
-                          {/* PDF Viewer */}
-                          <PDFViewer 
-                            src="/CSI_01.pdf#page=1&view=FitH"
-                            title="CSI_01.pdf - Phần I. Introduction"
-                            className="h-96"
-                          />
-                          
+                          <div className="flex justify-end">
+                            <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700" onClick={() => setIsPdfOpen(true)}>
+                              Xem tài liệu
+                            </Button>
+                          </div>
                           {/* Introduction Content */}
                           <IntroductionContent />
                           
@@ -526,8 +525,15 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                 }
                   })()}
                 </div>
-              </CardContent>
-            </ScrollArea>
+              </ScrollArea>
+            </CardContent>
+            {/* PDF Modal (global for this card) */}
+            <PDFModal
+              src="/CSI_01.pdf"
+              title="CSI_01.pdf - Phần I. Introduction"
+              isOpen={isPdfOpen}
+              onClose={() => setIsPdfOpen(false)}
+            />
           </Card>
         </div>
 

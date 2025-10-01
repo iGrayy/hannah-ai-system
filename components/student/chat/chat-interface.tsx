@@ -281,10 +281,10 @@ export function ChatInterface() {
               </Avatar>
               <div>
                 <h3 className="font-semibold text-gray-900">Hannah AI</h3>
-                <div className="flex items-center gap-1">
+                {/* <div className="flex items-center gap-1">
                   <div className="h-2 w-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm text-gray-500">Trực tuyến</span>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex items-center gap-1">
