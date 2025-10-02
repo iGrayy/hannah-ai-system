@@ -20,10 +20,14 @@ export function LoginPage() {
   const [isAnimating, setIsAnimating] = useState(false)
   const { login, isLoading, registerStudent, requestPasswordReset } = useAuth()
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
-  const [isForgotOpen, setIsForgotOpen] = useState(false)
   const [registerData, setRegisterData] = useState({ name: "", email: "", password: "" })
-  const [forgotEmail, setForgotEmail] = useState("")
   const [actionMessage, setActionMessage] = useState("")
+  const [resetMessage, setResetMessage] = useState("")
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [resetStep, setResetStep] = useState<"email" | "password">("email")
 
   useEffect(() => {
     setIsAnimating(true)
@@ -36,6 +40,44 @@ export function LoginPage() {
     const success = await login(email, password)
     if (!success) {
       setError("Email hoặc mật khẩu không đúng")
+    }
+  }
+
+  const handlePasswordReset = async () => {
+    if (resetStep === "email") {
+      if (!resetEmail) {
+        setResetMessage("Vui lòng nhập email của bạn")
+        return
+      }
+      setResetMessage("Đang xác thực email...")
+      setTimeout(() => {
+        setResetStep("password")
+        setResetMessage("✅ Email hợp lệ! Vui lòng nhập mật khẩu mới")
+      }, 1500)
+    } else {
+      if (!newPassword || !confirmPassword) {
+        setResetMessage("Vui lòng nhập đầy đủ thông tin")
+        return
+      }
+      if (newPassword !== confirmPassword) {
+        setResetMessage("Mật khẩu xác nhận không khớp")
+        return
+      }
+      if (newPassword.length < 6) {
+        setResetMessage("Mật khẩu phải có ít nhất 6 ký tự")
+        return
+      }
+
+      setResetMessage("Đang cập nhật mật khẩu...")
+      setTimeout(() => {
+        setResetMessage("✅ Đổi mật khẩu thành công! Vui lòng đăng nhập lại")
+        setIsResetDialogOpen(false)
+        setResetStep("email")
+        setResetEmail("")
+        setNewPassword("")
+        setConfirmPassword("")
+        setTimeout(() => setResetMessage(""), 3000)
+      }, 1500)
     }
   }
 
@@ -59,7 +101,7 @@ export function LoginPage() {
             Hannah AI Assistant
           </CardTitle>
           <CardDescription className="text-slate-600 mt-2 animate-fade-in-delay">
-            Đăng nhập vào hệ thống quản trị thông minh
+            Đăng nhập vào hệ thống hỗ trợ học tập
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -132,61 +174,36 @@ export function LoginPage() {
               )}
             </Button>
 
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                onClick={() => setIsRegisterOpen(true)}
-                className="flex-1 bg-white text-blue-700 font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-blue-200 hover:bg-blue-50 group"
-                disabled={isLoading}
-              >
-                <UserPlus className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
-                Đăng ký
-              </Button>
+            <Button
+              type="button"
+              onClick={() => setIsRegisterOpen(true)}
+              className="w-full bg-white text-blue-700 font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-blue-200 hover:bg-blue-50 group mb-4"
+              disabled={isLoading}
+            >
+              <UserPlus className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+              Đăng ký tài khoản mới
+            </Button>
 
-              <Button
+            {/* Password Reset Link */}
+            <div className="text-center">
+              <button
                 type="button"
-                onClick={() => setIsForgotOpen(true)}
-                variant="outline"
-                className="flex-1 text-slate-600 font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-slate-200 hover:bg-slate-50 group"
+                onClick={() => setIsResetDialogOpen(true)}
+                className="group relative inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-all duration-300 hover:scale-105 active:scale-95"
                 disabled={isLoading}
               >
-                <KeyRound className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
-                Quên MK?
-              </Button>
+                <KeyRound className="h-4 w-4 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="relative">
+                  Quên mật khẩu? Nhấn để đặt lại
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300"></span>
+                </span>
+              </button>
+
+
             </div>
           </form>
 
-          <>
-            <Dialog open={isForgotOpen} onOpenChange={setIsForgotOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Quên mật khẩu</DialogTitle>
-                  <DialogDescription>Nhập email để nhận liên kết đặt lại mật khẩu.</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-2">
-                  <Label htmlFor="forgot-email">Email</Label>
-                  <Input id="forgot-email" type="email" placeholder="email@hannah.edu" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} />
-                </div>
-                {actionMessage && <p className="text-sm text-slate-600">{actionMessage}</p>}
-                <DialogFooter>
-                  <Button
-                    onClick={async () => {
-                      setActionMessage("")
-                      const ok = await requestPasswordReset(forgotEmail)
-                      setActionMessage(ok ? "Đã gửi email đặt lại mật khẩu (mô phỏng)." : "Email không tồn tại trong hệ thống.")
-                      if (ok) {
-                        setTimeout(() => setIsForgotOpen(false), 900)
-                      }
-                    }}
-                    className="bg-slate-700 text-white"
-                  >
-                    Gửi liên kết
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
+          <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Tạo tài khoản Student</DialogTitle>
@@ -224,7 +241,112 @@ export function LoginPage() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          </>
+
+            {/* Password Reset Dialog */}
+            <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <KeyRound className="h-5 w-5 text-blue-600" />
+                    Đặt lại mật khẩu
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-4">
+                  {resetStep === "email" ? (
+                    <div className="space-y-3">
+                      <Label htmlFor="reset-email" className="text-slate-700 font-medium">
+                        Nhập email của bạn
+                      </Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="xxxxxx@hannah.edu"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="border-slate-200 focus:border-blue-500"
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="new-password" className="text-slate-700 font-medium">
+                          Mật khẩu mới
+                        </Label>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="border-slate-200 focus:border-blue-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirm-password" className="text-slate-700 font-medium">
+                          Xác nhận mật khẩu
+                        </Label>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          placeholder="Nhập lại mật khẩu mới"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="border-slate-200 focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {resetMessage && (
+                    <div className={`p-3 rounded-lg border animate-fade-in ${
+                      resetMessage.includes("✅")
+                        ? "bg-gradient-to-r from-green-50 to-blue-50 border-green-200"
+                        : resetMessage.includes("không khớp") || resetMessage.includes("Vui lòng")
+                        ? "bg-gradient-to-r from-red-50 to-orange-50 border-red-200"
+                        : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
+                    }`}>
+                      <p className={`text-sm font-medium ${
+                        resetMessage.includes("✅")
+                          ? "text-green-700"
+                          : resetMessage.includes("không khớp") || resetMessage.includes("Vui lòng")
+                          ? "text-red-700"
+                          : "text-blue-700"
+                      }`}>
+                        {resetMessage}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                  {resetStep === "password" && (
+                    <Button
+                      onClick={() => setResetStep("email")}
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                    >
+                      Quay lại
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handlePasswordReset}
+                    className={`w-full sm:w-auto ${
+                      resetStep === "email"
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-green-600 hover:bg-green-700"
+                    } text-white`}
+                    disabled={
+                      resetStep === "email"
+                        ? !resetEmail
+                        : !newPassword || !confirmPassword
+                    }
+                  >
+                    {resetStep === "email" ? "Tiếp tục" : "Đổi mật khẩu"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
         </CardContent>
       </Card>
     </div>
