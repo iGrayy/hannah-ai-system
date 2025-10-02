@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Send,
-  Paperclip,
   Code,
   Smile,
   Share2,
@@ -21,6 +20,7 @@ import {
   Clock,
   CheckCircle,
   Trash2,
+  Plus,
 } from "lucide-react"
 
 interface Message {
@@ -113,6 +113,7 @@ export function ChatInterface() {
   const [codeSnippet, setCodeSnippet] = useState("")
   const [codeLanguage, setCodeLanguage] = useState("javascript")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const lastUserMessageRef = useRef<string>("")
   const [flagOpen, setFlagOpen] = useState(false)
 
@@ -261,34 +262,7 @@ export function ChatInterface() {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
-        <div className="p-4 border-b border-gray-200 bg-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="/hannah-avatar.png" />
-                <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  H
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-gray-900">Hannah AI</h3>
-                {/* <div className="flex items-center gap-1">
-                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-500">Trực tuyến</span>
-                </div> */}
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" onClick={() => alert('🔗 Chia sẻ đoạn chat (mô phỏng)')} title="Chia sẻ">
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setFlagOpen(true)} title="Đánh dấu cần can thiệp">
-                <Flag className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
+        {/* Chat Header removed per request */}
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -301,9 +275,6 @@ export function ChatInterface() {
                 {message.sender === 'hannah' && (
                   <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarImage src="/hannah-avatar.png" />
-                    <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm">
-                      H
-                    </AvatarFallback>
                   </Avatar>
                 )}
                 
@@ -348,9 +319,6 @@ export function ChatInterface() {
               <div className="flex gap-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/hannah-avatar.png" />
-                  <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm">
-                    H
-                  </AvatarFallback>
                 </Avatar>
                 <div className="bg-gray-100 rounded-2xl px-4 py-2">
                   <div className="flex items-center gap-1">
@@ -441,9 +409,40 @@ export function ChatInterface() {
 
         {/* Input Area */}
         <div className="p-4 border-t border-gray-200 bg-white">
-          <div className="max-w-6xl mx-auto">
+          <div className="w-full">
             <div className="relative">
               <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                {/* Plus button like ChatGPT */}
+                <button
+                  type="button"
+                  className="h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                  title="Thêm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    const message: Message = {
+                      id: Date.now().toString(),
+                      content: `📎 ${file.name} (${Math.round(file.size / 1024)} KB)` ,
+                      sender: "user",
+                      timestamp: new Date(),
+                      type: "text",
+                    }
+                    setMessages(prev => [...prev, message])
+                    setTimeout(() => {
+                      setMessages(prev => [...prev, { id: (Date.now()+1).toString(), content: "Đã nhận tệp. Mình sẽ xử lý nội dung tệp này! (demo)", sender: "hannah", timestamp: new Date(), type: "text" }])
+                    }, 800)
+                    // reset so selecting same file again still fires change
+                    e.currentTarget.value = ""
+                  }}
+                />
                 <Input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
@@ -457,14 +456,6 @@ export function ChatInterface() {
                   }}
                 />
                 <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    title="Tải tệp lên"
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700"
-                  >
-                    <Paperclip className="h-4 w-4" />
-                  </Button>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim()}
