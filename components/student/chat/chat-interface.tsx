@@ -105,6 +105,7 @@ console.log(addFive(3)); // Output: 8`,
 
 
 export function ChatInterface() {
+  const [sessions, setSessions] = useState<ChatSession[]>(mockSessions)
   const [messages, setMessages] = useState<Message[]>(mockMessages)
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
@@ -141,6 +142,7 @@ export function ChatInterface() {
   const [renameOpen, setRenameOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const [renameValue, setRenameValue] = useState("")
+  const [profileOpen, setProfileOpen] = useState(false)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -162,6 +164,8 @@ export function ChatInterface() {
     }
 
     setMessages(prev => [...prev, newMessage])
+    // Update session preview
+    setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, lastMessage: newMessage.content, timestamp: new Date(), unread: 0 }) : s))
     setInputValue("")
     lastUserMessageRef.current = newMessage.content
     
@@ -176,6 +180,8 @@ export function ChatInterface() {
         type: "text",
       }
       setMessages(prev => [...prev, hannahResponse])
+      // Update session preview to latest assistant response
+      setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, lastMessage: hannahResponse.content, timestamp: new Date() }) : s))
       setIsTyping(false)
     }, 2000)
   }
@@ -221,7 +227,7 @@ export function ChatInterface() {
 
         {/* Sessions List */}
         <div className="flex-1 overflow-y-auto">
-          {mockSessions.map((session) => (
+          {sessions.map((session) => (
             <div
               key={session.id}
               className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
@@ -270,6 +276,31 @@ export function ChatInterface() {
                       <Share2 className="h-4 w-4 mr-2" />
                       Chia sẻ
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const ok = confirm('Xóa cuộc trò chuyện này?')
+                        if (!ok) return
+                        setSessions(prev => prev.filter(s => s.id !== session.id))
+                        if (selectedSession === session.id) {
+                          // Switch to first remaining session (if any) and clear messages
+                          setTimeout(() => {
+                            setSelectedSession((next) => {
+                              const remaining = sessions.filter(s => s.id !== session.id)
+                              const newActive = remaining[0]?.id || ''
+                              setMessages([])
+                              setIsTyping(false)
+                              return newActive
+                            })
+                          }, 0)
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Xóa
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -280,7 +311,23 @@ export function ChatInterface() {
 
         {/* New Chat Button */}
         <div className="p-4 border-t border-gray-200">
-          <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+          <Button
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            onClick={() => {
+              const id = Date.now().toString()
+              const newSession: ChatSession = {
+                id,
+                title: `Cuộc trò chuyện mới`,
+                lastMessage: "",
+                timestamp: new Date(),
+                unread: 0,
+              }
+              setSessions(prev => [newSession, ...prev])
+              setSelectedSession(id)
+              setMessages([])
+              setIsTyping(false)
+            }}
+          >
             <Zap className="h-4 w-4 mr-2" />
             Cuộc trò chuyện mới
           </Button>
@@ -297,10 +344,16 @@ export function ChatInterface() {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header removed per request */}
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center text-gray-500 min-h-[200px]">
+              <div className="text-center">
+                <p className="text-sm">Chào mừng trở lại! Hannah có thể giúp gì cho bạn hôm nay?</p>
+              </div>
+            </div>
+          )}
           {messages.map((message) => (
             <div
               key={message.id}
@@ -523,7 +576,7 @@ export function ChatInterface() {
                 const conversation = {
                   id: `${selectedSession}-${Date.now()}`,
                   sessionId: selectedSession,
-                  title: (mockSessions.find((s: ChatSession) => s.id === selectedSession)?.title) || 'Cuộc trò chuyện',
+                  title: (sessions.find((s: ChatSession) => s.id === selectedSession)?.title) || 'Cuộc trò chuyện',
                   flaggedAt: new Date().toISOString(),
                   messages,
                 }
@@ -552,8 +605,9 @@ export function ChatInterface() {
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRenameOpen(false)}>Hủy</Button>
             <Button onClick={() => {
-              if (!renameValue.trim()) return setRenameOpen(false)
-              alert(`✅ Đã đổi tên (demo) thành: ${renameValue.trim()}`)
+              const name = renameValue.trim()
+              if (!name) return setRenameOpen(false)
+              setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, title: name }) : s))
               setRenameOpen(false)
             }}>Lưu</Button>
           </DialogFooter>
@@ -573,6 +627,38 @@ export function ChatInterface() {
           </div>
           <DialogFooter>
             <Button onClick={() => setShareOpen(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hồ sơ cá nhân (Cài đặt) */}
+      <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Hồ sơ cá nhân</DialogTitle>
+            <DialogDescription>Thông tin tài khoản của bạn (demo).</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 text-gray-700 text-sm font-medium">NB</span>
+              <div>
+                <p className="font-medium text-gray-900">Nguyen Van B</p>
+                <p className="text-xs text-gray-500">nguyen.b@example.com</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-gray-500">Họ và tên</label>
+                <Input value="Nguyen Van B" readOnly />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">Email</label>
+                <Input value="nguyen.b@example.com" readOnly />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setProfileOpen(false)}>Đóng</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
