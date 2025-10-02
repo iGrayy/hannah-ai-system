@@ -20,7 +20,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
   const facultyNavItems = [
     { id: "responses", label: "Quản lý phản hồi" },
     { id: "knowledge", label: "Kho tri thức" },
-    { id: "quality", label: "Đảm bảo chất lượng" },
+    { id: "quality", label: "Theo dõi tiến độ học tập" },
     { id: "students", label: "Theo dõi sinh viên" },
     { id: "dashboard", label: "Bảng điều khiển & Phân tích" },
   ]
