@@ -103,14 +103,6 @@ console.log(addFive(3)); // Output: 8`,
   },
 ]
 
-const quickActions = [
-  "Giải thích đoạn mã",
-  "Gỡ lỗi giúp tôi",
-  "Hỗ trợ dự án",
-  "Làm rõ bài tập",
-  "Thông tin học vụ",
-  "Thực hành tốt",
-]
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>(mockMessages)
@@ -377,22 +369,6 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Actions */}
-        <div className="px-4 py-2 border-t border-gray-100">
-          <div className="flex gap-2 overflow-x-auto">
-            {quickActions.map((action, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                className="whitespace-nowrap text-xs"
-                onClick={() => setInputValue(action)}
-              >
-                {action}
-              </Button>
-            ))}
-          </div>
-        </div>
 
         {/* Code Snippet Input */}
         {showCodeInput && (
@@ -465,42 +441,41 @@ export function ChatInterface() {
 
         {/* Input Area */}
         <div className="p-4 border-t border-gray-200 bg-white">
-          <div className="flex items-end gap-3">
-            <div className="flex-1">
-              <Textarea
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Hỏi Hannah về lập trình, dự án, bài tập hoặc thông tin học vụ..."
-                className="min-h-[60px] max-h-32 resize-none"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    handleSendMessage()
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Button variant="outline" size="sm" title="Tải tệp lên">
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCodeInput(!showCodeInput)}
-                title="Chia sẻ đoạn mã"
-                className={showCodeInput ? "bg-blue-100 border-blue-300" : ""}
-              >
-                <Code className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim()}
-                className="bg-blue-500 hover:bg-blue-600"
-                title="Gửi tin nhắn"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+          <div className="max-w-6xl mx-auto">
+            <div className="relative">
+              <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Hỏi Hannah về lập trình, dự án, bài tập hoặc thông tin học vụ..."
+                  className="flex-1 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base placeholder:text-gray-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSendMessage()
+                    }
+                  }}
+                />
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    title="Tải tệp lên"
+                    className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700"
+                  >
+                    <Paperclip className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputValue.trim()}
+                    size="sm"
+                    className="h-8 w-8 p-0 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    title="Gửi tin nhắn"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

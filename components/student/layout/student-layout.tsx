@@ -142,7 +142,13 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
                 key={item.id}
                 variant={activeTab === item.id ? "default" : "ghost"}
                 className={`w-full ${isCollapsed ? 'justify-center px-2' : 'justify-start px-3'}`}
-                onClick={() => onTabChange(item.id)}
+                onClick={() => {
+                  onTabChange(item.id)
+                  // Dispatch custom event for learning chat navigation
+                  if (item.id === 'resources') {
+                    window.dispatchEvent(new CustomEvent('navigate-to-resources', { detail: 'resources' }))
+                  }
+                }}
               >
                 <item.icon className="h-4 w-4" />
                 {!isCollapsed && <span className="ml-2">{item.label}</span>}

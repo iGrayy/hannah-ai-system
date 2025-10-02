@@ -737,6 +737,7 @@ export function LearningResources() {
         topicId={activeTopic.id}
         topicTitle={activeTopic.title}
         onExit={() => setActiveTopic(null)}
+        onNavigateToResources={() => setActiveTopic(null)}
       />
     )
   }

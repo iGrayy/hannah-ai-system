@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { BookOpenCheck, CheckCircle2, Lock, MessageSquare, PlayCircle, Sparkles } from "lucide-react"
+import { BookOpenCheck, CheckCircle2, Lock, MessageSquare, PlayCircle, Sparkles, ChevronLeft, ChevronRight, GripVertical, FileText, Settings } from "lucide-react"
 import { IntroductionContent } from "./introduction-content"
 import { PDFModal } from "@/components/ui/pdf-modal"
 
@@ -41,6 +41,7 @@ export interface LearningChatProps {
   topicId: string
   topicTitle: string
   onExit?: () => void
+  onNavigateToResources?: () => void
 }
 
 const mockChapters: Chapter[] = [
@@ -88,7 +89,7 @@ const mockChapters: Chapter[] = [
   },
 ]
 
-export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningChatProps) {
+export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateToResources }: LearningChatProps) {
   const [activeChapterIndex, setActiveChapterIndex] = useState(0)
   const [activeSection, setActiveSection] = useState<string>("c1-doc")
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set(["c1"]))
@@ -100,9 +101,84 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
   const [qaInput, setQaInput] = useState("")
   const [qaTyping, setQaTyping] = useState(false)
   const [isPdfOpen, setIsPdfOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [panelWidths, setPanelWidths] = useState({ sidebar: 300, content: 600, chat: 300 })
+  const [isResizing, setIsResizing] = useState(false)
+  const [resizeStartX, setResizeStartX] = useState(0)
+  const [resizeStartWidths, setResizeStartWidths] = useState({ sidebar: 300, chat: 300 })
 
   const chapters = mockChapters
   const currentChapter = chapters[activeChapterIndex]
+
+  // Listen for navigation events from sidebar
+  useEffect(() => {
+    const handleNavigation = (event: CustomEvent) => {
+      if (event.detail === 'resources' && onNavigateToResources) {
+        onNavigateToResources()
+      }
+    }
+
+    window.addEventListener('navigate-to-resources', handleNavigation as EventListener)
+    return () => {
+      window.removeEventListener('navigate-to-resources', handleNavigation as EventListener)
+    }
+  }, [onNavigateToResources])
+
+  // Resize handlers
+  const handleMouseDown = (e: React.MouseEvent, panel: 'sidebar' | 'chat') => {
+    e.preventDefault()
+    setIsResizing(true)
+    setResizeStartX(e.clientX)
+    setResizeStartWidths({ sidebar: panelWidths.sidebar, chat: panelWidths.chat })
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      const containerWidth = window.innerWidth
+      const deltaX = e.clientX - resizeStartX
+      
+      if (panel === 'sidebar') {
+        const newSidebarWidth = resizeStartWidths.sidebar + deltaX
+        const minWidth = 200
+        const maxWidth = containerWidth * 0.5
+        const clampedSidebarWidth = Math.max(minWidth, Math.min(maxWidth, newSidebarWidth))
+        
+        const remainingWidth = containerWidth - clampedSidebarWidth - panelWidths.chat - 2
+        const minContentWidth = 400
+        
+        if (remainingWidth >= minContentWidth) {
+          setPanelWidths(prev => ({
+            ...prev,
+            sidebar: clampedSidebarWidth,
+            content: remainingWidth
+          }))
+        }
+      } else if (panel === 'chat') {
+        const newChatWidth = resizeStartWidths.chat - deltaX
+        const minWidth = 250
+        const maxWidth = containerWidth * 0.5
+        const clampedChatWidth = Math.max(minWidth, Math.min(maxWidth, newChatWidth))
+        
+        const remainingWidth = containerWidth - panelWidths.sidebar - clampedChatWidth - 2
+        const minContentWidth = 400
+        
+        if (remainingWidth >= minContentWidth) {
+          setPanelWidths(prev => ({
+            ...prev,
+            chat: clampedChatWidth,
+            content: remainingWidth
+          }))
+        }
+      }
+    }
+    
+    const handleMouseUp = () => {
+      setIsResizing(false)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
 
   const progressPercent = useMemo(() => {
     const totalSections = chapters.reduce((acc, chapter) => acc + chapter.sections.length, 0)
@@ -285,33 +361,51 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b p-4">
-        <div className="w-full flex items-center justify-between">
-          <div>
-             <h2 className="text-xl font-semibold text-gray-900">Môn học: JavaScript</h2>
-          </div>
-          <div className="flex items-center gap-2">
-            {onExit && (
-              <Button variant="outline" size="sm" onClick={onExit}>Quay lại</Button>
-            )}
-          </div>
-        </div>
+    <div className="h-screen w-screen flex flex-col bg-[#f3f3f3] overflow-hidden">
+      {/* Header - Keep visible */}
+      <div className="h-16 bg-white border-b border-[#e1e1e1] flex items-center px-4 flex-shrink-0">
+        <h1 className="text-lg font-semibold text-[#333333]">Learning Platform</h1>
       </div>
 
-      {/* 3 Columns */}
-      <div className="flex-1 grid grid-cols-12 auto-rows-fr gap-4 p-4 w-full">
-        {/* Left: Roadmap */}
-        <div className="col-span-12 lg:col-span-3 h-full">
-          <Card className="h-[calc(100vh-220px)] overflow-hidden flex flex-col">
-            <CardHeader>
-              <CardTitle className="text-base">Lộ trình học</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto">
-              <div className="mb-4">
-                <Progress value={progressPercent} />
-                <p className="text-xs text-gray-500 mt-1">Hoàn thành {progressPercent}%</p>
+      {/* VS Code Style Layout */}
+      <div className="flex-1 flex h-full overflow-hidden">
+        {/* Left: VS Code Style Sidebar */}
+        <div 
+          className="h-full transition-all duration-300 border-r border-[#e1e1e1]"
+          style={{ width: sidebarCollapsed ? '60px' : `${panelWidths.sidebar}px` }}
+        >
+          <div className="h-full bg-[#f3f3f3] overflow-hidden flex flex-col">
+            {/* VS Code Style Header */}
+            <div className="p-3 border-b border-[#e1e1e1] flex flex-row items-center justify-between bg-[#f3f3f3]">
+              {!sidebarCollapsed && (
+                <div className="flex items-center gap-2">
+                  <BookOpenCheck className="h-4 w-4 text-[#007acc]" />
+                  <span className="text-sm font-medium text-[#333333]">JavaScript</span>
+                </div>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="h-6 w-6 p-0 hover:bg-[#e1e1e1]"
+                title={sidebarCollapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
+              >
+                {sidebarCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+              </Button>
+            </div>
+            <div className={`flex-1 overflow-y-auto p-2 ${sidebarCollapsed ? 'hidden' : ''}`}>
+              
+              <div className="mb-4 p-2 bg-white rounded border border-[#e1e1e1]">
+                <div className="flex justify-between text-xs text-[#666666] mb-1">
+                  <span>Progress</span>
+                  <span>{progressPercent}%</span>
+                </div>
+                <div className="w-full bg-[#e1e1e1] rounded-full h-2">
+                  <div 
+                    className="bg-[#007acc] h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
+                  ></div>
+                </div>
               </div>
               <div className="space-y-1">
                 {chapters.map((ch, idx) => {
@@ -379,37 +473,95 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                   )
                 })}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-         {/* Middle: Document/Quiz Content */}
-         <div className="col-span-12 lg:col-span-6 h-full">
-          <Card className="h-[calc(100vh-220px)] flex flex-col overflow-hidden">
-            <CardHeader className="border-b flex-shrink-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-base">
-                    {(() => {
-                      const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
-                      return currentSection ? currentSection.title : "Chọn một mục để bắt đầu"
-                    })()}
-                  </CardTitle>
+            </div>
+            
+            {/* Collapsed Sidebar Content */}
+            {sidebarCollapsed && (
+              <div className="p-3 space-y-3">
+                <div className="text-center">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-2">JavaScript</h3>
+                  <div className="text-xs text-gray-500 mb-3">
+                    {progressPercent}% hoàn thành
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  {chapters.slice(0, 3).map((chapter, index) => {
+                    const chapterCompleted = chapter.sections.every(section => completedSections[section.id])
+                    const isActive = activeChapterIndex === index
+                    
+                    return (
+                      <div 
+                        key={chapter.id}
+                        className={`p-2 rounded-lg border cursor-pointer hover:shadow-sm transition-all ${
+                          isActive ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                        }`}
+                        onClick={() => setSidebarCollapsed(false)}
+                        title="Nhấp để mở rộng sidebar"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium text-gray-700">
+                            Chương {index + 1}
+                          </span>
+                          {chapterCompleted && (
+                            <CheckCircle2 className="h-3 w-3 text-green-600" />
+                          )}
+                        </div>
+                        {isActive && (
+                          <div className="mt-1 text-xs text-blue-600 font-medium">
+                            Đang học
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col pt-4 overflow-hidden">
+            )}
+          </div>
+        </div>
+
+        {/* Resize Handle */}
+        <div 
+          className="h-full w-1 cursor-col-resize hover:bg-[#007acc] transition-colors relative group"
+          onMouseDown={(e) => handleMouseDown(e, 'sidebar')}
+          style={{ cursor: isResizing ? 'col-resize' : 'col-resize' }}
+        >
+          <div className="absolute inset-0 w-2 -ml-0.5"></div>
+        </div>
+
+        {/* Middle: Clean Content Viewer */}
+        <div 
+          className="h-full transition-all duration-300 border-r border-[#e1e1e1]"
+          style={{ width: `${panelWidths.content}px` }}
+        >
+          <div className="h-full bg-[#f7f7f7] flex flex-col overflow-hidden">
+            {/* VS Code Style Header */}
+            <div className="p-3 border-b border-[#e1e1e1] flex-shrink-0 bg-[#f3f3f3]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BookOpenCheck className="h-4 w-4 text-[#007acc]" />
+                  <h3 className="text-sm font-medium text-[#333333]">
+                    {(() => {
+                      const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
+                      return currentSection ? currentSection.title : "Select a lesson to begin"
+                    })()}
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col p-4 overflow-hidden">
               <ScrollArea className="flex-1 min-h-0">
-                <div className="space-y-4 pr-4 pb-4">
+                <div className="space-y-4 pr-2 pb-4">
                   {(() => {
                     const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
                     
                     if (!currentSection) {
                       return (
-                        <div className="flex items-center justify-center text-gray-500 min-h-[400px]">
+                        <div className="flex items-center justify-center text-[#666666] min-h-[400px]">
                           <div className="text-center">
-                            <BookOpenCheck className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                            <p>Chọn một mục từ lộ trình học để bắt đầu</p>
+                            <BookOpenCheck className="h-12 w-12 mx-auto mb-4 text-[#cccccc]" />
+                            <p className="text-[#666666]">Select a lesson from the sidebar to begin</p>
                           </div>
                         </div>
                       )
@@ -418,21 +570,55 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                     if (currentSection.type === 'document') {
                       return (
                         <div className="space-y-4">
-                          <div className="flex justify-end">
-                            <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700" onClick={() => setIsPdfOpen(true)}>
-                              Xem tài liệu
-                            </Button>
+                          {/* Clean Content Cards */}
+                          <div className="bg-white rounded-lg border border-[#e1e1e1] p-6 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                              <h2 className="text-xl font-semibold text-[#333333]">Introduction to Computer Science</h2>
+                              <Button 
+                                size="sm" 
+                                className="bg-[#007acc] text-white hover:bg-[#005a9e] border-0" 
+                                onClick={() => setIsPdfOpen(true)}
+                              >
+                                View Document
+                              </Button>
+                            </div>
+                            
+                            <div className="prose prose-sm max-w-none">
+                              <p className="text-[#666666] mb-4">
+                                Welcome to the comprehensive introduction to Computer Science. This course covers fundamental concepts 
+                                that every software engineer should understand.
+                              </p>
+                              
+                              <div className="bg-[#f7f7f7] border-l-4 border-[#007acc] p-4 mb-4">
+                                <h3 className="text-sm font-semibold text-[#333333] mb-2">Learning Objectives</h3>
+                                <ul className="text-sm text-[#666666] space-y-1">
+                                  <li>• Understand basic computer science principles</li>
+                                  <li>• Learn fundamental programming concepts</li>
+                                  <li>• Explore data structures and algorithms</li>
+                                  <li>• Develop problem-solving skills</li>
+                                </ul>
+                              </div>
+                              
+                              <div className="bg-[#f7f7f7] border-l-4 border-[#28a745] p-4 mb-4">
+                                <h3 className="text-sm font-semibold text-[#333333] mb-2">Skills You'll Gain</h3>
+                                <div className="flex flex-wrap gap-2">
+                                  <span className="px-2 py-1 bg-[#e3f2fd] text-[#1976d2] text-xs rounded">Programming</span>
+                                  <span className="px-2 py-1 bg-[#e8f5e8] text-[#2e7d32] text-xs rounded">Algorithms</span>
+                                  <span className="px-2 py-1 bg-[#fff3e0] text-[#f57c00] text-xs rounded">Data Structures</span>
+                                  <span className="px-2 py-1 bg-[#fce4ec] text-[#c2185b] text-xs rounded">Problem Solving</span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          {/* Introduction Content */}
-                          <IntroductionContent />
                           
-                          {/* Complete Button */}
-                          <div className="pt-4 border-t">
+                          {/* Complete Button Card */}
+                          <div className="bg-white rounded-lg border border-[#e1e1e1] p-4 shadow-sm">
                             <Button 
-                              className="w-full"
+                              className="w-full bg-[#28a745] text-white hover:bg-[#218838] border-0"
                               onClick={() => handleCompleteSection(currentSection.id)}
                             >
-                              Hoàn thành
+                              <CheckCircle2 className="h-4 w-4 mr-2" />
+                              Mark as Complete
                             </Button>
                           </div>
                         </div>
@@ -441,7 +627,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                   // Quiz content
                   return (
                     <div className="space-y-4">
-                      <div className="rounded border p-3">
+                      <div className="bg-white rounded-lg border border-[#e1e1e1] p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium text-sm">Quiz kiểm tra</h4>
                           <div className="flex gap-2">
@@ -526,7 +712,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                   })()}
                 </div>
               </ScrollArea>
-            </CardContent>
+            </div>
             {/* PDF Modal (global for this card) */}
             <PDFModal
               src="/CSI_01.pdf"
@@ -534,55 +720,79 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
               isOpen={isPdfOpen}
               onClose={() => setIsPdfOpen(false)}
             />
-          </Card>
+          </div>
         </div>
 
-        {/* Right: Chat Input Only */}
-        <div className="col-span-12 lg:col-span-3 h-full">
-          <Card className="h-[calc(100vh-220px)] flex flex-col overflow-hidden">
-            <CardHeader className="border-b">
-              <CardTitle className="text-base">Trò chuyện với AI</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-3 pt-4 overflow-hidden">
-              <ScrollArea className="flex-1 rounded border p-3 bg-white h-full overflow-y-auto">
-                <div className="space-y-3">
+        {/* Invisible Resize Area */}
+        <div 
+          className="h-full w-1 cursor-col-resize hover:bg-gray-300 transition-colors"
+          onMouseDown={(e) => handleMouseDown(e, 'chat')}
+          style={{ cursor: isResizing ? 'col-resize' : 'default' }}
+        />
+
+        {/* Right: AI Chat Assistant */}
+        <div 
+          className="h-full transition-all duration-300"
+          style={{ width: `${panelWidths.chat}px` }}
+        >
+          <div className="h-full bg-[#f3f3f3] flex flex-col overflow-hidden">
+            {/* VS Code Style Header */}
+            <div className="p-3 border-b border-[#e1e1e1] bg-[#f3f3f3]">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-[#007acc]" />
+                <h3 className="text-sm font-medium text-[#333333]">AI Assistant</h3>
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col p-3 overflow-hidden">
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="space-y-3 pr-2">
                   {qaMessages.length === 0 && (
                     <div className="space-y-3">
-                      {/* Demo chat messages */}
-                      <div className="flex justify-start">
-                        <div className="max-w-[85%] flex items-start gap-2">
-                          <div className="rounded-2xl px-3 py-2 text-sm bg-gray-100 text-gray-900">
-                            Chào bạn! Tôi có thể giúp bạn hiểu rõ hơn về nội dung bài học. Bạn có câu hỏi gì không?
-                          </div>
+                      {/* Terminal-like AI messages */}
+                      <div className="bg-[#f7f7f7] border border-[#e1e1e1] rounded p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-[#28a745] rounded-full"></div>
+                          <span className="text-xs text-[#666666] font-mono">AI Assistant</span>
                         </div>
+                        <p className="text-sm text-[#333333]">
+                          Hello! I can help you understand the lesson content better. Do you have any questions?
+                        </p>
                       </div>
-                      <div className="flex justify-end">
-                        <div className="max-w-[85%] flex items-start gap-2 flex-row-reverse">
-                          <div className="rounded-2xl px-3 py-2 text-sm bg-purple-600 text-white">
-                            Khái niệm A là gì?
-                          </div>
+                      
+                      <div className="bg-[#007acc] text-white rounded p-3 ml-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <span className="text-xs font-mono opacity-75">You</span>
                         </div>
+                        <p className="text-sm">What is concept A?</p>
                       </div>
-                      <div className="flex justify-start">
-                        <div className="max-w-[85%] flex items-start gap-2">
-                          <div className="rounded-2xl px-3 py-2 text-sm bg-gray-100 text-gray-900">
-                            Khái niệm A là một phương pháp cơ bản giúp đơn giản hóa các bước xử lý phức tạp. Nó thường được sử dụng trong các tình huống cần tối ưu hóa quy trình.
-                          </div>
+                      
+                      <div className="bg-[#f7f7f7] border border-[#e1e1e1] rounded p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-[#28a745] rounded-full"></div>
+                          <span className="text-xs text-[#666666] font-mono">AI Assistant</span>
                         </div>
+                        <p className="text-sm text-[#333333]">
+                          Concept A is a fundamental method that helps simplify complex processing steps. It's commonly used in situations that require process optimization.
+                        </p>
                       </div>
-                      <div className="flex justify-end">
-                        <div className="max-w-[85%] flex items-start gap-2 flex-row-reverse">
-                          <div className="rounded-2xl px-3 py-2 text-sm bg-purple-600 text-white">
-                            Có ví dụ thực tế nào không?
-                          </div>
+                      
+                      <div className="bg-[#007acc] text-white rounded p-3 ml-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <span className="text-xs font-mono opacity-75">You</span>
                         </div>
+                        <p className="text-sm">Is there a real-world example?</p>
                       </div>
-                      <div className="flex justify-start">
-                        <div className="max-w-[85%] flex items-start gap-2">
-                          <div className="rounded-2xl px-3 py-2 text-sm bg-gray-100 text-gray-900">
-                            Ví dụ: Khi bạn cần sắp xếp một danh sách số, thay vì viết code phức tạp, bạn có thể sử dụng khái niệm A để đơn giản hóa thành một vài dòng code ngắn gọn.
-                          </div>
+                      
+                      <div className="bg-[#f7f7f7] border border-[#e1e1e1] rounded p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-[#28a745] rounded-full"></div>
+                          <span className="text-xs text-[#666666] font-mono">AI Assistant</span>
                         </div>
+                        <p className="text-sm text-[#333333]">
+                          Example: When you need to sort a list of numbers, instead of writing complex code, you can use concept A to simplify it into a few short lines of code.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -608,12 +818,12 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                   )}
                 </div>
               </ScrollArea>
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-2 p-3 bg-white border border-[#e1e1e1] rounded">
                 <Textarea
                   value={qaInput}
                   onChange={(e) => setQaInput(e.target.value)}
-                  placeholder="Hỏi bất kì điều gì về nội dung bài học..."
-                  className="min-h-[44px]"
+                  placeholder="Ask anything about the lesson content..."
+                  className="min-h-[40px] border-0 focus-visible:ring-0 resize-none text-sm"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
@@ -621,10 +831,17 @@ export function LearningChat({ subject, topicId, topicTitle, onExit }: LearningC
                     }
                   }}
                 />
-                <Button onClick={handleSubmitQA} disabled={!qaInput.trim()}><MessageSquare className="h-4 w-4 mr-1" />Gửi</Button>
+                <Button 
+                  onClick={handleSubmitQA} 
+                  disabled={!qaInput.trim()}
+                  size="sm"
+                  className="bg-[#007acc] text-white hover:bg-[#005a9e] border-0"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
