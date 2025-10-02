@@ -153,6 +153,9 @@ export function StudentLayout({
             </Button>
           </div>
 
+          {/* Divider between navigation group and chat history */}
+          <div className="border-t border-gray-200 my-2" />
+
           {/* Chat History Section */}
           {!isCollapsed && activeTab === "chat" && (
             <div className="flex-1 flex flex-col min-h-0">

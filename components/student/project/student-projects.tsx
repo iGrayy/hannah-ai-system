@@ -9,16 +9,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Search, Clock, Users, FolderPlus, Settings, Trash2 } from "lucide-react"
-
-type ProjectVisibility = "private" | "course" | "public"
+import { Plus, Search, Clock, FolderPlus, Settings, Trash2 } from "lucide-react"
 
 interface ProjectItem {
   id: string
   name: string
   description: string
-  visibility: ProjectVisibility
-  model: string
   updatedAt: string
 }
 
@@ -27,8 +23,6 @@ const initialProjects: ProjectItem[] = [
     id: "1",
     name: "Hannah AI",
     description: "Trợ lý học tập cho ngành Công nghệ phần mềm",
-    visibility: "private",
-    model: "Sonnet 4",
     updatedAt: "6 giờ trước",
   },
 ]
@@ -38,11 +32,12 @@ export function StudentProjects() {
   const [query, setQuery] = useState("")
   const [sort, setSort] = useState("activity")
   const [open, setOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [settingsName, setSettingsName] = useState("")
   const [draft, setDraft] = useState({
     name: "",
     description: "",
-    visibility: "private" as ProjectVisibility,
-    model: "Sonnet 4",
   })
 
   const filtered = useMemo(() => {
@@ -61,13 +56,30 @@ export function StudentProjects() {
       id: Date.now().toString(),
       name: draft.name.trim(),
       description: draft.description.trim(),
-      visibility: draft.visibility,
-      model: draft.model,
       updatedAt: "vừa tạo",
     }
     setProjects(prev => [item, ...prev])
     setOpen(false)
-    setDraft({ name: "", description: "", visibility: "private", model: "Sonnet 4" })
+    setDraft({ name: "", description: "" })
+  }
+
+  const openSettings = (projectId: string) => {
+    const proj = projects.find(p => p.id === projectId)
+    setSelectedProjectId(projectId)
+    setSettingsName(proj?.name || "")
+    setSettingsOpen(true)
+  }
+
+  const renameProject = () => {
+    if (!selectedProjectId) return
+    setProjects(prev => prev.map(p => p.id === selectedProjectId ? { ...p, name: settingsName.trim() || p.name } : p))
+    setSettingsOpen(false)
+  }
+
+  const deleteProject = () => {
+    if (!selectedProjectId) return
+    setProjects(prev => prev.filter(p => p.id !== selectedProjectId))
+    setSettingsOpen(false)
   }
 
   return (
@@ -116,19 +128,11 @@ export function StudentProjects() {
                     <Clock className="h-3.5 w-3.5" /> Cập nhật {p.updatedAt}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{p.model}</Badge>
-                  <Badge variant="secondary">
-                    {p.visibility === "private" ? "Riêng tư" : p.visibility === "course" ? "Trong lớp" : "Công khai"}
-                  </Badge>
-                </div>
+                
               </div>
               <div className="mt-3 flex items-center gap-2">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => openSettings(p.id)}>
                   <Settings className="h-4 w-4 mr-1" /> Cấu hình
-                </Button>
-                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
-                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
@@ -152,36 +156,34 @@ export function StudentProjects() {
               <Label htmlFor="desc">Mô tả</Label>
               <Textarea id="desc" rows={3} value={draft.description} onChange={e => setDraft(v => ({ ...v, description: e.target.value }))} placeholder="Mục tiêu, phạm vi, tài liệu sẽ tham chiếu..." />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Chế độ hiển thị</Label>
-                <Select value={draft.visibility} onValueChange={(v: ProjectVisibility) => setDraft(prev => ({ ...prev, visibility: v }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="private">Riêng tư</SelectItem>
-                    <SelectItem value="course">Trong lớp</SelectItem>
-                    <SelectItem value="public">Công khai</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Mô hình AI</Label>
-                <Select value={draft.model} onValueChange={(v) => setDraft(prev => ({ ...prev, model: v }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Sonnet 4">Sonnet 4</SelectItem>
-                    <SelectItem value="Haiku">Thơ Haiku</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setOpen(false)}>Hủy</Button>
               <Button onClick={createProject}>Tạo dự án</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Settings Dialog: rename or delete project */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cấu hình dự án</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="proj-name">Đặt lại tên dự án</Label>
+              <Input id="proj-name" value={settingsName} onChange={e => setSettingsName(e.target.value)} />
+            </div>
+            <div className="flex justify-between gap-2">
+              <Button variant="outline" onClick={() => setSettingsOpen(false)}>Đóng</Button>
+              <div className="flex gap-2">
+                <Button onClick={renameProject}>Lưu</Button>
+                <Button variant="destructive" onClick={deleteProject} className="gap-1">
+                  <Trash2 className="h-4 w-4" /> Xóa dự án
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
