@@ -192,7 +192,7 @@ Giảng viên`
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-7xl w-full h-[95vh] overflow-hidden flex flex-col p-0 gap-0 ">
+      <DialogContent className="max-w-[1600px] w-[1600px] h-[900px] overflow-hidden flex flex-col p-0 gap-0 ">
         {/* Mobile-First Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex-shrink-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

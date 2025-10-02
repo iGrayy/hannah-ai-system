@@ -66,6 +66,28 @@ export function ResponseDetailModal({
 
   if (!response) return null
 
+  const getConfidenceBadge = (confidence: number) => {
+    if (confidence >= 85) {
+      return (
+        <Badge variant="default" className="bg-green-600 text-white">
+          Chính xác
+        </Badge>
+      )
+    } else if (confidence >= 60) {
+      return (
+        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+          Cần chỉnh sửa
+        </Badge>
+      )
+    } else {
+      return (
+        <Badge variant="destructive">
+          Chưa chính xác
+        </Badge>
+      )
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
@@ -89,19 +111,6 @@ export function ResponseDetailModal({
             Đã từ chối
           </Badge>
         )
-      default:
-        return null
-    }
-  }
-
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return <Badge variant="destructive">Ưu tiên cao</Badge>
-      case "medium":
-        return <Badge variant="secondary">Ưu tiên trung bình</Badge>
-      case "low":
-        return <Badge variant="outline">Ưu tiên thấp</Badge>
       default:
         return null
     }
@@ -134,7 +143,8 @@ export function ResponseDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-[95vw] max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="!max-w-[60vw] !sm:max-w-[1200px]overflow-hidden flex flex-col">
+
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -163,7 +173,6 @@ export function ResponseDetailModal({
             </div>
             <div className="flex items-center gap-2">
               {getStatusBadge(response.status)}
-              {getPriorityBadge(response.priority)}
             </div>
           </div>
 
@@ -183,12 +192,9 @@ export function ResponseDetailModal({
             <Label className="text-base font-semibold flex items-center gap-2 mb-2">
               <MessageSquare className="h-4 w-4" />
               Phản hồi của Hannah AI
-              <Badge variant="outline" className="ml-2">
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Độ tin cậy {response.confidence}%
-              </Badge>
+              {getConfidenceBadge(response.confidence)}
             </Label>
-            
+
             {isEditing ? (
               <div className="space-y-3">
                 <Textarea
@@ -234,8 +240,9 @@ export function ResponseDetailModal({
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-slate-500" />
               <span className="text-sm">
-                <strong>Độ tin cậy:</strong> {response.confidence}%
+                <strong>Độ chính xác:</strong>
               </span>
+              {getConfidenceBadge(response.confidence)}
             </div>
           </div>
 

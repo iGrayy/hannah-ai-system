@@ -104,7 +104,7 @@ export function SimpleAdminLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="p-4">
             <h3 className="text-sm font-medium text-gray-500 mb-4">
-              {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Mô-đun Quản trị"}
+              {user?.role === "faculty" ? "Giảng viên" : "Mô-đun Quản trị"}
             </h3>
             <nav className="space-y-2">
               <Button variant="ghost" className="w-full justify-start">

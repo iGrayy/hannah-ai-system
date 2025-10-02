@@ -44,10 +44,8 @@ interface FAQ {
   category: string
   tags: string[]
   priority: number
-  isActive: boolean
   createdAt: string
   updatedAt: string
-  usageCount: number
 }
 
 const mockFAQs: FAQ[] = [
@@ -58,10 +56,8 @@ const mockFAQs: FAQ[] = [
     category: "Tài khoản",
     tags: ["mật khẩu", "đăng nhập", "tài khoản"],
     priority: 1,
-    isActive: true,
     createdAt: "2024-01-15",
     updatedAt: "2024-01-20",
-    usageCount: 45,
   },
   {
     id: "2",
@@ -70,10 +66,8 @@ const mockFAQs: FAQ[] = [
     category: "Kỹ thuật",
     tags: ["yêu cầu", "trình duyệt", "kỹ thuật"],
     priority: 2,
-    isActive: true,
     createdAt: "2024-01-10",
     updatedAt: "2024-01-18",
-    usageCount: 32,
   },
   {
     id: "3",
@@ -82,10 +76,8 @@ const mockFAQs: FAQ[] = [
     category: "Hỗ trợ",
     tags: ["hỗ trợ", "liên hệ", "trợ giúp"],
     priority: 1,
-    isActive: true,
     createdAt: "2024-01-12",
     updatedAt: "2024-01-22",
-    usageCount: 28,
   },
 ]
 
@@ -93,7 +85,6 @@ export function CustomFAQManagement() {
   const [faqs, setFaqs] = useState<FAQ[]>(mockFAQs)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterCategory, setFilterCategory] = useState("all")
-  const [filterStatus, setFilterStatus] = useState("all")
   const [isAddingFAQ, setIsAddingFAQ] = useState(false)
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null)
   const [newFAQ, setNewFAQ] = useState({
@@ -127,11 +118,8 @@ export function CustomFAQManagement() {
       faq.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     
     const matchesCategory = filterCategory === "all" || faq.category === filterCategory
-    const matchesStatus = filterStatus === "all" || 
-      (filterStatus === "active" && faq.isActive) ||
-      (filterStatus === "inactive" && !faq.isActive)
     
-    return matchesSearch && matchesCategory && matchesStatus
+    return matchesSearch && matchesCategory
   })
 
   const paginatedFAQs = filteredFAQs.slice(
@@ -148,10 +136,8 @@ export function CustomFAQManagement() {
         category: newFAQ.category || "Chung",
         tags: newFAQ.tags.split(",").map(tag => tag.trim()).filter(Boolean),
         priority: faqs.length + 1,
-        isActive: true,
         createdAt: new Date().toISOString().split('T')[0],
         updatedAt: new Date().toISOString().split('T')[0],
-        usageCount: 0,
       }
       setFaqs([...faqs, faq])
       setNewFAQ({ question: "", answer: "", category: "", tags: "" })
@@ -183,17 +169,13 @@ export function CustomFAQManagement() {
     }
   }
 
-  const handleToggleStatus = (id: string) => {
-    setFaqs(faqs.map(faq => 
-      faq.id === id ? { ...faq, isActive: !faq.isActive } : faq
-    ))
-  }
 
-  const handleBulkImport = (files: File[]) => {
-    // Simulate CSV import
-    console.log("Importing FAQ files:", files)
-    alert(`📁 Importing ${files.length} file(s). This feature will process CSV files with Question, Answer, Category, Tags columns.`)
-  }
+
+  // const handleBulkImport = (files: File[]) => {
+  //   // Simulate CSV import
+  //   console.log("Importing FAQ files:", files)
+  //   alert(`📁 Importing ${files.length} file(s). This feature will process CSV files with Question, Answer, Category, Tags columns.`)
+  // }
 
   const bulkActions = [
     commonBulkActions.delete((ids) => {
@@ -238,38 +220,6 @@ export function CustomFAQManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Quản lý FAQ tùy chỉnh</h1>
-          <p className="text-muted-foreground">Quản lý câu hỏi thường gặp và phản hồi tùy chỉnh</p>
-        </div>
-        <div className="flex gap-2">
-          <FileUpload
-            onFileSelect={handleBulkImport}
-            accept=".csv,.xlsx,.json"
-            multiple={false}
-            maxSize={5}
-          >
-            <Button variant="outline" size="sm">
-              <Upload className="h-4 w-4 mr-2" />
-              Nhập khẩu hàng loạt
-            </Button>
-          </FileUpload>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => alert("📊 Exporting all FAQs to CSV...")}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Xuất tất cả
-          </Button>
-          <Button size="sm" onClick={() => setIsAddingFAQ(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm FAQ
-          </Button>
-        </div>
-      </div>
 
       {/* Bulk Operations */}
       <BulkOperations
@@ -307,17 +257,19 @@ export function CustomFAQManagement() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Lọc theo trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                  <SelectItem value="active">Đang sử dụng</SelectItem>
-                  <SelectItem value="inactive">Tạm ẩn</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => alert("📊 Exporting all FAQs to CSV...")}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Xuất tất cả
+          </Button>
+          <Button size="sm" onClick={() => setIsAddingFAQ(true)}>
+            <Plus className="h-4 w-4" />
+            Thêm FAQ
+          </Button>
           </div>
         </CardContent>
       </Card>
@@ -342,8 +294,6 @@ export function CustomFAQManagement() {
                 <TableHead>Câu hỏi</TableHead>
                 <TableHead>Danh mục</TableHead>
                 <TableHead>Thẻ</TableHead>
-                <TableHead>Lượt dùng</TableHead>
-                <TableHead>Trạng thái</TableHead>
                 <TableHead>Thao tác</TableHead>
               </TableRow>
             </TableHeader>
@@ -381,14 +331,6 @@ export function CustomFAQManagement() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm font-medium">{faq.usageCount}</span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={faq.isActive ? "default" : "secondary"}>
-                      {faq.isActive ? "Đang sử dụng" : "Tạm ẩn"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"
@@ -396,13 +338,6 @@ export function CustomFAQManagement() {
                         onClick={() => handleEditFAQ(faq)}
                       >
                         <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleToggleStatus(faq.id)}
-                      >
-                        {faq.isActive ? <X className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                       <Button
                         variant="ghost"
@@ -433,7 +368,7 @@ export function CustomFAQManagement() {
 
       {/* Add FAQ Dialog */}
       <Dialog open={isAddingFAQ} onOpenChange={setIsAddingFAQ}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="!max-w-[50vw] !max-h-[900px] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Thêm FAQ mới</DialogTitle>
             <DialogDescription>Tạo câu hỏi thường gặp và câu trả lời mới</DialogDescription>
@@ -498,7 +433,7 @@ export function CustomFAQManagement() {
 
       {/* Edit FAQ Dialog */}
       <Dialog open={!!editingFAQ} onOpenChange={() => setEditingFAQ(null)}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="!max-w-[1600px] !w-[1600px] !max-h-[900px] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Chỉnh sửa FAQ</DialogTitle>
             <DialogDescription>Cập nhật câu hỏi thường gặp và câu trả lời</DialogDescription>

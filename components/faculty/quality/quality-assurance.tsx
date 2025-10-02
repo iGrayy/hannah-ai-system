@@ -342,7 +342,7 @@ export function QualityAssurance() {
 
       {/* Conversation Detail Modal */}
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
-        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
+        <DialogContent className="max-w-[1600px] w-[1600px] h-[900px] overflow-hidden flex flex-col p-0 gap-0">
           {selectedConversation && (
             <>
               {/* Modal Header */}

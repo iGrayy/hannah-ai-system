@@ -3,233 +3,258 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { KnowledgeItemDetailModal } from "./knowledge-item-detail-modal"
-import { MultimediaKnowledgeBase } from "./multimedia-knowledge-base"
-import { RichTextEditorWithPreview } from "@/components/ui/rich-text-editor"
-import { FileUpload } from "@/components/ui/file-upload"
-import { BulkOperations, useBulkSelection, BulkSelectionCheckbox, commonBulkActions } from "@/components/ui/bulk-operations"
-import { DataTablePagination, usePagination } from "@/components/ui/data-table-pagination"
+import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
-  BookOpen,
-  Plus,
-  Search,
-  Edit,
-  Trash2,
-  Upload,
-  Eye,
-  Folder,
   FileText,
-  ImageIcon,
-  Video,
-  File,
+  PlaySquare,
+  FileImage,
+  Sparkles,
+  Search,
+  Plus,
+  Edit,
+  Eye,
+  Download,
+  Upload,
+  Tag,
+  Calendar,
+  User,
+  BookOpen,
+  FolderTree,
+  GitCommit,
+  History,
+  Rocket,
+  Play,
+  Pause,
+  Volume2,
+  Maximize,
+  ZoomIn,
+  ZoomOut,
+  ChevronLeft,
   ChevronRight,
-  ChevronDown,
-  Save,
-  X,
+  ExternalLink,
 } from "lucide-react"
 
-interface KnowledgeItem {
+interface MediaContent {
   id: string
   title: string
-  content: string
+  description: string
+  type: "article" | "pdf" | "interactive"
   category: string
   tags: string[]
-  type: "text" | "image" | "video" | "pdf" | "document" | "link"
-  status: "draft" | "published" | "archived"
+  status: "draft" | "published"
   author: string
   createdAt: string
   updatedAt: string
-  views: number
-  rating: number
+  content?: string
+  mediaUrl?: string
+  thumbnailUrl?: string
+  chapters?: { title: string; startTime: number }[]
+  transcriptUrl?: string
+  embedUrl?: string
+  fileSize?: string
+  duration?: string
+  pageCount?: number
+  editHistory?: EditHistoryItem[]
+  editCount?: number
 }
 
-interface Category {
+interface EditHistoryItem {
   id: string
-  name: string
-  description: string
-  itemCount: number
-  children?: Category[]
+  editedBy: string
+  editedAt: string
+  changes: string
+  version: number
 }
 
-const mockCategories: Category[] = [
+const mockMediaContent: MediaContent[] = [
   {
-    id: "1",
-    name: "Cấu trúc dữ liệu & Giải thuật",
-    description: "Các khái niệm CS cốt lõi",
-    itemCount: 45,
-    children: [
-      { id: "1-1", name: "Mảng & Danh sách", description: "", itemCount: 12 },
-      { id: "1-2", name: "Cây & Đồ thị", description: "", itemCount: 18 },
-      { id: "1-3", name: "Sắp xếp & Tìm kiếm", description: "", itemCount: 15 },
-    ],
-  },
-  {
-    id: "2",
-    name: "Lập trình Hướng đối tượng",
-    description: "Nguyên lý và mẫu OOP",
-    itemCount: 32,
-    children: [
-      { id: "2-1", name: "Kế thừa", description: "", itemCount: 8 },
-      { id: "2-2", name: "Đa hình", description: "", itemCount: 10 },
-      { id: "2-3", name: "Mẫu thiết kế", description: "", itemCount: 14 },
-    ],
-  },
-  {
-    id: "3",
-    name: "Hệ quản trị CSDL",
-    description: "Thiết kế và quản lý CSDL",
-    itemCount: 28,
-    children: [
-      { id: "3-1", name: "Nền tảng SQL", description: "", itemCount: 15 },
-      { id: "3-2", name: "Thiết kế CSDL", description: "", itemCount: 13 },
-    ],
-  },
-]
-
-const mockKnowledgeItems: KnowledgeItem[] = [
-  {
-    id: "1",
-    title: "Giới thiệu về Cây tìm kiếm nhị phân",
-    content:
-      "A binary search tree (BST) is a hierarchical data structure that maintains sorted data in a way that allows for efficient insertion, deletion, and lookup operations. BSTs provide O(log n) average time complexity for search, insert, and delete operations when the tree is balanced.",
-    category: "Cấu trúc dữ liệu & Giải thuật",
-    tags: ["BST", "Cây", "Tìm kiếm"],
-    type: "text",
+    id: "kb-2",
+    title: "Faculty User Manual",
+    description: "Comprehensive guide for faculty members",
+    type: "pdf",
+    category: "Documentation",
+    tags: ["manual", "faculty", "guide"],
     status: "published",
-    author: "TS. Nguyễn",
+    author: "Tech Team",
     createdAt: "2024-01-10",
-    updatedAt: "2024-01-15",
-    views: 1250,
-    rating: 4.8
+    updatedAt: "2024-01-18",
+    mediaUrl: "/docs/faculty-manual.pdf",
+    fileSize: "2.5 MB",
+    pageCount: 45,
+    editCount: 3,
+    editHistory: [
+      {
+        id: "edit1",
+        editedBy: "Admin",
+        editedAt: "2024-01-20T10:30:00Z",
+        changes: "Cập nhật thông tin về tính năng mới trong phần quản lý điểm",
+        version: 3
+      },
+      {
+        id: "edit2",
+        editedBy: "Trần Thị B",
+        editedAt: "2024-01-18T14:15:00Z",
+        changes: "Sửa lỗi chính tả và cập nhật hình ảnh giao diện",
+        version: 2
+      },
+      {
+        id: "edit3",
+        editedBy: "Admin",
+        editedAt: "2024-01-15T09:00:00Z",
+        changes: "Tạo tài liệu ban đầu",
+        version: 1
+      }
+    ]
   },
   {
-    id: "2",
-    title: "Tính kế thừa trong Java",
-    content:
-      "Inheritance is a fundamental concept in object-oriented programming that allows a class to inherit properties and methods from another class. This mechanism promotes code reusability and establishes a hierarchical relationship between classes.",
-    category: "Lập trình Hướng đối tượng",
-    tags: ["Java", "Inheritance", "OOP"],
-    type: "document",
+    id: "kb-3",
+    title: "Interactive System Demo",
+    description: "Live demonstration of system features",
+    type: "interactive",
+    category: "Demo",
+    tags: ["demo", "interactive", "features"],
     status: "published",
-    author: "Prof. Tran",
+    author: "Demo Team",
     createdAt: "2024-01-12",
-    updatedAt: "2024-01-14",
-    views: 890,
-    rating: 4.6
+    updatedAt: "2024-01-22",
+    embedUrl: "https://demo.hannah.edu/interactive",
+    thumbnailUrl: "/thumbnails/demo.jpg"
   },
   {
-    id: "3",
-    title: "Các phép JOIN trong SQL",
-    content:
-      "SQL JOIN operations are used to combine rows from two or more tables based on a related column between them. Understanding different types of JOINs (INNER, LEFT, RIGHT, FULL OUTER) is crucial for effective database querying.",
-    category: "Hệ quản trị CSDL",
-    tags: ["SQL", "JOIN", "CSDL"],
-    type: "video",
+    id: "kb-4",
+    title: "Best Practices Guide",
+    description: "Article on best practices for using Hannah AI effectively",
+    type: "article",
+    category: "Best Practices",
+    tags: ["best-practices", "tips", "guide"],
     status: "draft",
-    author: "Dr. Le",
-    createdAt: "2024-01-13",
-    updatedAt: "2024-01-13",
-    views: 456,
-    rating: 4.2
-  },
+    author: "Dr. Johnson",
+    createdAt: "2024-01-20",
+    updatedAt: "2024-01-22",
+    content: "# Best Practices for Hannah AI\n\nThis guide covers the most effective ways to use Hannah AI..."
+  }
 ]
 
-export function KnowledgeBase() {
-  // Use the new multimedia knowledge base
-  return <MultimediaKnowledgeBase />
-}
-
-export function KnowledgeBaseOld() {
-  const [knowledgeItems, setKnowledgeItems] = useState<KnowledgeItem[]>(mockKnowledgeItems)
-  const [categories, setCategories] = useState<Category[]>(mockCategories)
-  const [selectedCategory, setSelectedCategory] = useState<string>("all")
+export function MultimediaKnowledgeBase() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["1", "2", "3"]))
-  const [editingItem, setEditingItem] = useState<KnowledgeItem | null>(null)
-  const [isAddingNew, setIsAddingNew] = useState(false)
-  const [detailModalOpen, setDetailModalOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState<KnowledgeItem | null>(null)
-
-  const filteredItems = knowledgeItems.filter((item) => {
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    return matchesCategory && matchesSearch
-  })
-
-  const toggleCategory = (categoryId: string) => {
-    const newExpanded = new Set(expandedCategories)
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId)
-    } else {
-      newExpanded.add(categoryId)
-    }
-    setExpandedCategories(newExpanded)
-  }
+  const [selectedType, setSelectedType] = useState<string>("all")
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [selectedContent, setSelectedContent] = useState<MediaContent | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [showEditHistory, setShowEditHistory] = useState(false)
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "text":
-        return <FileText className="h-4 w-4" />
-      case "image":
-        return <ImageIcon className="h-4 w-4" />
-      case "video":
-        return <Video className="h-4 w-4" />
-      case "pdf":
-        return <File className="h-4 w-4" />
-      default:
-        return <FileText className="h-4 w-4" />
+      case "pdf": return <FileImage className="h-5 w-5 text-rose-600" />
+      case "interactive": return <Sparkles className="h-5 w-5 text-cyan-600" />
+      default: return <FileText className="h-5 w-5 text-slate-600" />
     }
   }
 
   const getStatusBadge = (status: string) => {
     return status === "published" ? (
-      <Badge variant="default" className="bg-green-600">
-        Đã xuất bản
+      <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
+        <Rocket className="h-3 w-3 mr-1" />
+        Published
       </Badge>
     ) : (
-      <Badge variant="secondary">Nháp</Badge>
+      <Badge variant="secondary" className="bg-amber-100 text-amber-700 border-amber-200">
+        <GitCommit className="h-3 w-3 mr-1" />
+        Draft
+      </Badge>
     )
   }
 
-  const renderCategoryTree = (categories: Category[], level = 0) => {
-    return categories.map((category) => (
-      <div key={category.id} className={`${level > 0 ? "ml-4" : ""}`}>
-        <div
-          className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer"
-          onClick={() => {
-            if (category.children) {
-              toggleCategory(category.id)
-            }
-            setSelectedCategory(category.name)
-          }}
-        >
-          {category.children &&
-            (expandedCategories.has(category.id) ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            ))}
-          <Folder className="h-4 w-4 text-blue-500" />
-          <span className="text-sm font-medium">{category.name}</span>
-          <Badge variant="outline" className="ml-auto text-xs">
-            {category.itemCount}
-          </Badge>
-        </div>
-        {category.children && expandedCategories.has(category.id) && (
-          <div className="mt-1">{renderCategoryTree(category.children, level + 1)}</div>
-        )}
-      </div>
-    ))
+  const filteredContent = mockMediaContent.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+
+    const matchesType = selectedType === "all" || item.type === selectedType
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory
+
+    return matchesSearch && matchesType && matchesCategory
+  })
+
+  const categories = Array.from(new Set(mockMediaContent.map(item => item.category)))
+
+  const renderMediaViewer = (content: MediaContent) => {
+    switch (content.type) {
+
+      case "pdf":
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline">
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">Page 1 of {content.pageCount}</span>
+                <Button size="sm" variant="outline">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline">
+                  <ZoomOut className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">100%</span>
+                <Button size="sm" variant="outline">
+                  <ZoomIn className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="outline">
+                  <Download className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="border rounded-lg bg-white min-h-[600px] flex items-center justify-center">
+              <div className="text-center text-muted-foreground">
+                <FileImage className="h-16 w-16 mx-auto mb-4" />
+                <p>PDF Viewer Placeholder</p>
+                <p className="text-sm">File size: {content.fileSize}</p>
+              </div>
+            </div>
+          </div>
+        )
+
+      case "interactive":
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium">Interactive Content</h3>
+              <Button size="sm" variant="outline">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Open in New Tab
+              </Button>
+            </div>
+
+            <div className="border rounded-lg bg-muted min-h-[500px] flex items-center justify-center">
+              <div className="text-center text-muted-foreground">
+                <Sparkles className="h-16 w-16 mx-auto mb-4" />
+                <p>Interactive Embed Placeholder</p>
+                <p className="text-sm">URL: {content.embedUrl}</p>
+              </div>
+            </div>
+          </div>
+        )
+
+      default:
+        return (
+          <div className="prose max-w-none">
+            <div className="whitespace-pre-wrap">{content.content}</div>
+          </div>
+        )
+    }
   }
 
   return (
@@ -237,300 +262,376 @@ export function KnowledgeBaseOld() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Quản lý kho tri thức</h1>
-          <p className="text-muted-foreground">Quản lý nội dung và tài nguyên cho hệ thống tri thức của Hannah</p>
+          <h1 className="text-3xl font-bold">Kho tri thức</h1>
+          <p className="text-muted-foreground">Quản lý nội dung đa phương tiện</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => alert("📁 Chức năng import hàng loạt từ file Excel/CSV sẽ được triển khai sau!")}
-          >
-            <Upload className="h-4 w-4 mr-2" />
-            Nhập khẩu hàng loạt
-          </Button>
-          <Button size="sm" onClick={() => setIsAddingNew(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Thêm nội dung
-          </Button>
-        </div>
+
+        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Tạo nội dung mới
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Tạo nội dung mới</DialogTitle>
+            </DialogHeader>
+            <CreateContentForm onClose={() => setIsCreateModalOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Category Tree Sidebar */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Folder className="h-5 w-5" />
-              Danh mục
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-96">
-              <div className="space-y-1">
-                <div
-                  className={`flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer ${selectedCategory === "all" ? "bg-accent" : ""}`}
-                  onClick={() => setSelectedCategory("all")}
-                >
-                  <BookOpen className="h-4 w-4" />
-                  <span className="text-sm font-medium">Tất cả</span>
-                  <Badge variant="outline" className="ml-auto text-xs">
-                    {knowledgeItems.length}
-                  </Badge>
-                </div>
-                {renderCategoryTree(categories)}
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex-1 min-w-64">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm kiếm nội dung..."
+                  className="pl-10"
+                />
               </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+            </div>
 
-        {/* Main Content Area */}
-        <div className="lg:col-span-3 space-y-6">
-          {/* Search and Filters */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="Tìm nội dung, thẻ hoặc tác giả..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Loại nội dung" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="article">Bài viết</SelectItem>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="interactive">Tương tác</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Danh mục" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                {categories.map(category => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredContent.map((content) => (
+          <Card key={content.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2">
+                  {getTypeIcon(content.type)}
+                  <CardTitle className="text-sm line-clamp-2">{content.title}</CardTitle>
                 </div>
-                <Select>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Lọc theo loại" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="text">Văn bản</SelectItem>
-                    <SelectItem value="image">Hình ảnh</SelectItem>
-                    <SelectItem value="video">Video</SelectItem>
-                    <SelectItem value="pdf">PDF</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Lọc theo trạng thái" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="published">Đã xuất bản</SelectItem>
-                    <SelectItem value="draft">Nháp</SelectItem>
-                  </SelectContent>
-                </Select>
+                {getStatusBadge(content.status)}
+              </div>
+            </CardHeader>
+
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                {content.description}
+              </p>
+
+              <div className="flex flex-wrap gap-1 mb-3">
+                {content.tags.slice(0, 3).map(tag => (
+                  <Badge key={tag} variant="outline" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+                {content.tags.length > 3 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{content.tags.length - 3}
+                  </Badge>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <User className="h-3 w-3" />
+                  {content.author}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {content.updatedAt}
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setSelectedContent(content)}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Xem
+                </Button>
+                <Button size="sm" variant="outline">
+                  <Edit className="h-4 w-4" />
+                </Button>
               </div>
             </CardContent>
           </Card>
+        ))}
+      </div>
 
-          {/* Content List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                Danh sách nội dung ({filteredItems.length})
-                {selectedCategory !== "all" && (
-                  <span className="text-base font-normal text-muted-foreground ml-2">trong {selectedCategory}</span>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {filteredItems.map((item) => (
-                  <div key={item.id} className="border rounded-lg p-4 hover:bg-accent/50 transition-colors">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          {getTypeIcon(item.type)}
-                          <h3 className="font-semibold">{item.title}</h3>
-                          {getStatusBadge(item.status)}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.content}</p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <span>Tác giả {item.author}</span>
-                          <span>Cập nhật {item.updatedAt}</span>
-                          <div className="flex gap-1">
-                            {item.tags.map((tag) => (
-                              <Badge key={tag} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex gap-1 ml-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedItem(item)
-                            setDetailModalOpen(true)
-                          }}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setEditingItem(item)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700"
-                          onClick={() => {
-                            if (confirm(`Bạn có chắc chắn muốn xóa "${item.title}"?`)) {
-                              alert(`🗑️ Đã xóa "${item.title}" khỏi knowledge base`)
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+      {/* Content Viewer Modal */}
+      {selectedContent && (
+        <Dialog open={!!selectedContent} onOpenChange={() => setSelectedContent(null)}>
+          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-hidden flex flex-col">
+            <DialogHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {getTypeIcon(selectedContent.type)}
+                  <DialogTitle>{selectedContent.title}</DialogTitle>
+                  {getStatusBadge(selectedContent.status)}
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Chỉnh sửa
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowEditHistory(true)}
+                  >
+                    <History className="h-4 w-4 mr-2" />
+                    Lịch sử
+                  </Button>
+                </div>
+              </div>
+
+              {/* Content Info */}
+              <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <GitCommit className="h-4 w-4" />
+                  <span>Số lần chỉnh sửa: {selectedContent.editCount || 0}</span>
+                </div>
+                <div>Tác giả: {selectedContent.author}</div>
+                <div>Cập nhật: {new Date(selectedContent.updatedAt).toLocaleDateString('vi-VN')}</div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedContent.tags.map(tag => (
+                  <Badge key={tag} variant="outline">{tag}</Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-auto">
+              {renderMediaViewer(selectedContent)}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Edit History Modal */}
+      {showEditHistory && selectedContent && (
+        <Dialog open={showEditHistory} onOpenChange={setShowEditHistory}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Lịch sử chỉnh sửa - {selectedContent.title}
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {selectedContent.editHistory && selectedContent.editHistory.length > 0 ? (
+                selectedContent.editHistory.map((edit, index) => (
+                  <div key={edit.id} className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">Phiên bản {edit.version}</Badge>
+                        <span className="text-sm font-medium">{edit.editedBy}</span>
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date(edit.editedAt).toLocaleString('vi-VN')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">{edit.changes}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <History className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>Chưa có lịch sử chỉnh sửa</p>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  )
+}
+
+export default MultimediaKnowledgeBase
+
+function CreateContentForm({ onClose }: { onClose: () => void }) {
+  const [contentType, setContentType] = useState<string>("article")
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+
+  // Available tags
+  const availableTags = [
+    "manual", "faculty", "guide", "demo", "interactive", "features",
+    "best-practices", "tips", "tutorial", "documentation", "getting-started",
+    "advanced", "beginner", "video", "pdf", "article", "faq", "help",
+    "system", "integration", "api", "ui", "ux", "design", "development"
+  ]
+
+  const handleTagSelect = (tag: string) => {
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags([...selectedTags, tag])
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove))
+  }
+
+  return (
+    <Tabs value={contentType} onValueChange={setContentType} className="space-y-4">
+      <TabsList className="grid w-full grid-cols-3">
+        <TabsTrigger value="article" className="flex items-center gap-2">
+          <FileText className="h-4 w-4" />
+          Bài viết
+        </TabsTrigger>
+        <TabsTrigger value="pdf" className="flex items-center gap-2">
+          <FileImage className="h-4 w-4" />
+          PDF
+        </TabsTrigger>
+        <TabsTrigger value="interactive" className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4" />
+          Tương tác
+        </TabsTrigger>
+      </TabsList>
+
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="title">Tiêu đề</Label>
+            <Input id="title" placeholder="Nhập tiêu đề..." />
+          </div>
+          <div>
+            <Label htmlFor="category">Danh mục</Label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn danh mục" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="getting-started">Getting Started</SelectItem>
+                <SelectItem value="documentation">Documentation</SelectItem>
+                <SelectItem value="demo">Demo</SelectItem>
+                <SelectItem value="best-practices">Best Practices</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="description">Mô tả</Label>
+          <Textarea id="description" placeholder="Mô tả ngắn gọn về nội dung..." />
+        </div>
+
+        <div>
+          <Label htmlFor="tags">Tags</Label>
+          <Select onValueChange={handleTagSelect}>
+            <SelectTrigger>
+              <SelectValue placeholder="Chọn tags..." />
+            </SelectTrigger>
+            <SelectContent>
+              {availableTags.map(tag => (
+                <SelectItem
+                  key={tag}
+                  value={tag}
+                  disabled={selectedTags.includes(tag)}
+                >
+                  {tag}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Display selected tags */}
+          {selectedTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {selectedTags.map(tag => (
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => removeTag(tag)}
+                >
+                  {tag}
+                  <span className="ml-1 text-xs">×</span>
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <TabsContent value="article" className="space-y-4">
+          <div>
+            <Label htmlFor="content">Nội dung</Label>
+            <Textarea id="content" rows={8} placeholder="Nhập nội dung bài viết..." />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pdf" className="space-y-4">
+          <div>
+            <Label htmlFor="pdf-upload">Upload PDF</Label>
+            <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+              <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Kéa thả file PDF hoặc click để chọn</p>
+              <p className="text-xs text-muted-foreground mt-1">Hỗ trợ PDF (tối đa 50MB)</p>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="interactive" className="space-y-4">
+          <div>
+            <Label htmlFor="embed-url">Embed URL</Label>
+            <Input id="embed-url" placeholder="https://..." />
+          </div>
+          <div>
+            <Label htmlFor="embed-type">Loại embed</Label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn loại" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="codepen">CodePen</SelectItem>
+                <SelectItem value="jsfiddle">JSFiddle</SelectItem>
+                <SelectItem value="diagram">Diagram</SelectItem>
+                <SelectItem value="other">Khác</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </TabsContent>
+
+        <div className="flex justify-end gap-2 pt-4">
+          <Button variant="outline" onClick={onClose}>
+            Hủy
+          </Button>
+          <Button>
+            Tạo nội dung
+          </Button>
         </div>
       </div>
-
-      {/* Add/Edit Content Dialog */}
-      <Dialog
-        open={isAddingNew || editingItem !== null}
-        onOpenChange={(open) => {
-          if (!open) {
-            setIsAddingNew(false)
-            setEditingItem(null)
-          }
-        }}
-      >
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingItem ? "Chỉnh sửa nội dung" : "Thêm nội dung mới"}</DialogTitle>
-            <DialogDescription>
-              {editingItem ? "Cập nhật thông tin nội dung" : "Tạo nội dung mới cho kho tri thức"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <Tabs defaultValue="content" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="content">Nội dung</TabsTrigger>
-              <TabsTrigger value="metadata">Siêu dữ liệu</TabsTrigger>
-              <TabsTrigger value="preview">Xem trước</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="content" className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Tiêu đề</label>
-                <Input placeholder="Nhập tiêu đề nội dung..." defaultValue={editingItem?.title || ""} />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Nội dung</label>
-                <Textarea
-                  placeholder="Nhập nội dung tại đây... (Hỗ trợ Markdown)"
-                  className="min-h-64"
-                  defaultValue={editingItem?.content || ""}
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="metadata" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Danh mục</label>
-                  <Select defaultValue={editingItem?.category || ""}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn danh mục" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.name}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Loại nội dung</label>
-                  <Select defaultValue={editingItem?.type || "text"}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn loại" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="text">Văn bản</SelectItem>
-                      <SelectItem value="image">Hình ảnh</SelectItem>
-                      <SelectItem value="video">Video</SelectItem>
-                      <SelectItem value="pdf">PDF</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Thẻ</label>
-                <Input
-                  placeholder="Nhập thẻ, cách nhau bởi dấu phẩy..."
-                  defaultValue={editingItem?.tags.join(", ") || ""}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Trạng thái</label>
-                <Select defaultValue={editingItem?.status || "draft"}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn trạng thái" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Nháp</SelectItem>
-                    <SelectItem value="published">Đã xuất bản</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="preview" className="space-y-4">
-              <div className="border rounded-lg p-4 bg-muted/20">
-                <h3 className="font-semibold mb-2">Xem trước</h3>
-                <p className="text-sm text-muted-foreground">Bản xem trước nội dung sẽ hiển thị tại đây...</p>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsAddingNew(false)
-                setEditingItem(null)
-              }}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Hủy
-            </Button>
-            <Button>
-              <Save className="h-4 w-4 mr-2" />
-              {editingItem ? "Cập nhật" : "Tạo mới"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Knowledge Item Detail Modal */}
-      <KnowledgeItemDetailModal
-        item={selectedItem}
-        open={detailModalOpen}
-        onOpenChange={setDetailModalOpen}
-        onSave={(item) => {
-          // Update item in real app
-          console.log("Saving item:", item)
-        }}
-        onDelete={(id) => {
-          // Delete item in real app
-          console.log("Deleting item:", id)
-        }}
-      />
-    </div>
+    </Tabs>
   )
 }

@@ -315,6 +315,28 @@ export function ResponseManagement() {
     }),
   ]
 
+  const getConfidenceBadge = (confidence: number) => {
+    if (confidence >= 85) {
+      return (
+        <Badge variant="default" className="bg-green-600 text-white">
+          Chính xác
+        </Badge>
+      )
+    } else if (confidence >= 60) {
+      return (
+        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+          Cần chỉnh sửa
+        </Badge>
+      )
+    } else {
+      return (
+        <Badge variant="destructive">
+          Chưa chính xác
+        </Badge>
+      )
+    }
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
@@ -343,30 +365,6 @@ export function ResponseManagement() {
     }
   }
 
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return (
-          <Badge variant="destructive" className="text-xs">
-            Cao
-          </Badge>
-        )
-      case "medium":
-        return (
-          <Badge variant="secondary" className="text-xs">
-            Trung bình
-          </Badge>
-        )
-      case "low":
-        return (
-          <Badge variant="outline" className="text-xs">
-            Thấp
-          </Badge>
-        )
-      default:
-        return null
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -458,7 +456,6 @@ export function ResponseManagement() {
                 <TableHead>Sinh viên</TableHead>
                 <TableHead>Câu hỏi</TableHead>
                 <TableHead>Độ tin cậy</TableHead>
-                <TableHead>Ưu tiên</TableHead>
                 <TableHead>Thời gian</TableHead>
                 <TableHead>Trạng thái</TableHead>
                 <TableHead>Thao tác</TableHead>
@@ -500,17 +497,8 @@ export function ResponseManagement() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-12 h-2 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all"
-                          style={{ width: `${response.confidence}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-medium">{response.confidence}%</span>
-                    </div>
+                    {getConfidenceBadge(response.confidence)}
                   </TableCell>
-                  <TableCell>{getPriorityBadge(response.priority)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{response.date}</TableCell>
                   <TableCell>{getStatusBadge(response.status)}</TableCell>
                   <TableCell>
@@ -567,12 +555,12 @@ export function ResponseManagement() {
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm font-medium">Pending</span>
+              <span className="text-sm font-medium">Chờ phê duyệt</span>
             </div>
             <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.status === "pending").length}</p>
           </CardContent>
@@ -595,16 +583,6 @@ export function ResponseManagement() {
               <span className="text-sm font-medium">Đã từ chối</span>
             </div>
             <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.status === "rejected").length}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">Ưu tiên cao</span>
-            </div>
-            <p className="text-2xl font-bold mt-2">{responses.filter((r) => r.priority === "high").length}</p>
           </CardContent>
         </Card>
       </div>
@@ -718,7 +696,7 @@ export function ResponseManagement() {
 
           {/* Feedback Dialog */}
           <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
-            <DialogContent>
+            <DialogContent className="!max-w-[1400px] !w-[1400px]">
               <DialogHeader>
                 <DialogTitle>Thêm nhận xét</DialogTitle>
                 <DialogDescription>Ghi chú để bổ sung dữ liệu hoặc báo cáo cho Quản trị viên.</DialogDescription>

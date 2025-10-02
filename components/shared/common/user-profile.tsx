@@ -176,7 +176,7 @@ export function UserProfile() {
               <TabsTrigger value="personal">Thông tin</TabsTrigger>
               <TabsTrigger value="security">Bảo mật</TabsTrigger>
               <TabsTrigger value="notifications">Thông báo</TabsTrigger>
-              <TabsTrigger value="achievements">Thành tích</TabsTrigger>
+              {/* <TabsTrigger value="achievements">Thành tích</TabsTrigger> */}
             </TabsList>
 
             <TabsContent value="personal" className="space-y-4">
@@ -347,27 +347,7 @@ export function UserProfile() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">Báo cáo hàng tuần</h3>
-                      <p className="text-sm text-slate-600">Tóm tắt hoạt động hàng tuần</p>
-                    </div>
-                    <Switch
-                      checked={notifications.weeklyReports}
-                      onCheckedChange={(checked) => handleNotificationChange('weeklyReports', checked)}
-                    />
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">Cảnh báo hệ thống</h3>
-                      <p className="text-sm text-slate-600">Thông báo về sự cố hệ thống</p>
-                    </div>
-                    <Switch
-                      checked={notifications.systemAlerts}
-                      onCheckedChange={(checked) => handleNotificationChange('systemAlerts', checked)}
-                    />
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
