@@ -117,28 +117,6 @@ export function ChatInterface() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const lastUserMessageRef = useRef<string>("")
   const [flagOpen, setFlagOpen] = useState(false)
-  // Sidebar resizer state
-  const [sidebarWidth, setSidebarWidth] = useState(320)
-  const [isResizing, setIsResizing] = useState(false)
-  const handleResizeMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsResizing(true)
-    const startX = e.clientX
-    const startWidth = sidebarWidth
-    const onMove = (ev: MouseEvent) => {
-      const delta = ev.clientX - startX
-      const next = Math.max(220, Math.min(560, startWidth + delta))
-      setSidebarWidth(next)
-    }
-    const onUp = () => {
-      setIsResizing(false)
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-    }
-    document.addEventListener('mousemove', onMove, { passive: true })
-    document.addEventListener('mouseup', onUp)
-  }
   const [renameOpen, setRenameOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const [renameValue, setRenameValue] = useState("")
@@ -151,6 +129,82 @@ export function ChatInterface() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Render chat history in sidebar
+  useEffect(() => {
+    const container = document.getElementById('chat-history-container')
+    if (!container) return
+
+    const renderChatHistory = () => {
+      container.innerHTML = sessions.map((session) => `
+        <div class="p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 rounded-md ${
+          selectedSession === session.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+        }" data-session-id="${session.id}">
+          <div class="grid grid-cols-[1fr_auto] items-center gap-2">
+            <div class="min-w-0">
+              <h4 class="font-medium text-gray-900 truncate text-sm">${session.title}</h4>
+              <p class="text-xs text-gray-500 truncate mt-1">${session.lastMessage}</p>
+              <p class="text-xs text-gray-400 mt-1">${formatTime(session.timestamp)}</p>
+            </div>
+            <div class="flex items-center gap-2 ml-2 justify-end w-10">
+              ${session.unread > 0 ? `<span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 gap-1 border-transparent bg-blue-500 text-white text-xs">${session.unread}</span>` : ''}
+              <button type="button" aria-label="Tùy chọn" class="h-6 w-6 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground" data-session-menu="${session.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('')
+
+      // Add new chat button
+      container.innerHTML += `
+        <div class="p-3 border-t border-gray-200 mt-2">
+          <button class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-md px-3 py-2 text-sm font-medium flex items-center justify-center gap-2" id="new-chat-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10"></polygon></svg>
+            Cuộc trò chuyện mới
+          </button>
+        </div>
+      `
+    }
+
+    renderChatHistory()
+
+    // Add event listeners
+    const handleSessionClick = (e: Event) => {
+      const target = e.target as HTMLElement
+      const sessionDiv = target.closest('[data-session-id]') as HTMLElement
+      if (sessionDiv) {
+        const sessionId = sessionDiv.getAttribute('data-session-id')
+        if (sessionId) {
+          setSelectedSession(sessionId)
+        }
+      }
+    }
+
+    const handleNewChat = () => {
+      const id = Date.now().toString()
+      const newSession: ChatSession = {
+        id,
+        title: `Cuộc trò chuyện mới`,
+        lastMessage: "",
+        timestamp: new Date(),
+        unread: 0,
+      }
+      setSessions(prev => [newSession, ...prev])
+      setSelectedSession(id)
+      setMessages([])
+      setIsTyping(false)
+    }
+
+    container.addEventListener('click', handleSessionClick)
+    const newChatBtn = document.getElementById('new-chat-btn')
+    newChatBtn?.addEventListener('click', handleNewChat)
+
+    return () => {
+      container.removeEventListener('click', handleSessionClick)
+      newChatBtn?.removeEventListener('click', handleNewChat)
+    }
+  }, [sessions, selectedSession])
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return
@@ -215,133 +269,6 @@ export function ChatInterface() {
 
   return (
     <div className="flex h-full bg-white">
-      {/* Chat Sessions Sidebar */}
-      <div
-        className="border-r border-gray-200 flex flex-col"
-        style={{ width: `${sidebarWidth}px`, transition: isResizing ? 'none' : 'width 0.2s ease-out' }}
-      >
-        {/* Sessions Header */}
-        <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Lịch sử cuộc trò chuyện</h3>
-        </div>
-
-        {/* Sessions List */}
-        <div className="flex-1 overflow-y-auto">
-          {sessions.map((session) => (
-            <div
-              key={session.id}
-              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-                selectedSession === session.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-              }`}
-              onClick={() => setSelectedSession(session.id)}
-            >
-              <div className="grid grid-cols-[1fr_auto] items-center gap-2">
-                <div className="min-w-0">
-                  <h4 className="font-medium text-gray-900 truncate">{session.title}</h4>
-                  <p className="text-sm text-gray-500 truncate mt-1">{session.lastMessage}</p>
-                  <p className="text-xs text-gray-400 mt-1">{formatTime(session.timestamp)}</p>
-                </div>
-                <div className="flex items-center gap-2 ml-2 justify-end w-10">
-                  {session.unread > 0 && (
-                    <Badge className="bg-blue-500 text-white text-xs">
-                      {session.unread}
-                    </Badge>
-                  )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label="Tùy chọn"
-                        className="h-6 w-6 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 z-50">
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation()
-                      setRenameValue(session.title)
-                      setSelectedSession(session.id)
-                      setRenameOpen(true)
-                    }}>
-                      <Pencil className="h-4 w-4 mr-2" />
-                      Sửa tên 
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setFlagOpen(true) }}>
-                      <Flag className="h-4 w-4 mr-2" />
-                      Gắn cờ
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setShareOpen(true) }}>
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Chia sẻ
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="text-red-600 focus:text-red-600"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        const ok = confirm('Xóa cuộc trò chuyện này?')
-                        if (!ok) return
-                        setSessions(prev => prev.filter(s => s.id !== session.id))
-                        if (selectedSession === session.id) {
-                          // Switch to first remaining session (if any) and clear messages
-                          setTimeout(() => {
-                            setSelectedSession((next) => {
-                              const remaining = sessions.filter(s => s.id !== session.id)
-                              const newActive = remaining[0]?.id || ''
-                              setMessages([])
-                              setIsTyping(false)
-                              return newActive
-                            })
-                          }, 0)
-                        }
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Xóa
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* New Chat Button */}
-        <div className="p-4 border-t border-gray-200">
-          <Button
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-            onClick={() => {
-              const id = Date.now().toString()
-              const newSession: ChatSession = {
-                id,
-                title: `Cuộc trò chuyện mới`,
-                lastMessage: "",
-                timestamp: new Date(),
-                unread: 0,
-              }
-              setSessions(prev => [newSession, ...prev])
-              setSelectedSession(id)
-              setMessages([])
-              setIsTyping(false)
-            }}
-          >
-            <Zap className="h-4 w-4 mr-2" />
-            Cuộc trò chuyện mới
-          </Button>
-        </div>
-      </div>
-
-      {/* Resize Handle */}
-      <div
-        className="h-full w-2 cursor-col-resize hover:bg-gray-200"
-        onMouseDown={handleResizeMouseDown}
-        style={{ transition: 'background-color 0.15s ease' }}
-        aria-label="Resize sidebar"
-      />
-
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
 
@@ -559,6 +486,7 @@ export function ChatInterface() {
           </div>
         </div>
       </div>
+
       <Dialog open={flagOpen} onOpenChange={setFlagOpen}>
         <DialogContent>
           <DialogHeader>

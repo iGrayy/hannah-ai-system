@@ -95,9 +95,10 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
         <div className="border-b border-gray-200" />
 
         {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-2">
-            {navigationItems.map((item) => (
+        <nav className="flex-1 p-4 flex flex-col">
+          {/* Main Navigation Items */}
+          <div className="space-y-2 mb-4">
+            {navigationItems.slice(0, 2).map((item) => (
               <Button
                 key={item.id}
                 variant={activeTab === item.id ? "default" : "ghost"}
@@ -115,6 +116,32 @@ export function StudentLayout({ children, activeTab, onTabChange }: StudentLayou
               </Button>
             ))}
           </div>
+
+          {/* Projects Section */}
+          <div className="mb-4">
+            <Button
+              variant={activeTab === "projects" ? "default" : "ghost"}
+              className={`w-full ${isCollapsed ? 'justify-center px-2' : 'justify-start px-3'}`}
+              onClick={() => onTabChange("projects")}
+            >
+              <FolderPlus className="h-4 w-4" />
+              {!isCollapsed && <span className="ml-2">Dự án</span>}
+            </Button>
+          </div>
+
+          {/* Chat History Section */}
+          {!isCollapsed && activeTab === "chat" && (
+            <div className="flex-1 flex flex-col min-h-0">
+              <div className="mb-2">
+                <h4 className="text-sm font-medium text-gray-700 px-3">Lịch sử trò chuyện</h4>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <div id="chat-history-container" className="space-y-1">
+                  {/* Chat history will be rendered here by ChatInterface */}
+                </div>
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* Footer removed per request */}
