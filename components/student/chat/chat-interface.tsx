@@ -11,9 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Send,
-  Paperclip,
   Code,
-  Smile,
   Share2,
   Flag,
   MoreVertical,
@@ -21,6 +19,8 @@ import {
   Clock,
   CheckCircle,
   Trash2,
+  Plus,
+  Pencil,
 } from "lucide-react"
 
 interface Message {
@@ -103,16 +103,9 @@ console.log(addFive(3)); // Output: 8`,
   },
 ]
 
-const quickActions = [
-  "Giải thích đoạn mã",
-  "Gỡ lỗi giúp tôi",
-  "Hỗ trợ dự án",
-  "Làm rõ bài tập",
-  "Thông tin học vụ",
-  "Thực hành tốt",
-]
 
 export function ChatInterface() {
+  const [sessions, setSessions] = useState<ChatSession[]>(mockSessions)
   const [messages, setMessages] = useState<Message[]>(mockMessages)
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
@@ -121,8 +114,35 @@ export function ChatInterface() {
   const [codeSnippet, setCodeSnippet] = useState("")
   const [codeLanguage, setCodeLanguage] = useState("javascript")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const lastUserMessageRef = useRef<string>("")
   const [flagOpen, setFlagOpen] = useState(false)
+  // Sidebar resizer state
+  const [sidebarWidth, setSidebarWidth] = useState(320)
+  const [isResizing, setIsResizing] = useState(false)
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsResizing(true)
+    const startX = e.clientX
+    const startWidth = sidebarWidth
+    const onMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX
+      const next = Math.max(220, Math.min(560, startWidth + delta))
+      setSidebarWidth(next)
+    }
+    const onUp = () => {
+      setIsResizing(false)
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+    document.addEventListener('mousemove', onMove, { passive: true })
+    document.addEventListener('mouseup', onUp)
+  }
+  const [renameOpen, setRenameOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [renameValue, setRenameValue] = useState("")
+  const [profileOpen, setProfileOpen] = useState(false)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -144,6 +164,8 @@ export function ChatInterface() {
     }
 
     setMessages(prev => [...prev, newMessage])
+    // Update session preview
+    setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, lastMessage: newMessage.content, timestamp: new Date(), unread: 0 }) : s))
     setInputValue("")
     lastUserMessageRef.current = newMessage.content
     
@@ -158,6 +180,8 @@ export function ChatInterface() {
         type: "text",
       }
       setMessages(prev => [...prev, hannahResponse])
+      // Update session preview to latest assistant response
+      setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, lastMessage: hannahResponse.content, timestamp: new Date() }) : s))
       setIsTyping(false)
     }, 2000)
   }
@@ -192,16 +216,18 @@ export function ChatInterface() {
   return (
     <div className="flex h-full bg-white">
       {/* Chat Sessions Sidebar */}
-      <div className="w-80 border-r border-gray-200 flex flex-col">
+      <div
+        className="border-r border-gray-200 flex flex-col"
+        style={{ width: `${sidebarWidth}px`, transition: isResizing ? 'none' : 'width 0.2s ease-out' }}
+      >
         {/* Sessions Header */}
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Cuộc trò chuyện</h3>
-          <p className="text-sm text-gray-500">Lịch sử chat của bạn với Hannah</p>
+          <h3 className="font-semibold text-gray-900">Lịch sử cuộc trò chuyện</h3>
         </div>
 
         {/* Sessions List */}
         <div className="flex-1 overflow-y-auto">
-          {mockSessions.map((session) => (
+          {sessions.map((session) => (
             <div
               key={session.id}
               className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
@@ -223,34 +249,59 @@ export function ChatInterface() {
                   )}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                      <button
+                        type="button"
                         onClick={(e) => e.stopPropagation()}
                         aria-label="Tùy chọn"
-                        className="h-6 w-6 p-0"
+                        className="h-6 w-6 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
                       >
                         <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 z-50">
-                      <DropdownMenuItem onClick={() => alert('🔗 Chia sẻ cuộc trò chuyện (mô phỏng)')}>
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Chia sẻ
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => {
-                        const newName = prompt('Đổi tên cuộc trò chuyện:', session.title)
-                        if (newName) alert('✅ Đã đổi tên (mô phỏng) thành: ' + newName)
-                      }}>
-                        <Smile className="h-4 w-4 mr-2" />
-                        Đổi tên
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => confirm('Xóa cuộc trò chuyện này? (mô phỏng)') && alert('🗑️ Đã xóa (mô phỏng)')} className="text-red-600 focus:text-red-600">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Xóa
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
+                  <DropdownMenuContent align="end" className="w-48 z-50">
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation()
+                      setRenameValue(session.title)
+                      setSelectedSession(session.id)
+                      setRenameOpen(true)
+                    }}>
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Sửa tên 
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setFlagOpen(true) }}>
+                      <Flag className="h-4 w-4 mr-2" />
+                      Gắn cờ
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setShareOpen(true) }}>
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Chia sẻ
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const ok = confirm('Xóa cuộc trò chuyện này?')
+                        if (!ok) return
+                        setSessions(prev => prev.filter(s => s.id !== session.id))
+                        if (selectedSession === session.id) {
+                          // Switch to first remaining session (if any) and clear messages
+                          setTimeout(() => {
+                            setSelectedSession((next) => {
+                              const remaining = sessions.filter(s => s.id !== session.id)
+                              const newActive = remaining[0]?.id || ''
+                              setMessages([])
+                              setIsTyping(false)
+                              return newActive
+                            })
+                          }, 0)
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Xóa
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
               </div>
@@ -260,46 +311,49 @@ export function ChatInterface() {
 
         {/* New Chat Button */}
         <div className="p-4 border-t border-gray-200">
-          <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+          <Button
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            onClick={() => {
+              const id = Date.now().toString()
+              const newSession: ChatSession = {
+                id,
+                title: `Cuộc trò chuyện mới`,
+                lastMessage: "",
+                timestamp: new Date(),
+                unread: 0,
+              }
+              setSessions(prev => [newSession, ...prev])
+              setSelectedSession(id)
+              setMessages([])
+              setIsTyping(false)
+            }}
+          >
             <Zap className="h-4 w-4 mr-2" />
             Cuộc trò chuyện mới
           </Button>
         </div>
       </div>
 
+      {/* Resize Handle */}
+      <div
+        className="h-full w-2 cursor-col-resize hover:bg-gray-200"
+        onMouseDown={handleResizeMouseDown}
+        style={{ transition: 'background-color 0.15s ease' }}
+        aria-label="Resize sidebar"
+      />
+
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat Header */}
-        <div className="p-4 border-b border-gray-200 bg-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="/hannah-avatar.png" />
-                <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  H
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-gray-900">Hannah AI</h3>
-                <div className="flex items-center gap-1">
-                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-500">Trực tuyến</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" onClick={() => alert('🔗 Chia sẻ đoạn chat (mô phỏng)')} title="Chia sẻ">
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setFlagOpen(true)} title="Đánh dấu cần can thiệp">
-                <Flag className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center text-gray-500 min-h-[200px]">
+              <div className="text-center">
+                <p className="text-sm">Chào mừng trở lại! Hannah có thể giúp gì cho bạn hôm nay?</p>
+              </div>
+            </div>
+          )}
           {messages.map((message) => (
             <div
               key={message.id}
@@ -309,9 +363,6 @@ export function ChatInterface() {
                 {message.sender === 'hannah' && (
                   <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarImage src="/hannah-avatar.png" />
-                    <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm">
-                      H
-                    </AvatarFallback>
                   </Avatar>
                 )}
                 
@@ -356,9 +407,6 @@ export function ChatInterface() {
               <div className="flex gap-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/hannah-avatar.png" />
-                  <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm">
-                    H
-                  </AvatarFallback>
                 </Avatar>
                 <div className="bg-gray-100 rounded-2xl px-4 py-2">
                   <div className="flex items-center gap-1">
@@ -377,22 +425,6 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Actions */}
-        <div className="px-4 py-2 border-t border-gray-100">
-          <div className="flex gap-2 overflow-x-auto">
-            {quickActions.map((action, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                className="whitespace-nowrap text-xs"
-                onClick={() => setInputValue(action)}
-              >
-                {action}
-              </Button>
-            ))}
-          </div>
-        </div>
 
         {/* Code Snippet Input */}
         {showCodeInput && (
@@ -465,42 +497,64 @@ export function ChatInterface() {
 
         {/* Input Area */}
         <div className="p-4 border-t border-gray-200 bg-white">
-          <div className="flex items-end gap-3">
-            <div className="flex-1">
-              <Textarea
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Hỏi Hannah về lập trình, dự án, bài tập hoặc thông tin học vụ..."
-                className="min-h-[60px] max-h-32 resize-none"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    handleSendMessage()
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Button variant="outline" size="sm" title="Tải tệp lên">
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCodeInput(!showCodeInput)}
-                title="Chia sẻ đoạn mã"
-                className={showCodeInput ? "bg-blue-100 border-blue-300" : ""}
-              >
-                <Code className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim()}
-                className="bg-blue-500 hover:bg-blue-600"
-                title="Gửi tin nhắn"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+          <div className="w-full">
+            <div className="relative">
+              <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                {/* Plus button like ChatGPT */}
+                <button
+                  type="button"
+                  className="h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                  title="Thêm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    const message: Message = {
+                      id: Date.now().toString(),
+                      content: `📎 ${file.name} (${Math.round(file.size / 1024)} KB)` ,
+                      sender: "user",
+                      timestamp: new Date(),
+                      type: "text",
+                    }
+                    setMessages(prev => [...prev, message])
+                    setTimeout(() => {
+                      setMessages(prev => [...prev, { id: (Date.now()+1).toString(), content: "Đã nhận tệp. Mình sẽ xử lý nội dung tệp này! (demo)", sender: "hannah", timestamp: new Date(), type: "text" }])
+                    }, 800)
+                    // reset so selecting same file again still fires change
+                    e.currentTarget.value = ""
+                  }}
+                />
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Hỏi Hannah về lập trình, dự án, bài tập hoặc thông tin học vụ..."
+                  className="flex-1 border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base placeholder:text-gray-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSendMessage()
+                    }
+                  }}
+                />
+                <div className="flex items-center gap-1">
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputValue.trim()}
+                    size="sm"
+                    className="h-8 w-8 p-0 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    title="Gửi tin nhắn"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -522,7 +576,7 @@ export function ChatInterface() {
                 const conversation = {
                   id: `${selectedSession}-${Date.now()}`,
                   sessionId: selectedSession,
-                  title: (mockSessions.find((s: ChatSession) => s.id === selectedSession)?.title) || 'Cuộc trò chuyện',
+                  title: (sessions.find((s: ChatSession) => s.id === selectedSession)?.title) || 'Cuộc trò chuyện',
                   flaggedAt: new Date().toISOString(),
                   messages,
                 }
@@ -532,6 +586,79 @@ export function ChatInterface() {
               } catch {}
               setFlagOpen(false)
             }}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rename dialog */}
+      <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đổi tên cuộc trò chuyện</DialogTitle>
+            <DialogDescription>Nhập tên mới cho cuộc trò chuyện.</DialogDescription>
+          </DialogHeader>
+          <Input
+            value={renameValue}
+            onChange={(e) => setRenameValue(e.target.value)}
+            placeholder="Tên mới"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setRenameOpen(false)}>Hủy</Button>
+            <Button onClick={() => {
+              const name = renameValue.trim()
+              if (!name) return setRenameOpen(false)
+              setSessions(prev => prev.map(s => s.id === selectedSession ? ({ ...s, title: name }) : s))
+              setRenameOpen(false)
+            }}>Lưu</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share dialog */}
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chia sẻ cuộc trò chuyện</DialogTitle>
+            <DialogDescription>Đây là liên kết chia sẻ (demo). Bạn có thể sao chép để gửi cho người khác.</DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Input readOnly value={`https://hannah.ai/share/${selectedSession}`} />
+            <Button onClick={() => { navigator.clipboard?.writeText(`https://hannah.ai/share/${selectedSession}`); alert('📋 Đã sao chép liên kết (demo)') }}>Sao chép</Button>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShareOpen(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hồ sơ cá nhân (Cài đặt) */}
+      <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Hồ sơ cá nhân</DialogTitle>
+            <DialogDescription>Thông tin tài khoản của bạn (demo).</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 text-gray-700 text-sm font-medium">NB</span>
+              <div>
+                <p className="font-medium text-gray-900">Nguyen Van B</p>
+                <p className="text-xs text-gray-500">nguyen.b@example.com</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-gray-500">Họ và tên</label>
+                <Input value="Nguyen Van B" readOnly />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">Email</label>
+                <Input value="nguyen.b@example.com" readOnly />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setProfileOpen(false)}>Đóng</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
