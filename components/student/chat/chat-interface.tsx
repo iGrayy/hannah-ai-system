@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   Send,
   Code,
-  Smile,
   Share2,
   Flag,
   MoreVertical,
@@ -21,6 +20,7 @@ import {
   CheckCircle,
   Trash2,
   Plus,
+  Pencil,
 } from "lucide-react"
 
 interface Message {
@@ -116,6 +116,31 @@ export function ChatInterface() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const lastUserMessageRef = useRef<string>("")
   const [flagOpen, setFlagOpen] = useState(false)
+  // Sidebar resizer state
+  const [sidebarWidth, setSidebarWidth] = useState(320)
+  const [isResizing, setIsResizing] = useState(false)
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsResizing(true)
+    const startX = e.clientX
+    const startWidth = sidebarWidth
+    const onMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX
+      const next = Math.max(220, Math.min(560, startWidth + delta))
+      setSidebarWidth(next)
+    }
+    const onUp = () => {
+      setIsResizing(false)
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+    document.addEventListener('mousemove', onMove, { passive: true })
+    document.addEventListener('mouseup', onUp)
+  }
+  const [renameOpen, setRenameOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [renameValue, setRenameValue] = useState("")
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -185,11 +210,13 @@ export function ChatInterface() {
   return (
     <div className="flex h-full bg-white">
       {/* Chat Sessions Sidebar */}
-      <div className="w-80 border-r border-gray-200 flex flex-col">
+      <div
+        className="border-r border-gray-200 flex flex-col"
+        style={{ width: `${sidebarWidth}px`, transition: isResizing ? 'none' : 'width 0.2s ease-out' }}
+      >
         {/* Sessions Header */}
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Cuộc trò chuyện</h3>
-          <p className="text-sm text-gray-500">Lịch sử chat của bạn với Hannah</p>
+          <h3 className="font-semibold text-gray-900">Lịch sử cuộc trò chuyện</h3>
         </div>
 
         {/* Sessions List */}
@@ -216,34 +243,34 @@ export function ChatInterface() {
                   )}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                      <button
+                        type="button"
                         onClick={(e) => e.stopPropagation()}
                         aria-label="Tùy chọn"
-                        className="h-6 w-6 p-0"
+                        className="h-6 w-6 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
                       >
                         <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 z-50">
-                      <DropdownMenuItem onClick={() => alert('🔗 Chia sẻ cuộc trò chuyện (mô phỏng)')}>
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Chia sẻ
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => {
-                        const newName = prompt('Đổi tên cuộc trò chuyện:', session.title)
-                        if (newName) alert('✅ Đã đổi tên (mô phỏng) thành: ' + newName)
-                      }}>
-                        <Smile className="h-4 w-4 mr-2" />
-                        Đổi tên
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => confirm('Xóa cuộc trò chuyện này? (mô phỏng)') && alert('🗑️ Đã xóa (mô phỏng)')} className="text-red-600 focus:text-red-600">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Xóa
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
+                  <DropdownMenuContent align="end" className="w-48 z-50">
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation()
+                      setRenameValue(session.title)
+                      setSelectedSession(session.id)
+                      setRenameOpen(true)
+                    }}>
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Sửa tên 
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setFlagOpen(true) }}>
+                      <Flag className="h-4 w-4 mr-2" />
+                      Gắn cờ
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setShareOpen(true) }}>
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Chia sẻ
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
               </div>
@@ -259,6 +286,14 @@ export function ChatInterface() {
           </Button>
         </div>
       </div>
+
+      {/* Resize Handle */}
+      <div
+        className="h-full w-2 cursor-col-resize hover:bg-gray-200"
+        onMouseDown={handleResizeMouseDown}
+        style={{ transition: 'background-color 0.15s ease' }}
+        aria-label="Resize sidebar"
+      />
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
@@ -498,6 +533,46 @@ export function ChatInterface() {
               } catch {}
               setFlagOpen(false)
             }}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rename dialog */}
+      <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đổi tên cuộc trò chuyện</DialogTitle>
+            <DialogDescription>Nhập tên mới cho cuộc trò chuyện.</DialogDescription>
+          </DialogHeader>
+          <Input
+            value={renameValue}
+            onChange={(e) => setRenameValue(e.target.value)}
+            placeholder="Tên mới"
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setRenameOpen(false)}>Hủy</Button>
+            <Button onClick={() => {
+              if (!renameValue.trim()) return setRenameOpen(false)
+              alert(`✅ Đã đổi tên (demo) thành: ${renameValue.trim()}`)
+              setRenameOpen(false)
+            }}>Lưu</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share dialog */}
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chia sẻ cuộc trò chuyện</DialogTitle>
+            <DialogDescription>Đây là liên kết chia sẻ (demo). Bạn có thể sao chép để gửi cho người khác.</DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Input readOnly value={`https://hannah.ai/share/${selectedSession}`} />
+            <Button onClick={() => { navigator.clipboard?.writeText(`https://hannah.ai/share/${selectedSession}`); alert('📋 Đã sao chép liên kết (demo)') }}>Sao chép</Button>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShareOpen(false)}>Đóng</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
