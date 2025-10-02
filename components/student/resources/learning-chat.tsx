@@ -104,6 +104,10 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [panelWidths, setPanelWidths] = useState({ sidebar: 300, content: 600, chat: 300 })
   const [isResizing, setIsResizing] = useState(false)
+  const [pdfPage, setPdfPage] = useState(1)
+  const [pdfZoom, setPdfZoom] = useState(100)
+  const [pdfBookmarks, setPdfBookmarks] = useState<string[]>([])
+  const [pdfNotes, setPdfNotes] = useState<{[key: number]: string}>({})
 
   const chapters = mockChapters
   const currentChapter = chapters[activeChapterIndex]
@@ -449,7 +453,6 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                                 </svg>
                               </div>
                             </div>
-                            <p className="text-sm text-gray-500 mt-1 leading-relaxed">{ch.summary}</p>
                           </div>
                         </div>
                       </button>
@@ -564,20 +567,6 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
           }}
         >
           <div className="h-full bg-[#ffffff] flex flex-col overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
-            {/* Cursor Light-style Header */}
-            <div className="p-3 border-b border-[#e1e1e1] flex-shrink-0 bg-[#f3f3f3]">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <BookOpenCheck className="h-4 w-4 text-[#007acc]" />
-                  <h3 className="text-sm font-medium text-[#333333]">
-                    {(() => {
-                      const currentSection = chapters[activeChapterIndex]?.sections.find(s => s.id === activeSection)
-                      return currentSection ? currentSection.title : "Select a lesson to begin"
-                    })()}
-                  </h3>
-                </div>
-              </div>
-            </div>
             <div className="flex-1 flex flex-col p-4 overflow-hidden">
               <ScrollArea className="flex-1 min-h-0">
                 <div className="space-y-4 pr-2 pb-4">
@@ -598,23 +587,28 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                     if (currentSection.type === 'document') {
                       return (
                         <div className="space-y-6">
-                          {/* Title and Action Button */}
-                          <div className="flex items-center justify-between">
+                          {/* Title */}
+                          <div>
                             <h2 className="text-2xl font-bold text-[#333333]">Introduction to Computer Science</h2>
-                            <Button 
-                              size="sm" 
-                              className="bg-[#007acc] text-white hover:bg-[#005a9e] border-0" 
-                              onClick={() => setIsPdfOpen(true)}
-                            >
-                              View Document
-                            </Button>
                           </div>
                           
-                          {/* Description */}
-                          <p className="text-[#666666] text-lg leading-relaxed">
-                            Welcome to the comprehensive introduction to Computer Science. This course covers fundamental concepts 
-                            that every software engineer should understand.
-                          </p>
+                          
+                          {/* Integrated PDF Viewer */}
+                          <div className="bg-white border border-[#e1e1e1] rounded-lg shadow-sm">
+                            
+                            
+                            {/* PDF Content Area */}
+                            <div className="relative">
+                              <div className="h-[70vh] border-b border-[#e1e1e1] overflow-hidden">
+                                <iframe
+                                  src={`/CSI_01.pdf#toolbar=1&navpanes=1&scrollbar=1&page=${pdfPage}&view=FitH&zoom=${pdfZoom}`}
+                                  className="w-full h-full border-0"
+                                  title="CSI_01.pdf - Phần I. Introduction"
+                                />
+                              </div>
+                              
+                            </div>
+                          </div>
                           
                           {/* Learning Objectives */}
                           <div className="space-y-3">
@@ -788,13 +782,6 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
           }}
         >
           <div className="h-full bg-[#f3f3f3] flex flex-col overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
-            {/* Cursor Light-style Header */}
-            <div className="p-3 border-b border-[#e1e1e1] bg-[#f3f3f3]">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-[#007acc]" />
-                <h3 className="text-sm font-medium text-[#333333]">AI Assistant</h3>
-              </div>
-            </div>
             <div className="flex-1 flex flex-col p-3 overflow-hidden">
               <ScrollArea className="flex-1 min-h-0">
                 <div className="space-y-3 pr-2">
