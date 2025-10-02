@@ -394,7 +394,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
               {!sidebarCollapsed && (
                 <div className="flex items-center gap-2">
                   <BookOpenCheck className="h-4 w-4 text-[#007acc]" />
-                  <span className="text-sm font-medium text-[#333333]">JavaScript</span>
+                  <span className="text-sm font-medium text-[#333333]">CSI104</span>
                 </div>
               )}
               <Button
@@ -501,7 +501,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
             {sidebarCollapsed && (
               <div className="p-3 space-y-3">
                 <div className="text-center">
-                  <h3 className="text-sm font-semibold text-[#333333] mb-2">JS</h3>
+                  <h3 className="text-sm font-semibold text-[#333333] mb-2">CSI</h3>
                   <div className="text-xs text-gray-500 mb-3">
                     {progressPercent}%
                   </div>
@@ -515,25 +515,21 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                     return (
                       <div 
                         key={chapter.id}
-                        className={`p-2 rounded-lg border cursor-pointer hover:shadow-sm transition-all ${
-                          isActive ? 'bg-[#007acc] border-[#007acc]' : 'bg-white border-[#e1e1e1] hover:bg-gray-50'
+                        className={`w-12 h-12 rounded-md border cursor-pointer transition-all flex flex-col items-center justify-center relative ${
+                          isActive ? 'bg-[#007acc] border-[#007acc] text-white' : 'bg-white border-[#e1e1e1] hover:bg-gray-50 text-[#333333]'
                         }`}
                         onClick={() => setSidebarCollapsed(false)}
                         title="Nhấp để mở rộng sidebar"
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-[#333333]">
-                            {index + 1}
-                          </span>
-                          {chapterCompleted && (
-                            <CheckCircle2 className="h-3 w-3 text-green-600" />
-                          )}
-                        </div>
-                        {isActive && (
-                          <div className="mt-1 text-xs text-[#007acc] font-medium">
-                            •
-                          </div>
+                        {chapterCompleted && (
+                          <CheckCircle2 className="h-3 w-3 text-green-600 absolute top-1 right-1" />
                         )}
+                        <span className="text-xs font-medium">
+                          {index + 1}
+                        </span>
+                        <div className={`text-[10px] leading-none font-medium ${isActive ? 'text-white' : 'text-transparent'}`}>
+                          •
+                        </div>
                       </div>
                     )
                   })}
@@ -634,7 +630,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                           </div>
                           
                           {/* Skills You'll Gain */}
-                          <div className="space-y-3">
+                          {/* <div className="space-y-3">
                             <h3 className="text-lg font-semibold text-[#333333]">Skills You'll Gain</h3>
                             <div className="flex flex-wrap gap-3">
                               <span className="px-3 py-2 bg-[#e3f2fd] text-[#1976d2] text-sm rounded-lg font-medium">Programming</span>
@@ -642,7 +638,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                               <span className="px-3 py-2 bg-[#fff3e0] text-[#f57c00] text-sm rounded-lg font-medium">Data Structures</span>
                               <span className="px-3 py-2 bg-[#fce4ec] text-[#c2185b] text-sm rounded-lg font-medium">Problem Solving</span>
                             </div>
-                          </div>
+                          </div> */}
                           
                           {/* Complete Button */}
                           <div className="pt-4">

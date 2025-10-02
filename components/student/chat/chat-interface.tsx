@@ -275,9 +275,11 @@ export function ChatInterface() {
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && (
-            <div className="flex items-center justify-center text-gray-500 min-h-[200px]">
-              <div className="text-center">
-                <p className="text-sm">Chào mừng trở lại! Hannah có thể giúp gì cho bạn hôm nay?</p>
+            <div className="flex items-center justify-center text-gray-600 min-h-[60vh]">
+              <div className="text-center px-4">
+                <p className="text-xl md:text-2xl font-semibold">
+                  Chào mừng trở lại! Hannah có thể giúp gì cho bạn hôm nay?
+                </p>
               </div>
             </div>
           )}

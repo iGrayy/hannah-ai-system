@@ -12,16 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   Search,
   BookOpen,
-  Video,
   FileText,
   Code,
-  ExternalLink,
-  Star,
-  Clock,
-  Users,
-  Filter,
-  Download,
-  Play,
   ChevronDown,
   ChevronRight,
   GraduationCap,
@@ -659,15 +651,11 @@ const mockSemesters: Semester[] = [
   }
 ]
 
-const categories = ["Tất cả", "JavaScript", "React", "Python", "Database", "Security", "Tools"]
-const difficulties = ["Tất cả", "beginner", "intermediate", "advanced"]
-const types = ["Tất cả", "document", "tutorial", "code", "article"]
+// Filters simplified: only filter by semester
 
 export function LearningResources() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("Tất cả")
-  const [selectedType, setSelectedType] = useState("Tất cả")
+  const [semesterFilter, setSemesterFilter] = useState<string>("all")
   const [activeTopic, setActiveTopic] = useState<Resource | null>(null)
   const [semesters, setSemesters] = useState<Semester[]>(mockSemesters)
   const [selectedSemester, setSelectedSemester] = useState<string | null>(null)
@@ -758,49 +746,19 @@ export function LearningResources() {
               />
           </div>
 
-          {/* Filters */}
+          {/* Semester Filter */}
           <div className="flex flex-wrap gap-2">
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Danh mục" />
+            <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Chọn kỳ" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                <SelectItem value="all">Tất cả kỳ</SelectItem>
+                {semesters.map(sem => (
+                  <SelectItem key={sem.id} value={sem.id}>{sem.name} - Năm {sem.year}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-
-            <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Độ khó" />
-              </SelectTrigger>
-              <SelectContent>
-                {difficulties.map(difficulty => (
-                  <SelectItem key={difficulty} value={difficulty}>
-                    {difficulty === 'Tất cả' ? 'Tất cả' : difficulty === 'beginner' ? 'Cơ bản' : difficulty === 'intermediate' ? 'Trung cấp' : difficulty === 'advanced' ? 'Nâng cao' : difficulty}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Loại" />
-              </SelectTrigger>
-              <SelectContent>
-                {types.map(type => (
-                  <SelectItem key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Bộ lọc khác
-            </Button>
           </div>
           </div>
 
@@ -828,7 +786,7 @@ export function LearningResources() {
       <div className="flex-1 overflow-y-auto p-4">
         <div className="w-full">
           <div className="space-y-1">
-            {semesters.map((semester) => (
+            {(semesterFilter === 'all' ? semesters : semesters.filter(s => s.id === semesterFilter)).map((semester) => (
               <div key={semester.id} className="space-y-1">
                 {/* Semester Header - Horizontal Row */}
                 <div 
