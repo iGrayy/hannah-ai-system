@@ -82,7 +82,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
             <div className="flex items-center gap-3">
               <Brain className="h-7 w-7 text-slate-600" />
               <span className="text-xl font-bold text-slate-800">Hannah</span>
-              <span className="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-medium">AI Assistant</span>
+              <span className="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-medium">Trợ lý trí tuệ nhân tạo</span>
             </div>
           </div>
 
@@ -113,7 +113,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
               </div>
               <div className="hidden md:flex flex-col items-start">
                 <span className="text-sm font-semibold text-slate-800">{user?.name}</span>
-                <span className="text-xs text-slate-600 capitalize font-medium">{user?.role}</span>
+                <span className="text-xs text-slate-600 capitalize font-medium">{user?.role === "faculty" ? "Giảng viên" : "Quản trị viên"}</span>
               </div>
               <ChevronDown className="h-4 w-4 text-slate-500 hidden md:block" />
             </button>
@@ -181,7 +181,7 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
                 <div className="mb-6 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200 animate-in fade-in-0 slide-in-from-top-2 duration-500 delay-100">
                   <h3 className="text-sm font-bold text-slate-700 mb-1">
 
-                    {user?.role === "faculty" ? "Giảng viên" : "Mô-đun Quản trị viên"}
+                    {user?.role === "faculty" ? "Giảng viên" : "Quản trị viên"}
 
                   </h3>
                   <p className="text-xs text-slate-600">Quản lý hệ thống Hannah AI</p>
