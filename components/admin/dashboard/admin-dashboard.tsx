@@ -163,7 +163,7 @@ export function AdminDashboard() {
         <div>
           <h1 className="text-3xl font-bold">Bảng điều khiển</h1>
           <p className="text-muted-foreground">
-            Tổng quan hệ thống Hannah AI Learning Assistant
+            Tổng quan hệ thống Trợ lý học tập Hannah AI
           </p>
         </div>
         <div className="flex gap-2">

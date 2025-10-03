@@ -606,25 +606,27 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                             </div>
                           </div>
                           
-                          {/* Learning Objectives */}
+                          {/* Mục tiêu học tập */}
                           <div className="space-y-3">
-                            <h3 className="text-lg font-semibold text-[#333333]">Learning Objectives</h3>
+                            <h3 className="text-lg font-semibold text-[#333333]">Mục tiêu học tập</h3>
                             <ul className="text-[#666666] space-y-2 ml-4">
+                              {chapterContentMap[currentChapter.id]?.objectives.map((objective, index) => (
+                                <li key={index} className="flex items-start">
+                                  <span className="text-[#007acc] mr-2">•</span>
+                                  <span>{objective}</span>
+                                </li>
+                              ))}
                               <li className="flex items-start">
                                 <span className="text-[#007acc] mr-2">•</span>
-                                <span>Understand basic computer science principles</span>
+                                <span>Học các khái niệm lập trình cơ bản</span>
                               </li>
                               <li className="flex items-start">
                                 <span className="text-[#007acc] mr-2">•</span>
-                                <span>Learn fundamental programming concepts</span>
+                                <span>Khám phá cấu trúc dữ liệu và thuật toán</span>
                               </li>
                               <li className="flex items-start">
                                 <span className="text-[#007acc] mr-2">•</span>
-                                <span>Explore data structures and algorithms</span>
-                              </li>
-                              <li className="flex items-start">
-                                <span className="text-[#007acc] mr-2">•</span>
-                                <span>Develop problem-solving skills</span>
+                                <span>Phát triển kỹ năng giải quyết vấn đề</span>
                               </li>
                             </ul>
                           </div>
@@ -640,14 +642,14 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                             </div>
                           </div> */}
                           
-                          {/* Complete Button */}
+                          {/* Nút hoàn thành */}
                           <div className="pt-4">
-                            <Button 
+                            <Button
                               className="bg-[#28a745] text-white hover:bg-[#218838] border-0 px-8 py-3 text-base"
                               onClick={() => handleCompleteSection(currentSection.id)}
                             >
                               <CheckCircle2 className="h-5 w-5 mr-2" />
-                              Mark as Complete
+                              Đánh dấu hoàn thành
                             </Button>
                           </div>
                         </div>
@@ -857,7 +859,7 @@ export function LearningChat({ subject, topicId, topicTitle, onExit, onNavigateT
                 <Textarea
                   value={qaInput}
                   onChange={(e) => setQaInput(e.target.value)}
-                  placeholder="Ask anything about the lesson content..."
+                  placeholder="Hãy đặt câu hỏi về nội dung bài học…"
                   className="min-h-[40px] border-0 focus-visible:ring-0 resize-none text-sm bg-white text-[#333333] placeholder-gray-500"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {

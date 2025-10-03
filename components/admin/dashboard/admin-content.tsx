@@ -26,7 +26,7 @@ import { UserProfile } from "../../shared/common/user-profile"
 
 export function AdminContent() {
   const { user } = useAuth()
-  const [activeSection, setActiveSection] = useState(user?.role === "admin" ? "dashboard" : "dashboard")
+  const [activeSection, setActiveSection] = useState(user?.role === "admin" ? "dashboard" : "responses")
 
   const renderContent = () => {
     if (user?.role === "faculty") {
