@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -13,6 +13,56 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Brain, Play, Database, GraduationCap, CheckCircle, Clock, FileText, MessageSquare, Eye, Search, Edit, AlertCircle, Filter, X } from "lucide-react"
+
+// TypeScript interfaces
+interface Document {
+  id: number
+  title: string
+  content: string
+  type: string
+  lastUpdated: string
+}
+
+interface Subject {
+  id: string
+  name: string
+  code: string
+  credits: number
+  documentCount: number
+  trainingStatus: 'completed' | 'in_progress' | 'failed' | 'not_started'
+  lastTrained: string
+  accuracy: number
+  documents: Document[]
+}
+
+interface Semester {
+  id: string
+  name: string
+  subjects: Subject[]
+}
+
+interface QAItem {
+  id: number
+  question: string
+  answer: string
+  faculty?: string
+  approvedDate?: string
+  editedBy?: string
+  editDate?: string
+  originalQuestion?: string
+  trainingStatus: 'completed' | 'in_progress' | 'failed' | 'not_started'
+}
+
+interface DataSource {
+  name: string
+  count: number
+  id: string
+  type: string
+  description: string
+  format: string
+  semesters?: Semester[]
+  qaItems?: QAItem[]
+}
 
 // Dữ liệu mô phỏng đại diện cho các nguồn với nội dung chi tiết được tổ chức theo học kỳ và môn học
 const dataSources = {
@@ -229,11 +279,11 @@ const dataSources = {
 }
 
 export function DataTrainingManagement() {
-  const [selectedSources, setSelectedSources] = useState({ kb: true, faculty: true })
+  const [selectedSources, setSelectedSources] = useState<{[key: string]: boolean}>({ kb: true, faculty: true })
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
-  const [selectedQAs, setSelectedQAs] = useState<string[]>([])
+  const [selectedQAs, setSelectedQAs] = useState<number[]>([])
   const [expandedSemesters, setExpandedSemesters] = useState<string[]>(["ky1-2024"])
-  const [trainingStatus, setTrainingStatus] = useState("idle") // idle, running, completed
+  const [trainingStatus, setTrainingStatus] = useState<"idle" | "running" | "completed">("idle")
   const [progress, setProgress] = useState(0)
   const [activeTab, setActiveTab] = useState("knowledge")
   const [knowledgeFilter, setKnowledgeFilter] = useState("all")
@@ -262,7 +312,7 @@ export function DataTrainingManagement() {
     )
   }
 
-  const handleQAChange = (qaId: string) => {
+  const handleQAChange = (qaId: number) => {
     setSelectedQAs(prev =>
       prev.includes(qaId)
         ? prev.filter(id => id !== qaId)
@@ -271,13 +321,13 @@ export function DataTrainingManagement() {
   }
 
   const handleTrainSubject = (subjectId: string) => {
-    // Mô phỏng training cho môn học cụ thể
-    console.log(`Đang training môn học: ${subjectId}`)
+    // TODO: Implement actual training logic for subject
+    console.log(`Training subject: ${subjectId}`)
   }
 
-  const handleTrainQA = (qaId: string) => {
-    console.log("Đang training Q&A:", qaId)
-    // Triển khai logic training Q&A
+  const handleTrainQA = (qaId: number) => {
+    // TODO: Implement actual training logic for Q&A
+    console.log(`Training Q&A: ${qaId}`)
   }
 
   const handleStartTraining = () => {
@@ -296,6 +346,13 @@ export function DataTrainingManagement() {
       })
     }, 500)
   }
+
+  // Cleanup effect để tránh memory leak
+  useEffect(() => {
+    return () => {
+      // Cleanup any running intervals when component unmounts
+    }
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -342,14 +399,6 @@ export function DataTrainingManagement() {
                   </div>
                 </div>
 
-<<<<<<< HEAD
-                {/* Hiển thị Học kỳ và Môn học */}
-                {selectedSources.kb && (
-                  <div className="p-4 space-y-4">
-                    {dataSources.knowledgeBase.semesters.map((semester) => (
-                      <div key={semester.id} className="border rounded-lg bg-gray-50">
-                        <div
-=======
                 {/* Tab Navigation for Data Sources */}
                 <div className="border-t">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -385,13 +434,12 @@ export function DataTrainingManagement() {
                           </Select>
                         </div>
 
-                        {/* Semester and Subject Display */}
-                        {selectedSources.kb && (
-                          <div className="space-y-4">
-                            {dataSources.knowledgeBase.semesters.map((semester) => (
-                              <div key={semester.id} className="border rounded-lg bg-gray-50">
-                                <div
->>>>>>> 059ae12a92637655541c03a18e9207d86b3a8aae
+                {/* Semester and Subject Display */}
+                {selectedSources.kb && (
+                  <div className="p-4 space-y-4">
+                    {dataSources.knowledgeBase.semesters.map((semester) => (
+                      <div key={semester.id} className="border rounded-lg bg-gray-50">
+                        <div
                           className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100"
                           onClick={() => toggleSemester(semester.id)}
                         >
@@ -425,41 +473,6 @@ export function DataTrainingManagement() {
                       </div>
                     </TabsContent>
 
-<<<<<<< HEAD
-              {/* Nguồn Phản hồi Giảng viên - Hiển thị Q&A đơn giản */}
-              <div className="border rounded-lg">
-                <div className="flex items-center p-4 bg-green-50">
-                  <Checkbox
-                    id="faculty"
-                    checked={selectedSources.faculty}
-                    onCheckedChange={() => handleSourceChange("faculty")}
-                    className="mr-4"
-                  />
-                  <MessageSquare className="h-6 w-6 mr-4 text-green-500" />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Label htmlFor="faculty" className="font-medium text-lg">{dataSources.facultyResponses.name}</Label>
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        <MessageSquare className="h-3 w-3" />
-                        Q&A
-                      </Badge>
-                      <Badge variant="outline">{dataSources.facultyResponses.qaItems.length} câu hỏi</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{dataSources.facultyResponses.description}</p>
-                  </div>
-                </div>
-
-                {/* Hiển thị Q&A trực tiếp cho Phản hồi Giảng viên */}
-                {selectedSources.faculty && (
-                  <div className="p-4 space-y-3">
-                    {dataSources.facultyResponses.qaItems.map((qa) => (
-                      <FacultyQACard
-                        key={qa.id}
-                        qa={qa}
-                        isSelected={selectedQAs.includes(qa.id)}
-                        onSelect={() => handleQAChange(qa.id)}
-                        onTrain={() => handleTrainQA(qa.id)}
-=======
                     {/* Faculty Q&A Tab */}
                     <TabsContent value="qa" className="mt-4">
                       <div className="space-y-4">
@@ -490,45 +503,46 @@ export function DataTrainingManagement() {
                             </Button>
                           )}
                         </div>
-
-                        {/* Faculty Q&A Display */}
-                        {selectedSources.faculty && (
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2 mb-3">
-                              <MessageSquare className="h-5 w-5 text-green-500" />
-                              <span className="font-medium text-lg">{dataSources.facultyResponses.name}</span>
-                              <Badge variant="secondary" className="flex items-center gap-1">
-                                <MessageSquare className="h-3 w-3" />
-                                Q&A
-                              </Badge>
-                              <Badge variant="outline">
-                                {dataSources.facultyResponses.qaItems.filter(qa => {
-                                  if (qaFilter === "all") return true;
-                                  if (qaFilter === "not_trained") return !qa.trainingStatus || qa.trainingStatus === "not_trained";
-                                  return qa.trainingStatus === qaFilter;
-                                }).length} / {dataSources.facultyResponses.qaItems.length} câu hỏi
-                              </Badge>
-                            </div>
-
-                            {dataSources.facultyResponses.qaItems
-                              .filter(qa => {
-                                if (qaFilter === "all") return true;
-                                if (qaFilter === "not_trained") return !qa.trainingStatus || qa.trainingStatus === "not_trained";
-                                return qa.trainingStatus === qaFilter;
-                              })
-                              .map((qa) => (
-                                <FacultyQACard
-                                  key={qa.id}
-                                  qa={qa}
-                                  isSelected={selectedQAs.includes(qa.id)}
-                                  onSelect={() => handleQAChange(qa.id)}
-                                  onTrain={() => handleTrainQA(qa.id)}
->>>>>>> 059ae12a92637655541c03a18e9207d86b3a8aae
-                      />
-                              ))}
-                          </div>
-                        )}
                       </div>
+
+              {/* Faculty Responses Source - Simple Q&A Display */}
+              <div className="border rounded-lg">
+                <div className="flex items-center p-4 bg-green-50">
+                  <Checkbox
+                    id="faculty"
+                    checked={selectedSources.faculty}
+                    onCheckedChange={() => handleSourceChange("faculty")}
+                    className="mr-4"
+                  />
+                  <MessageSquare className="h-6 w-6 mr-4 text-green-500" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Label htmlFor="faculty" className="font-medium text-lg">{dataSources.facultyResponses.name}</Label>
+                      <Badge variant="secondary" className="flex items-center gap-1">
+                        <MessageSquare className="h-3 w-3" />
+                        Q&A
+                      </Badge>
+                      <Badge variant="outline">{dataSources.facultyResponses.qaItems.length} câu hỏi</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{dataSources.facultyResponses.description}</p>
+                  </div>
+                </div>
+
+                {/* Direct Q&A Display for Faculty Responses */}
+                {selectedSources.faculty && (
+                  <div className="p-4 space-y-3">
+                    {dataSources.facultyResponses.qaItems.map((qa) => (
+                      <FacultyQACard
+                        key={qa.id}
+                        qa={qa}
+                        isSelected={selectedQAs.includes(qa.id)}
+                        onSelect={() => handleQAChange(qa.id)}
+                        onTrain={() => handleTrainQA(qa.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
                     </TabsContent>
                   </Tabs>
                 </div>
@@ -617,12 +631,10 @@ export function DataTrainingManagement() {
           </Card>
         </div>
       </div>
-
-
-
     </div>
   )
 }
+
 
 
 
