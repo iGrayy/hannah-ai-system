@@ -209,7 +209,8 @@ export function AdminLayout({ children, activeSection: propActiveSection, onSect
           <div className="p-4">
             <div className="mb-4">
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                {user?.role === "faculty" ? "Mô-đun Giảng viên" : "Quản trị viên"}
+                {user?.role === "faculty" ? "Giảng viên" : "Mô-đun Quản trị viên"}
+
               </h3>
             </div>
             <nav className="space-y-1">

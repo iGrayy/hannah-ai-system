@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { LearningChat } from "./learning-chat"
+import { StudyAdvisorWidget } from "./study-advisor-widget"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,16 +12,11 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   Search,
   BookOpen,
-  Video,
   FileText,
   Code,
-  ExternalLink,
-  Star,
-  Clock,
-  Users,
-  Filter,
-  Download,
-  Play,
+  ChevronDown,
+  ChevronRight,
+  GraduationCap,
 } from "lucide-react"
 
 interface Resource {
@@ -35,6 +32,47 @@ interface Resource {
   thumbnail: string
   url: string
   tags: string[]
+}
+
+interface Subject {
+  id: string
+  name: string
+  code: string
+  credits: number
+  description: string
+  resources: Resource[]
+  progress: number
+  status: "completed" | "in-progress" | "not-started"
+  isHighlighted?: boolean
+  prerequisites?: string[]
+}
+
+interface RecentPost {
+  id: string
+  title: string
+  subjectCode: string
+  author: string
+  date: string
+  type: "exam" | "assignment" | "note"
+}
+
+interface Specialization {
+  id: string
+  name: string
+  description: string
+  subjects: Subject[]
+}
+
+interface Semester {
+  id: string
+  name: string
+  year: number
+  subjects: Subject[]
+  isExpanded: boolean
+  topicsCount: number
+  postsCount: number
+  recentPost?: RecentPost
+  specializations?: Specialization[]
 }
 
 const mockResources: Resource[] = [
@@ -124,27 +162,542 @@ const mockResources: Resource[] = [
   },
 ]
 
-const categories = ["All", "JavaScript", "React", "Python", "Database", "Security", "Tools"]
-const difficulties = ["All", "beginner", "intermediate", "advanced"]
-const types = ["All", "document", "tutorial", "code", "article"]
+const mockSemesters: Semester[] = [
+  {
+    id: "sem1",
+    name: "Kỳ 1",
+    year: 1,
+    isExpanded: false,
+    topicsCount: 450,
+    postsCount: 680,
+    recentPost: {
+      id: "post1",
+      title: "Đề Thi FE",
+      subjectCode: "MAE101 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "3/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub1",
+        name: "Introduction to computing",
+        code: "CSI104",
+        credits: 3,
+        description: "Fundamentals of computer science and computing",
+        progress: 85,
+        status: "in-progress",
+        resources: [mockResources[0]],
+        isHighlighted: true
+      },
+      {
+        id: "sub2",
+        name: "Programming Fundamentals",
+        code: "PRF192",
+        credits: 4,
+        description: "Basic programming concepts and problem solving",
+        progress: 90,
+        status: "in-progress",
+        resources: [mockResources[1]],
+        isHighlighted: true
+      },
+      {
+        id: "sub3",
+        name: "Mathematics for Engineering",
+        code: "MAE101",
+        credits: 3,
+        description: "Mathematical foundations for engineering",
+        progress: 75,
+        status: "in-progress",
+        resources: [mockResources[2]],
+        isHighlighted: true
+      },
+      {
+        id: "sub4",
+        name: "Computer Organization and Architecture",
+        code: "CEA201",
+        credits: 3,
+        description: "Computer hardware and system architecture",
+        progress: 60,
+        status: "in-progress",
+        resources: [mockResources[3]]
+      }
+    ]
+  },
+  {
+    id: "sem2",
+    name: "Kỳ 2",
+    year: 1,
+    isExpanded: false,
+    topicsCount: 420,
+    postsCount: 650,
+    recentPost: {
+      id: "post2",
+      title: "Đề Thi FE",
+      subjectCode: "MAD101 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "4/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub5",
+        name: "Object-Oriented Programming",
+        code: "PRO192",
+        credits: 4,
+        description: "OOP concepts and implementation",
+        progress: 80,
+        status: "in-progress",
+        resources: [mockResources[4]],
+        isHighlighted: true,
+        prerequisites: ["PRF192"]
+      },
+      {
+        id: "sub6",
+        name: "Discrete mathematics",
+        code: "MAD101",
+        credits: 3,
+        description: "Mathematical foundations for computer science",
+        progress: 70,
+        status: "in-progress",
+        resources: [mockResources[5]],
+        isHighlighted: true
+      },
+      {
+        id: "sub7",
+        name: "Operating Systems",
+        code: "OSG202",
+        credits: 3,
+        description: "OS concepts and system programming",
+        progress: 50,
+        status: "in-progress",
+        resources: [mockResources[0]]
+      },
+      {
+        id: "sub8",
+        name: "Computer Networking",
+        code: "NWC203c",
+        credits: 3,
+        description: "Network protocols and communication",
+        progress: 40,
+        status: "in-progress",
+        resources: [mockResources[1]]
+      }
+    ]
+  },
+  {
+    id: "sem3",
+    name: "Kỳ 3",
+    year: 2,
+    isExpanded: false,
+    topicsCount: 380,
+    postsCount: 520,
+    recentPost: {
+      id: "post3",
+      title: "Đề Thi FE",
+      subjectCode: "CSD201 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "5/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub9",
+        name: "Web Design",
+        code: "WED201c",
+        credits: 3,
+        description: "Web design principles and frontend development",
+        progress: 65,
+        status: "in-progress",
+        resources: [mockResources[5]],
+        isHighlighted: true
+      },
+      {
+        id: "sub10",
+        name: "Data Structures and Algorithms",
+        code: "CSD201",
+        credits: 4,
+        description: "Advanced data structures and algorithm design",
+        progress: 55,
+        status: "in-progress",
+        resources: [mockResources[4]],
+        isHighlighted: true,
+        prerequisites: ["PRO192"]
+      },
+      {
+        id: "sub11",
+        name: "Database Systems",
+        code: "DBI202",
+        credits: 3,
+        description: "Database design and management systems",
+        progress: 45,
+        status: "in-progress",
+        resources: [mockResources[2]]
+      },
+      {
+        id: "sub12",
+        name: "OOP with Java Lab",
+        code: "LAB211",
+        credits: 2,
+        description: "Practical Java programming laboratory",
+        progress: 70,
+        status: "in-progress",
+        resources: [mockResources[3]],
+        prerequisites: ["PRO192"]
+      }
+    ]
+  },
+  {
+    id: "sem4",
+    name: "Kỳ 4",
+    year: 2,
+    isExpanded: false,
+    topicsCount: 320,
+    postsCount: 420,
+    recentPost: {
+      id: "post4",
+      title: "Đề Thi FE",
+      subjectCode: "PRJ301 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "6/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub13",
+        name: "Statistics & Probability",
+        code: "MAS291",
+        credits: 3,
+        description: "Statistical methods and probability theory",
+        progress: 30,
+        status: "in-progress",
+        resources: [mockResources[0]],
+        isHighlighted: true,
+        prerequisites: ["MAE101", "MAC101"]
+      },
+      {
+        id: "sub14",
+        name: "Java Web application development",
+        code: "PRJ301",
+        credits: 4,
+        description: "Web application development using Java",
+        progress: 25,
+        status: "in-progress",
+        resources: [mockResources[1]],
+        isHighlighted: true,
+        prerequisites: ["DBI202", "PRO192"]
+      }
+    ]
+  },
+  {
+    id: "sem5",
+    name: "Kỳ 5",
+    year: 3,
+    isExpanded: false,
+    topicsCount: 280,
+    postsCount: 380,
+    recentPost: {
+      id: "post5",
+      title: "Đề Thi FE",
+      subjectCode: "SWP391 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "7/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub15",
+        name: "Software development project",
+        code: "SWP391",
+        credits: 4,
+        description: "Capstone software development project",
+        progress: 20,
+        status: "in-progress",
+        resources: [mockResources[4]],
+        isHighlighted: true,
+        prerequisites: ["SWE201c", "PRJ301"]
+      },
+      {
+        id: "sub16",
+        name: "Software Requirements",
+        code: "SWR302",
+        credits: 3,
+        description: "Requirements engineering and analysis",
+        progress: 15,
+        status: "in-progress",
+        resources: [mockResources[2]],
+        prerequisites: ["SWE201c", "SWE102"]
+      },
+      {
+        id: "sub17",
+        name: "Software Testing",
+        code: "SWT301",
+        credits: 3,
+        description: "Software testing methodologies and practices",
+        progress: 10,
+        status: "in-progress",
+        resources: [mockResources[3]],
+        prerequisites: ["SWE201c", "SWE102"]
+      }
+    ],
+    specializations: [
+      {
+        id: "spec1",
+        name: "Combo: Topic on .NET Programming",
+        description: "Chủ đề lập trình .NET",
+        subjects: [
+          {
+            id: "sub18",
+            name: "Basic Cross-Platform Application Programming With .NET",
+            code: "PRN212",
+            credits: 3,
+            description: "Cross-platform development with .NET framework",
+            progress: 5,
+            status: "in-progress",
+            resources: [mockResources[0]],
+            prerequisites: ["DBI202", "PRO192"]
+          }
+        ]
+      },
+      {
+        id: "spec2",
+        name: "Combo: Định hướng kỹ sư cầu nối Nhật (JS)",
+        description: "Cam kết tham gia OJT tại Nhật",
+        subjects: [
+          {
+            id: "sub19",
+            name: "Japanese Bridge Engineer Orientation",
+            code: "JSE301",
+            credits: 3,
+            description: "Orientation for Japanese bridge engineers",
+            progress: 0,
+            status: "not-started",
+            resources: [mockResources[1]]
+          }
+        ]
+      },
+      {
+        id: "spec3",
+        name: "Combo: Định hướng kỹ sư cầu nối Hàn (KS)",
+        description: "Korean Bridge Engineer Orientation",
+        subjects: [
+          {
+            id: "sub20",
+            name: "Korean Bridge Engineer Orientation",
+            code: "KSE301",
+            credits: 3,
+            description: "Orientation for Korean bridge engineers",
+            progress: 0,
+            status: "not-started",
+            resources: [mockResources[2]]
+          }
+        ]
+      },
+      {
+        id: "spec4",
+        name: "Combo: SE_COM10: Topic on Java",
+        description: "Java chuyên sâu (Intensive Java)",
+        subjects: [
+          {
+            id: "sub21",
+            name: "Intensive Java Programming",
+            code: "JAV301",
+            credits: 3,
+            description: "Advanced Java programming concepts",
+            progress: 0,
+            status: "not-started",
+            resources: [mockResources[3]]
+          }
+        ]
+      },
+      {
+        id: "spec5",
+        name: "Combo: Topic on React/NodeJS",
+        description: "Chủ đề React/NodeJS",
+        subjects: [
+          {
+            id: "sub22",
+            name: "React/NodeJS Development",
+            code: "RND301",
+            credits: 3,
+            description: "Full-stack development with React and NodeJS",
+            progress: 0,
+            status: "not-started",
+            resources: [mockResources[4]]
+          }
+        ]
+      },
+      {
+        id: "spec6",
+        name: "Combo: SAP",
+        description: "SAP Enterprise Resource Planning",
+        subjects: [
+          {
+            id: "sub23",
+            name: "SAP ERP Systems",
+            code: "SAP301",
+            credits: 3,
+            description: "SAP Enterprise Resource Planning systems",
+            progress: 0,
+            status: "not-started",
+            resources: [mockResources[5]]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "sem7",
+    name: "Kỳ 7",
+    year: 4,
+    isExpanded: false,
+    topicsCount: 200,
+    postsCount: 280,
+    recentPost: {
+      id: "post6",
+      title: "Đề Thi FE",
+      subjectCode: "SWD392 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "8/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub19",
+        name: "Software Architecture and Design",
+        code: "SWD392",
+        credits: 3,
+        description: "Software architecture patterns and design principles",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[0]],
+        isHighlighted: true,
+        prerequisites: ["PRO192", "SWE201c"]
+      },
+      {
+        id: "sub20",
+        name: "Advanced Cross-Platform Application Programming With .NET",
+        code: "PRN222",
+        credits: 3,
+        description: "Advanced .NET cross-platform development",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[1]],
+        prerequisites: ["PRN212", "PRN211"]
+      },
+      {
+        id: "sub21",
+        name: "C# Programming and Unity",
+        code: "PRU212",
+        credits: 3,
+        description: "Game development with C# and Unity",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[2]],
+        prerequisites: ["PRO192"]
+      }
+    ]
+  },
+  {
+    id: "sem8",
+    name: "Kỳ 8",
+    year: 4,
+    isExpanded: false,
+    topicsCount: 150,
+    postsCount: 200,
+    recentPost: {
+      id: "post7",
+      title: "Đề Thi FE",
+      subjectCode: "PRN232 - SU25 - B5 - RE",
+      author: "Misa",
+      date: "9/9/25",
+      type: "exam"
+    },
+    subjects: [
+      {
+        id: "sub22",
+        name: "Building Cross-Platform Back-End Application With .NET",
+        code: "PRN232",
+        credits: 3,
+        description: "Backend development with .NET technologies",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[3]],
+        isHighlighted: true,
+        prerequisites: ["PRN221", "PRN222"]
+      },
+      {
+        id: "sub23",
+        name: "Mobile Programming",
+        code: "PRM392",
+        credits: 3,
+        description: "Mobile application development",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[4]],
+        prerequisites: ["PRO192"]
+      },
+      {
+        id: "sub24",
+        name: "The UI/UX Design",
+        code: "WDU203c",
+        credits: 3,
+        description: "User interface and user experience design",
+        progress: 0,
+        status: "not-started",
+        resources: [mockResources[5]]
+      }
+    ]
+  }
+]
+
+// Filters simplified: only filter by semester
 
 export function LearningResources() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("All")
-  const [selectedType, setSelectedType] = useState("All")
+  const [semesterFilter, setSemesterFilter] = useState<string>("all")
+  const [activeTopic, setActiveTopic] = useState<Resource | null>(null)
+  const [semesters, setSemesters] = useState<Semester[]>(mockSemesters)
+  const [selectedSemester, setSelectedSemester] = useState<string | null>(null)
 
-  const filteredResources = mockResources.filter(resource => {
-    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    
-    const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory
-    const matchesDifficulty = selectedDifficulty === "All" || resource.difficulty === selectedDifficulty
-    const matchesType = selectedType === "All" || resource.type === selectedType
+  const toggleSemester = (semesterId: string) => {
+    setSemesters(prev => prev.map(sem => 
+      sem.id === semesterId 
+        ? { ...sem, isExpanded: !sem.isExpanded }
+        : { ...sem, isExpanded: false }
+    ))
+    setSelectedSemester(selectedSemester === semesterId ? null : semesterId)
+  }
 
-    return matchesSearch && matchesCategory && matchesDifficulty && matchesType
-  })
+  const getStatusColor = (status: string, prerequisites?: string[]) => {
+    if (prerequisites && prerequisites.length > 0) {
+      return "bg-red-100 text-red-800"
+    }
+    return "hidden"
+  }
+
+  const getStatusText = (status: string, prerequisites?: string[]) => {
+    if (prerequisites && prerequisites.length > 0) {
+      return `Yêu cầu: ${prerequisites.join(", ")}`
+    }
+    return ""
+  }
+
+  // Compute popular topics by tag frequency weighted by views
+  const popularTopics = useMemo(() => {
+    const score: Record<string, number> = {}
+    for (const r of mockResources) {
+      for (const t of r.tags) {
+        const key = t.toLowerCase()
+        score[key] = (score[key] || 0) + Math.max(1, Math.floor(r.views / 1000))
+      }
+    }
+    const topics = Object.entries(score)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name]) => name)
+    return topics
+  }, [])
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -165,17 +718,23 @@ export function LearningResources() {
     }
   }
 
+  if (activeTopic) {
+    return (
+      <LearningChat
+        subject={activeTopic.category}
+        topicId={activeTopic.id}
+        topicTitle={activeTopic.title}
+        onExit={() => setActiveTopic(null)}
+        onNavigateToResources={() => setActiveTopic(null)}
+      />
+    )
+  }
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
-      {/* Header & Search */}
-      <div className="bg-white border-b border-gray-200 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Tài nguyên học tập</h1>
-              <p className="text-gray-600">Tài liệu chọn lọc giúp bạn học hiệu quả hơn</p>
-            </div>
-            
+      {/* Search & Filters */}
+      <div className="bg-white border-b border-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
             {/* Search Bar */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -185,148 +744,252 @@ export function LearningResources() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
+          </div>
+
+          {/* Semester Filter */}
+          <div className="flex flex-wrap gap-2">
+            <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Chọn kỳ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả kỳ</SelectItem>
+                {semesters.map(sem => (
+                  <SelectItem key={sem.id} value={sem.id}>{sem.name} - Năm {sem.year}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          </div>
+
+          {/* Popular topics */}
+          {popularTopics.length > 0 && (
+          <div className="mt-3">
+              <div className="text-sm text-gray-600 mb-2">Chủ đề phổ biến</div>
+              <div className="flex flex-wrap gap-2">
+                {popularTopics.map((topic) => (
+                  <button
+                    key={topic}
+                    className="px-3 py-1 text-xs rounded-full border hover:bg-gray-50 transition-colors"
+                    onClick={() => setSearchTerm(topic)}
+                    title={`Tìm nhanh theo chủ đề: ${topic}`}
+                  >
+                    #{topic}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-wrap gap-4 mt-6">
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Danh mục" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Độ khó" />
-              </SelectTrigger>
-              <SelectContent>
-                {difficulties.map(difficulty => (
-                  <SelectItem key={difficulty} value={difficulty}>
-                    {difficulty === 'All' ? 'Tất cả' : difficulty === 'beginner' ? 'Cơ bản' : difficulty === 'intermediate' ? 'Trung cấp' : difficulty === 'advanced' ? 'Nâng cao' : difficulty}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Loại" />
-              </SelectTrigger>
-              <SelectContent>
-                {types.map(type => (
-                  <SelectItem key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Bộ lọc khác
-            </Button>
-          </div>
-        </div>
+          )}
       </div>
 
-      {/* Resources Grid */}
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredResources.map((resource) => (
-              <Card key={resource.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
-                <div className="relative">
-                  <img
-                    src={resource.thumbnail}
-                    alt={resource.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-t-lg flex items-center justify-center">
-                    <Button
-                      size="sm"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Mở
-                    </Button>
+      {/* Semesters Vertical List */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="w-full">
+          <div className="space-y-1">
+            {(semesterFilter === 'all' ? semesters : semesters.filter(s => s.id === semesterFilter)).map((semester) => (
+              <div key={semester.id} className="space-y-1">
+                {/* Semester Header - Horizontal Row */}
+                <div 
+                  className={`flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 ${
+                    semester.isExpanded ? 'bg-blue-50 border-blue-300' : ''
+                  }`}
+                  onClick={() => toggleSemester(semester.id)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <GraduationCap className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{semester.name}</h3>
+                      <p className="text-sm text-gray-500">Năm {semester.year}</p>
+                    </div>
                   </div>
-                  <div className="absolute top-3 left-3">
-                    <Badge className="bg-white/90 text-gray-800">
-                      {getTypeIcon(resource.type)}
-                      <span className="ml-1 capitalize">{resource.type}</span>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-xs">
+                      {semester.subjects.length} môn
                     </Badge>
+                    {semester.isExpanded ? (
+                      <ChevronDown className="h-5 w-5 text-gray-500" />
+                    ) : (
+                      <ChevronRight className="h-5 w-5 text-gray-500" />
+                    )}
                   </div>
                 </div>
 
-                <CardHeader className="pb-3">
+                {/* Subjects - Horizontal Scroll */}
+                {semester.isExpanded && (
+                  <div className="space-y-3 ml-4">
+                    {/* Regular Subjects */}
+                    {semester.subjects.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium text-gray-700 px-2">
+                          Các môn học trong {semester.name}:
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto pb-2">
+                          {semester.subjects.map((subject) => (
+                            <Card key={subject.id} className="min-w-[500px] h-[280px] flex-shrink-0 hover:shadow-md transition-shadow flex flex-col">
+                              {/* Fixed Header Section */}
+                              <CardHeader className="pb-1 pt-3 px-3 flex-shrink-0">
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-lg line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {resource.title}
+                                  <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-base line-clamp-4 h-16 flex items-center">
+                                      {subject.name}
                     </CardTitle>
-                    <Badge className={getDifficultyColor(resource.difficulty)}>
-                      {resource.difficulty}
+                                    <CardDescription className="text-xs mt-1">
+                                      {subject.code}
+                                    </CardDescription>
+                                  </div>
+                                  <Badge className={getStatusColor(subject.status, subject.prerequisites)}>
+                                    {getStatusText(subject.status, subject.prerequisites)}
                     </Badge>
                   </div>
-                  <CardDescription className="line-clamp-3">
-                    {resource.description}
-                  </CardDescription>
+                                <p className="text-sm text-gray-600 line-clamp-2 h-10 mt-2">
+                                  {subject.description}
+                                </p>
                 </CardHeader>
 
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {resource.duration}
+                              {/* Flexible Content Section */}
+                              <CardContent className="pt-1 px-3 pb-3 flex-1 flex flex-col">
+                                {/* Progress Bar - Fixed Height */}
+                                <div className="mb-2 flex-shrink-0">
+                                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                    <span>Tiến độ</span>
+                                    <span>{subject.progress}%</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {resource.views.toLocaleString()}
+                                  <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div 
+                                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                      style={{ width: `${subject.progress}%` }}
+                                    ></div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      {resource.rating}
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {resource.tags.slice(0, 3).map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
+
+                                {/* Spacer to push button to bottom */}
+                                <div className="flex-1"></div>
+
+                                {/* Action Buttons - Fixed at Bottom */}
+                                <div className="w-full flex-shrink-0">
+                                  <Button 
+                                    className="w-full" 
+                                    size="sm" 
+                                    onClick={() => {
+                                      if (subject.resources.length > 0) {
+                                        setActiveTopic(subject.resources[0])
+                                      }
+                                    }}
+                                    disabled={subject.resources.length === 0}
+                                  >
+                                    <BookOpen className="h-4 w-4 mr-2" />
+                                    Mở tài liệu
+                                  </Button>
+                      </div>
+                              </CardContent>
+                            </Card>
                     ))}
+                      </div>
+                    </div>
+                    )}
+
+                    {/* Specializations */}
+                    {semester.specializations && semester.specializations.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="text-sm font-medium text-gray-700 px-2">
+                          Các chuyên ngành hẹp:
+                        </div>
+                        {semester.specializations.map((specialization) => (
+                          <div key={specialization.id} className="space-y-2">
+                            <div className="text-sm font-semibold text-blue-700 px-2">
+                              {specialization.name}
+                            </div>
+                            <div className="text-xs text-gray-600 px-2 mb-2">
+                              {specialization.description}
+                            </div>
+                            <div className="flex gap-4 overflow-x-auto pb-2">
+                              {specialization.subjects.map((subject) => (
+                                <Card key={subject.id} className="min-w-[500px] h-[280px] flex-shrink-0 hover:shadow-md transition-shadow flex flex-col">
+                                  {/* Fixed Header Section */}
+                                  <CardHeader className="pb-1 pt-3 px-3 flex-shrink-0">
+                                    <div className="flex items-start justify-between gap-2">
+                                      <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-base line-clamp-2 h-10 flex items-center">
+                                      {subject.name}
+                                    </CardTitle>
+                                        <CardDescription className="text-xs mt-1">
+                                          {subject.code}
+                                        </CardDescription>
+                                      </div>
+                                  <Badge className={`${getStatusColor(subject.status, subject.prerequisites)} whitespace-normal text-xs max-w-[120px]`}>
+                                    {getStatusText(subject.status, subject.prerequisites)}
+                                  </Badge>
+                                    </div>
+                                    <p className="text-sm text-gray-600 line-clamp-2 h-10 mt-2">
+                                      {subject.description}
+                                    </p>
+                                  </CardHeader>
+
+                                  {/* Flexible Content Section */}
+                                  <CardContent className="pt-1 px-3 pb-3 flex-1 flex flex-col">
+                                    {/* Progress Bar - Fixed Height */}
+                                    <div className="mb-3 flex-shrink-0">
+                                      <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                        <span>Tiến độ</span>
+                                        <span>{subject.progress}%</span>
+                                      </div>
+                                      <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div 
+                                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                          style={{ width: `${subject.progress}%` }}
+                                        ></div>
+                    </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button className="flex-1" size="sm">
+
+                                    {/* Spacer to push button to bottom */}
+                                    <div className="flex-1"></div>
+
+                                    {/* Action Buttons - Fixed at Bottom */}
+                                    <div className="w-full flex-shrink-0">
+                                      <Button 
+                                        className="w-full" 
+                                        size="sm" 
+                                        onClick={() => {
+                                          if (subject.resources.length > 0) {
+                                            setActiveTopic(subject.resources[0])
+                                          }
+                                        }}
+                                        disabled={subject.resources.length === 0}
+                                      >
                       <BookOpen className="h-4 w-4 mr-2" />
-                      Mở
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Download className="h-4 w-4" />
+                                        Mở tài liệu
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
-          {filteredResources.length === 0 && (
+          {semesters.length === 0 && (
             <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy tài nguyên</h3>
-              <p className="text-gray-500">Hãy thử thay đổi từ khóa hoặc bộ lọc</p>
+              <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Không có kỳ học nào</h3>
+              <p className="text-gray-500">Vui lòng liên hệ quản trị viên để được hỗ trợ</p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Floating AI Study Advisor */}
+      <StudyAdvisorWidget />
     </div>
   )
 }

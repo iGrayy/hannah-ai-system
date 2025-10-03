@@ -17,9 +17,9 @@ import { KnowledgeBaseManagement } from "../knowledge/knowledge-base-management"
 // Faculty components (will be imported from faculty module)
 import { FacultyDashboard } from "../../faculty/dashboard/faculty-dashboard"
 import { ResponseManagement } from "../../faculty/responses/response-management"
-import { KnowledgeBase } from "../../faculty/knowledge/knowledge-base"
+import { MultimediaKnowledgeBase } from "../../faculty/knowledge/knowledge-base"
 import { StudentMonitoring } from "../../faculty/students/student-monitoring"
-import { QualityAssurance } from "../../faculty/quality/quality-assurance"
+import { LearningProgressTracker } from "../../faculty/quality/learning-progress-tracker"
 import { UserProfile } from "../../shared/common/user-profile"
 
 
@@ -36,9 +36,9 @@ export function AdminContent() {
         case "responses":
           return <ResponseManagement />
         case "knowledge":
-          return <KnowledgeBase />
+          return <MultimediaKnowledgeBase />
         case "quality":
-          return <QualityAssurance />
+          return <LearningProgressTracker />
         case "students":
           return <StudentMonitoring />
         case "profile":

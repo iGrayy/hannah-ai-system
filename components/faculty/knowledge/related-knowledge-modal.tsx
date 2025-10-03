@@ -177,7 +177,7 @@ export function RelatedKnowledgeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl w-[95vw] max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[1600px] w-[1600px] max-h-[900px] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BookOpenCheck className="h-5 w-5 text-indigo-600" />
