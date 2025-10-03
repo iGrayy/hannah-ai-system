@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Brain, Play, Database, GraduationCap, CheckCircle, Clock, FileText, MessageSquare, Eye, Search, Edit, AlertCircle } from "lucide-react"
+import { Brain, Play, Database, GraduationCap, CheckCircle, Clock, FileText, MessageSquare, Eye, Search, Edit, AlertCircle, Filter, X } from "lucide-react"
 
 // Dữ liệu mô phỏng đại diện cho các nguồn với nội dung chi tiết được tổ chức theo học kỳ và môn học
 const dataSources = {
@@ -235,6 +235,9 @@ export function DataTrainingManagement() {
   const [expandedSemesters, setExpandedSemesters] = useState<string[]>(["ky1-2024"])
   const [trainingStatus, setTrainingStatus] = useState("idle") // idle, running, completed
   const [progress, setProgress] = useState(0)
+  const [activeTab, setActiveTab] = useState("knowledge")
+  const [knowledgeFilter, setKnowledgeFilter] = useState("all")
+  const [qaFilter, setQaFilter] = useState("all")
 
   const handleSourceChange = (sourceId: string) => {
     setSelectedSources(prev => ({
@@ -339,12 +342,56 @@ export function DataTrainingManagement() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* Hiển thị Học kỳ và Môn học */}
                 {selectedSources.kb && (
                   <div className="p-4 space-y-4">
                     {dataSources.knowledgeBase.semesters.map((semester) => (
                       <div key={semester.id} className="border rounded-lg bg-gray-50">
                         <div
+=======
+                {/* Tab Navigation for Data Sources */}
+                <div className="border-t">
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="knowledge" className="flex items-center gap-2">
+                        <Database className="h-4 w-4" />
+                        Kho tri thức
+                      </TabsTrigger>
+                      <TabsTrigger value="qa" className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        Phản hồi được duyệt
+                      </TabsTrigger>
+                    </TabsList>
+
+                    {/* Knowledge Base Tab */}
+                    <TabsContent value="knowledge" className="mt-4">
+                      <div className="space-y-4">
+                        {/* Filter for Knowledge Base */}
+                        <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                          <Filter className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm font-medium">Lọc theo trạng thái:</span>
+                          <Select value={knowledgeFilter} onValueChange={setKnowledgeFilter}>
+                            <SelectTrigger className="w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">Tất cả</SelectItem>
+                              <SelectItem value="completed">Đã training</SelectItem>
+                              <SelectItem value="not_trained">Chưa training</SelectItem>
+                              <SelectItem value="in_progress">Đang training</SelectItem>
+                              <SelectItem value="failed">Thất bại</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Semester and Subject Display */}
+                        {selectedSources.kb && (
+                          <div className="space-y-4">
+                            {dataSources.knowledgeBase.semesters.map((semester) => (
+                              <div key={semester.id} className="border rounded-lg bg-gray-50">
+                                <div
+>>>>>>> 059ae12a92637655541c03a18e9207d86b3a8aae
                           className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100"
                           onClick={() => toggleSemester(semester.id)}
                         >
@@ -375,8 +422,10 @@ export function DataTrainingManagement() {
                     ))}
                   </div>
                 )}
-              </div>
+                      </div>
+                    </TabsContent>
 
+<<<<<<< HEAD
               {/* Nguồn Phản hồi Giảng viên - Hiển thị Q&A đơn giản */}
               <div className="border rounded-lg">
                 <div className="flex items-center p-4 bg-green-50">
@@ -410,10 +459,79 @@ export function DataTrainingManagement() {
                         isSelected={selectedQAs.includes(qa.id)}
                         onSelect={() => handleQAChange(qa.id)}
                         onTrain={() => handleTrainQA(qa.id)}
+=======
+                    {/* Faculty Q&A Tab */}
+                    <TabsContent value="qa" className="mt-4">
+                      <div className="space-y-4">
+                        {/* Filter for Q&A */}
+                        <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                          <Filter className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm font-medium">Lọc theo trạng thái:</span>
+                          <Select value={qaFilter} onValueChange={setQaFilter}>
+                            <SelectTrigger className="w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">Tất cả</SelectItem>
+                              <SelectItem value="completed">Đã training</SelectItem>
+                              <SelectItem value="not_trained">Chưa training</SelectItem>
+                              <SelectItem value="in_progress">Đang training</SelectItem>
+                              <SelectItem value="failed">Thất bại</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {qaFilter !== "all" && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setQaFilter("all")}
+                              className="h-8 px-2"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+
+                        {/* Faculty Q&A Display */}
+                        {selectedSources.faculty && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 mb-3">
+                              <MessageSquare className="h-5 w-5 text-green-500" />
+                              <span className="font-medium text-lg">{dataSources.facultyResponses.name}</span>
+                              <Badge variant="secondary" className="flex items-center gap-1">
+                                <MessageSquare className="h-3 w-3" />
+                                Q&A
+                              </Badge>
+                              <Badge variant="outline">
+                                {dataSources.facultyResponses.qaItems.filter(qa => {
+                                  if (qaFilter === "all") return true;
+                                  if (qaFilter === "not_trained") return !qa.trainingStatus || qa.trainingStatus === "not_trained";
+                                  return qa.trainingStatus === qaFilter;
+                                }).length} / {dataSources.facultyResponses.qaItems.length} câu hỏi
+                              </Badge>
+                            </div>
+
+                            {dataSources.facultyResponses.qaItems
+                              .filter(qa => {
+                                if (qaFilter === "all") return true;
+                                if (qaFilter === "not_trained") return !qa.trainingStatus || qa.trainingStatus === "not_trained";
+                                return qa.trainingStatus === qaFilter;
+                              })
+                              .map((qa) => (
+                                <FacultyQACard
+                                  key={qa.id}
+                                  qa={qa}
+                                  isSelected={selectedQAs.includes(qa.id)}
+                                  onSelect={() => handleQAChange(qa.id)}
+                                  onTrain={() => handleTrainQA(qa.id)}
+>>>>>>> 059ae12a92637655541c03a18e9207d86b3a8aae
                       />
-                    ))}
-                  </div>
-                )}
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
               </div>
             </CardContent>
           </Card>
