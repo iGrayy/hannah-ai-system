@@ -14,7 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Brain, Play, Database, GraduationCap, CheckCircle, Clock, FileText, MessageSquare, Eye, Search, Edit, AlertCircle } from "lucide-react"
 
-// Mock data representing the sources with detailed content organized by semester and subjects
+// Dữ liệu mô phỏng đại diện cho các nguồn với nội dung chi tiết được tổ chức theo học kỳ và môn học
 const dataSources = {
   knowledgeBase: {
     name: "Kho tri thức",
@@ -42,14 +42,14 @@ const dataSources = {
                 id: 1,
                 title: "Bài 1: Giới thiệu về Khoa học máy tính",
                 content: "Khoa học máy tính (Computer Science) là một ngành khoa học nghiên cứu về thuật toán, cấu trúc dữ liệu...",
-                type: "lecture",
+                type: "bài giảng",
                 lastUpdated: "2024-01-10"
               },
               {
                 id: 2,
                 title: "Bài 2: Lịch sử phát triển máy tính",
                 content: "Máy tính đã trải qua nhiều thế hệ phát triển từ máy tính cơ học đến máy tính điện tử hiện đại...",
-                type: "lecture",
+                type: "bài giảng",
                 lastUpdated: "2024-01-12"
               }
             ]
@@ -67,7 +67,7 @@ const dataSources = {
                 id: 3,
                 title: "Chương 1: Logic mệnh đề",
                 content: "Logic mệnh đề là nền tảng của toán học và khoa học máy tính...",
-                type: "theory",
+                type: "lý thuyết",
                 lastUpdated: "2024-01-08"
               }
             ]
@@ -82,9 +82,9 @@ const dataSources = {
             documents: [
               {
                 id: 4,
-                title: "Unit 1: Computer Basics",
-                content: "Introduction to computer terminology and basic concepts...",
-                type: "vocabulary",
+                title: "Bài 1: Cơ bản về máy tính",
+                content: "Giới thiệu về thuật ngữ máy tính và các khái niệm cơ bản...",
+                type: "từ vựng",
                 lastUpdated: "2024-01-05"
               }
             ]
@@ -109,7 +109,7 @@ const dataSources = {
                 id: 5,
                 title: "Chương 1: Mảng và Danh sách",
                 content: "Cấu trúc dữ liệu cơ bản: Array, Linked List, Stack, Queue...",
-                type: "theory",
+                type: "lý thuyết",
                 lastUpdated: "2024-02-15"
               }
             ]
@@ -129,7 +129,7 @@ const dataSources = {
                 id: 6,
                 title: "Chương 1: Khái niệm OOP",
                 content: "Lập trình hướng đối tượng với 4 tính chất: Encapsulation, Inheritance, Polymorphism, Abstraction...",
-                type: "theory",
+                type: "lý thuyết",
                 lastUpdated: "2024-02-18"
               }
             ]
@@ -268,20 +268,20 @@ export function DataTrainingManagement() {
   }
 
   const handleTrainSubject = (subjectId: string) => {
-    // Simulate training for specific subject
-    console.log(`Training subject: ${subjectId}`)
+    // Mô phỏng training cho môn học cụ thể
+    console.log(`Đang training môn học: ${subjectId}`)
   }
 
   const handleTrainQA = (qaId: string) => {
-    console.log("Training Q&A:", qaId)
-    // Implement Q&A training logic
+    console.log("Đang training Q&A:", qaId)
+    // Triển khai logic training Q&A
   }
 
   const handleStartTraining = () => {
     setTrainingStatus("running")
     setProgress(0)
 
-    // Simulate training progress
+    // Mô phỏng tiến trình training
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -296,28 +296,28 @@ export function DataTrainingManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Brain className="h-8 w-8 text-purple-600" />
-            Quản lý Training Dữ liệu
+            Quản lý Huấn luyện Dữ liệu
           </h1>
           <p className="text-muted-foreground">Tinh chỉnh Hannah AI với dữ liệu giáo dục được tuyển chọn.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Configuration */}
+        {/* Cột trái: Cấu hình */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Step 1: Data Source Selection */}
+          {/* Bước 1: Chọn nguồn dữ liệu */}
           <Card>
             <CardHeader>
               <CardTitle>Bước 1: Chọn nguồn dữ liệu</CardTitle>
               <CardDescription>Chọn dữ liệu sẽ được sử dụng để tinh chỉnh mô hình.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Knowledge Base Source - Organized by Semester and Subject */}
+              {/* Nguồn Kho tri thức - Được tổ chức theo Học kỳ và Môn học */}
               <div className="border rounded-lg">
                 <div className="flex items-center p-4 bg-blue-50">
                   <Checkbox
@@ -339,7 +339,7 @@ export function DataTrainingManagement() {
                   </div>
                 </div>
 
-                {/* Semester and Subject Display */}
+                {/* Hiển thị Học kỳ và Môn học */}
                 {selectedSources.kb && (
                   <div className="p-4 space-y-4">
                     {dataSources.knowledgeBase.semesters.map((semester) => (
@@ -377,7 +377,7 @@ export function DataTrainingManagement() {
                 )}
               </div>
 
-              {/* Faculty Responses Source - Simple Q&A Display */}
+              {/* Nguồn Phản hồi Giảng viên - Hiển thị Q&A đơn giản */}
               <div className="border rounded-lg">
                 <div className="flex items-center p-4 bg-green-50">
                   <Checkbox
@@ -400,7 +400,7 @@ export function DataTrainingManagement() {
                   </div>
                 </div>
 
-                {/* Direct Q&A Display for Faculty Responses */}
+                {/* Hiển thị Q&A trực tiếp cho Phản hồi Giảng viên */}
                 {selectedSources.faculty && (
                   <div className="p-4 space-y-3">
                     {dataSources.facultyResponses.qaItems.map((qa) => (
@@ -418,7 +418,7 @@ export function DataTrainingManagement() {
             </CardContent>
           </Card>
 
-          {/* Step 2: Model Configuration */}
+          {/* Bước 2: Cấu hình Mô hình */}
           <Card>
             <CardHeader>
               <CardTitle>Bước 2: Cấu hình tham số mô hình</CardTitle>
@@ -438,7 +438,7 @@ export function DataTrainingManagement() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="epochs">Số vòng training</Label>
+                <Label htmlFor="epochs">Số vòng huấn luyện</Label>
                 <Select defaultValue="5">
                   <SelectTrigger>
                     <SelectValue />
@@ -454,25 +454,25 @@ export function DataTrainingManagement() {
           </Card>
         </div>
 
-        {/* Right Column: Training Control */}
+        {/* Cột phải: Điều khiển Huấn luyện */}
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Bước 3: Bắt đầu Training</CardTitle>
+              <CardTitle>Bước 3: Bắt đầu Huấn luyện</CardTitle>
               <CardDescription>Khởi động quá trình tinh chỉnh với dữ liệu và cấu hình đã chọn.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {trainingStatus === "idle" && (
                 <Alert>
                   <AlertTitle>Sẵn sàng bắt đầu</AlertTitle>
-                  <AlertDescription>Hệ thống đã sẵn sàng để bắt đầu quá trình training.</AlertDescription>
+                  <AlertDescription>Hệ thống đã sẵn sàng để bắt đầu quá trình huấn luyện.</AlertDescription>
                 </Alert>
               )}
 
               {trainingStatus === "running" && (
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <Label>Đang training</Label>
+                    <Label>Đang huấn luyện</Label>
                     <span className="text-sm font-medium">{progress}%</span>
                   </div>
                   <Progress value={progress} />
@@ -482,7 +482,7 @@ export function DataTrainingManagement() {
               {trainingStatus === "completed" && (
                 <Alert variant="default" className="bg-green-50 border-green-200">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertTitle className="text-green-800">Training hoàn thành</AlertTitle>
+                  <AlertTitle className="text-green-800">Huấn luyện hoàn thành</AlertTitle>
                   <AlertDescription className="text-green-700">Mô hình đã được tinh chỉnh thành công.</AlertDescription>
                 </Alert>
               )}
@@ -508,7 +508,7 @@ export function DataTrainingManagement() {
 
 
 
-// Component for individual Faculty Q&A card
+// Component cho thẻ Q&A của Giảng viên
 function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
   qa: any
   isSelected: boolean
@@ -526,10 +526,10 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'completed': return 'Đã training'
-      case 'in_progress': return 'Đang training'
-      case 'failed': return 'Training thất bại'
-      default: return 'Chưa training'
+      case 'completed': return 'Đã huấn luyện'
+      case 'in_progress': return 'Đang huấn luyện'
+      case 'failed': return 'Huấn luyện thất bại'
+      default: return 'Chưa huấn luyện'
     }
   }
 
@@ -568,7 +568,7 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
             )}
           </div>
 
-          {/* Answer */}
+          {/* Câu trả lời */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <MessageSquare className="h-4 w-4 text-green-500" />
@@ -579,7 +579,7 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
             </p>
           </div>
 
-          {/* Faculty and Edit Info */}
+          {/* Thông tin Giảng viên và Chỉnh sửa */}
           <div className="flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center gap-4">
               <span>Giảng viên: {qa.faculty}</span>
@@ -587,14 +587,14 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
               <span>Ngày sửa: {qa.editDate}</span>
             </div>
 
-            {/* Training Status */}
+            {/* Trạng thái Huấn luyện */}
             <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs border ${getStatusColor(qa.trainingStatus)}`}>
               {getStatusIcon(qa.trainingStatus)}
               {getStatusText(qa.trainingStatus)}
             </div>
           </div>
 
-          {/* Error Message */}
+          {/* Thông báo Lỗi */}
           {qa.errorMessage && (
             <div className="text-xs text-red-600 bg-red-50 p-2 rounded">
               <AlertCircle className="h-3 w-3 inline mr-1" />
@@ -603,7 +603,7 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Nút Hành động */}
         <div className="flex flex-col gap-2">
           {qa.trainingStatus !== 'in_progress' && (
             <Button
@@ -612,7 +612,7 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
               onClick={onTrain}
             >
               <Brain className="h-3 w-3 mr-1" />
-              {qa.trainingStatus === 'failed' ? 'Training lại' : 'Training'}
+              {qa.trainingStatus === 'failed' ? 'Huấn luyện lại' : 'Huấn luyện'}
             </Button>
           )}
 
@@ -626,7 +626,7 @@ function FacultyQACard({ qa, isSelected, onSelect, onTrain }: {
   )
 }
 
-// Component for individual subject training card
+// Component cho thẻ huấn luyện môn học
 function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
   subject: any
   isSelected: boolean
@@ -645,9 +645,9 @@ function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'completed': return 'Đã hoàn thành'
-      case 'in_progress': return 'Đang training'
+      case 'in_progress': return 'Đang huấn luyện'
       case 'failed': return 'Thất bại'
-      default: return 'Chưa training'
+      default: return 'Chưa huấn luyện'
     }
   }
 
@@ -684,7 +684,7 @@ function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
               </span>
             </div>
 
-            {/* Training Status */}
+            {/* Trạng thái Huấn luyện */}
             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm border ${getStatusColor(subject.trainingStatus)}`}>
               {getStatusIcon(subject.trainingStatus)}
               {getStatusText(subject.trainingStatus)}
@@ -696,7 +696,7 @@ function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
               )}
             </div>
 
-            {/* Additional Info */}
+            {/* Thông tin Bổ sung */}
             {subject.lastTrained && (
               <div className="text-xs text-muted-foreground mt-2">
                 Lần cuối: {subject.lastTrained}
@@ -719,7 +719,7 @@ function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
               onClick={onTrain}
             >
               <Brain className="h-3 w-3 mr-1" />
-              {subject.trainingStatus === 'failed' ? 'Training lại' : 'Training'}
+              {subject.trainingStatus === 'failed' ? 'Huấn luyện lại' : 'Huấn luyện'}
             </Button>
           )}
 
@@ -733,7 +733,7 @@ function SubjectTrainingCard({ subject, isSelected, onSelect, onTrain }: {
   )
 }
 
-// Component for individual data source item
+// Component cho mục nguồn dữ liệu riêng lẻ
 function DataSourceItem({ source, checked, onCheckedChange, onViewDetails }: {
   source: any
   checked: boolean
