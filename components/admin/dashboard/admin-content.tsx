@@ -12,6 +12,7 @@ import { AdminIntegrations } from "../system/admin-integrations"
 
 import { AdminDashboard } from "./admin-dashboard"
 import { KnowledgeBaseManagement } from "../knowledge/knowledge-base-management"
+import { DataTrainingManagement } from "../ai-training/data-training-management"
 
 
 // Faculty components (will be imported from faculty module)
@@ -61,6 +62,8 @@ export function AdminContent() {
           return <AdminIntegrations />
         case "knowledge":
           return <KnowledgeBaseManagement />
+        case "training":
+          return <DataTrainingManagement />
         case "profile":
           return <UserProfile />
         default:
