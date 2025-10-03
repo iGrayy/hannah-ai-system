@@ -7,48 +7,56 @@ import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Zap, Database, Mail, MessageSquare, Cloud, Settings, CheckCircle, AlertCircle } from "lucide-react"
+import { Zap, Database, MessageSquare, Settings, CheckCircle, AlertCircle, Search, Cpu } from "lucide-react"
 
 const integrations = [
   {
-    id: "openai",
-    name: "OpenAI GPT",
-    description: "AI language model for generating responses",
+    id: "nvidia-chatrtx",
+    name: "NVIDIA ChatRTX",
+    description: "AI Engine - Open source base model for Hannah AI",
     status: "connected",
     icon: Zap,
     category: "ai",
   },
   {
-    id: "supabase",
-    name: "Supabase",
-    description: "Database and authentication service",
+    id: "postgresql",
+    name: "PostgreSQL",
+    description: "Primary database for structured data",
     status: "connected",
     icon: Database,
     category: "database",
   },
   {
-    id: "sendgrid",
-    name: "SendGrid",
-    description: "Email delivery service",
-    status: "disconnected",
-    icon: Mail,
-    category: "communication",
+    id: "mongodb",
+    name: "MongoDB",
+    description: "Document database for conversation logs",
+    status: "connected",
+    icon: Database,
+    category: "database",
   },
   {
-    id: "slack",
-    name: "Slack",
-    description: "Team communication and notifications",
+    id: "elasticsearch",
+    name: "Elasticsearch",
+    description: "Search engine for knowledge base retrieval",
+    status: "connected",
+    icon: Search,
+    category: "search",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    description: "In-memory caching for improved performance",
+    status: "connected",
+    icon: Cpu,
+    category: "cache",
+  },
+  {
+    id: "websockets",
+    name: "WebSockets",
+    description: "Real-time communication for chat interface",
     status: "connected",
     icon: MessageSquare,
     category: "communication",
-  },
-  {
-    id: "aws",
-    name: "AWS S3",
-    description: "Cloud storage for files and media",
-    status: "disconnected",
-    icon: Cloud,
-    category: "storage",
   },
 ]
 
@@ -63,10 +71,10 @@ export function AdminIntegrations() {
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList>
           <TabsTrigger value="all">Tất cả tích hợp</TabsTrigger>
-          <TabsTrigger value="ai">Phiên bản AI</TabsTrigger>
+          <TabsTrigger value="ai">AI Engine</TabsTrigger>
           <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
-          <TabsTrigger value="communication">Liên lạc</TabsTrigger>
-          <TabsTrigger value="storage">Lưu trữ</TabsTrigger>
+          <TabsTrigger value="search">Tìm kiếm</TabsTrigger>
+          <TabsTrigger value="communication">Giao tiếp</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
@@ -118,57 +126,244 @@ export function AdminIntegrations() {
         <TabsContent value="ai" className="space-y-4">
           <Card>
             <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5" />
-                Cấu hình OpenAI
+                Cấu hình NVIDIA ChatRTX
               </CardTitle>
-              <CardDescription>Cấu hình model AI và API key</CardDescription>
+              <CardDescription>Cấu hình AI Engine cho Hannah Assistant</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="openai-key">API Key</Label>
+                <Label htmlFor="chatrtx-model">Model Path</Label>
                 <Input
-                  id="openai-key"
-                  type="password"
-                  placeholder="sk-..."
-                  defaultValue="sk-***************************"
+                  id="chatrtx-model"
+                  placeholder="/path/to/chatrtx/model"
+                  defaultValue="/opt/nvidia/chatrtx/models/llama2-7b"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="model">Model mặc định</Label>
-                <Input id="model" defaultValue="gpt-4" />
+                <Label htmlFor="gpu-memory">GPU Memory (GB)</Label>
+                <Input id="gpu-memory" type="number" defaultValue="8" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="max-tokens">Số token tối đa</Label>
-                <Input id="max-tokens" type="number" defaultValue="2048" />
+                <Input id="max-tokens" type="number" defaultValue="4096" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="temperature">Temperature</Label>
+                <Input id="temperature" type="number" step="0.1" defaultValue="0.7" />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Trạng thái AI Engine</Label>
+                  <p className="text-sm text-muted-foreground">NVIDIA ChatRTX đang hoạt động</p>
+                </div>
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Đã kết nối
+                </Badge>
               </div>
               <Button>Lưu cấu hình</Button>
             </CardContent>
           </Card>
         </TabsContent>
 
+
+
         <TabsContent value="database" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  Cấu hình PostgreSQL
+                </CardTitle>
+                <CardDescription>Cơ sở dữ liệu chính cho dữ liệu có cấu trúc</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="pg-host">Database Host</Label>
+                  <Input id="pg-host" defaultValue="localhost" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pg-port">Port</Label>
+                  <Input id="pg-port" type="number" defaultValue="5432" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pg-database">Database Name</Label>
+                  <Input id="pg-database" defaultValue="hannah_db" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pg-username">Username</Label>
+                  <Input id="pg-username" defaultValue="hannah_user" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pg-password">Password</Label>
+                  <Input id="pg-password" type="password" defaultValue="***********" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Trạng thái PostgreSQL</Label>
+                    <p className="text-sm text-muted-foreground">Kết nối hoạt động</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Đã kết nối
+                  </Badge>
+                </div>
+                <Button>Kiểm tra kết nối</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  Cấu hình MongoDB
+                </CardTitle>
+                <CardDescription>Cơ sở dữ liệu cho conversation logs</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="mongo-uri">Connection URI</Label>
+                  <Input id="mongo-uri" defaultValue="mongodb://localhost:27017/hannah_conversations" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mongo-database">Database Name</Label>
+                  <Input id="mongo-database" defaultValue="hannah_conversations" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mongo-collection">Default Collection</Label>
+                  <Input id="mongo-collection" defaultValue="chat_logs" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mongo-max-pool">Max Pool Size</Label>
+                  <Input id="mongo-max-pool" type="number" defaultValue="10" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Trạng thái MongoDB</Label>
+                    <p className="text-sm text-muted-foreground">Kết nối hoạt động</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Đã kết nối
+                  </Badge>
+                </div>
+                <Button>Kiểm tra kết nối</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="search" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  Cấu hình Elasticsearch
+                </CardTitle>
+                <CardDescription>Search engine cho knowledge base retrieval</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="es-host">Elasticsearch Host</Label>
+                  <Input id="es-host" defaultValue="localhost:9200" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="es-index">Default Index</Label>
+                  <Input id="es-index" defaultValue="hannah_knowledge_base" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="es-username">Username</Label>
+                  <Input id="es-username" defaultValue="elastic" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="es-password">Password</Label>
+                  <Input id="es-password" type="password" defaultValue="***********" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Trạng thái Elasticsearch</Label>
+                    <p className="text-sm text-muted-foreground">Cluster đang hoạt động</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Đã kết nối
+                  </Badge>
+                </div>
+                <Button>Kiểm tra cluster</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Cpu className="h-5 w-5" />
+                  Cấu hình Redis Cache
+                </CardTitle>
+                <CardDescription>In-memory caching cho hiệu suất tối ưu</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="redis-host">Redis Host</Label>
+                  <Input id="redis-host" defaultValue="localhost" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="redis-port">Port</Label>
+                  <Input id="redis-port" type="number" defaultValue="6379" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="redis-db">Database Number</Label>
+                  <Input id="redis-db" type="number" defaultValue="0" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="redis-ttl">Default TTL (seconds)</Label>
+                  <Input id="redis-ttl" type="number" defaultValue="3600" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Trạng thái Redis</Label>
+                    <p className="text-sm text-muted-foreground">Cache server hoạt động</p>
+                  </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Đã kết nối
+                  </Badge>
+                </div>
+                <Button>Xóa cache</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="communication" className="space-y-4">
           <Card>
             <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                <Database className="h-5 w-5" />
-                Cấu hình Supabase
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Cấu hình WebSockets
               </CardTitle>
-              <CardDescription>Cài đặt và kết nối cơ sở dữ liệu</CardDescription>
+              <CardDescription>Giao tiếp real-time cho giao diện chat</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="supabase-url">Project URL</Label>
-                <Input id="supabase-url" defaultValue="https://your-project.supabase.co" />
+                <Label htmlFor="ws-server-url">WebSocket Server URL</Label>
+                <Input id="ws-server-url" defaultValue="ws://localhost:8000/ws" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="supabase-key">Anon Key</Label>
-                <Input id="supabase-key" type="password" defaultValue="eyJ***************************" />
+                <Label htmlFor="ws-reconnect-interval">Reconnect Interval (ms)</Label>
+                <Input id="ws-reconnect-interval" type="number" defaultValue="5000" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ws-max-reconnect">Max Reconnect Attempts</Label>
+                <Input id="ws-max-reconnect" type="number" defaultValue="10" />
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Trạng thái kết nối</Label>
-                  <p className="text-sm text-muted-foreground">Kết nối cơ sở dữ liệu hoạt động</p>
+                  <Label>Trạng thái WebSocket</Label>
+                  <p className="text-sm text-muted-foreground">Đã kết nối</p>
                 </div>
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
                   <CheckCircle className="h-3 w-3 mr-1" />
@@ -176,83 +371,6 @@ export function AdminIntegrations() {
                 </Badge>
               </div>
               <Button>Kiểm tra kết nối</Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="communication" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
-                  Gửi Email SendGrid
-                </CardTitle>
-              <CardDescription>Cấu hình gửi email</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sendgrid-key">API Key</Label>
-                  <Input id="sendgrid-key" type="password" placeholder="SG...." />
-                </div>
-                <div className="space-y-2">
-                <Label htmlFor="from-email">Email gửi đi</Label>
-                  <Input id="from-email" type="email" placeholder="noreply@hannah.edu" />
-                </div>
-                <Button>Kết nối SendGrid</Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5" />
-                  Tích hợp Slack
-                </CardTitle>
-              <CardDescription>Thông báo và cảnh báo cho nhóm</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                <Label htmlFor="slack-webhook">Webhook URL</Label>
-                  <Input id="slack-webhook" defaultValue="https://hooks.slack.com/services/..." />
-                </div>
-                <div className="space-y-2">
-                <Label htmlFor="slack-channel">Kênh mặc định</Label>
-                  <Input id="slack-channel" defaultValue="#hannah-alerts" />
-                </div>
-                <Button>Cập nhật cài đặt</Button>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="storage" className="space-y-4">
-          <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                <Cloud className="h-5 w-5" />
-                Lưu trữ AWS S3
-              </CardTitle>
-              <CardDescription>Lưu trữ đám mây cho tệp và media</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="aws-access-key">Access Key ID</Label>
-                <Input id="aws-access-key" placeholder="AKIA..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="aws-secret-key">Secret Access Key</Label>
-                <Input id="aws-secret-key" type="password" placeholder="..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="aws-bucket">Tên bucket</Label>
-                <Input id="aws-bucket" placeholder="hannah-storage" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="aws-region">Vùng</Label>
-                <Input id="aws-region" defaultValue="us-east-1" />
-              </div>
-              <Button>Kết nối AWS S3</Button>
             </CardContent>
           </Card>
         </TabsContent>

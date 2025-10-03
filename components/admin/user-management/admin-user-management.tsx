@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { Users, Search, Edit, Trash2, Upload, UserPlus, Shield, Clock, Eye, Key, Settings } from "lucide-react"
+import { Users, Search, Edit, Trash2, Upload, UserPlus, Shield, Clock, Eye, Key, Settings, Plus } from "lucide-react"
 
 interface User {
   id: string
@@ -49,7 +49,7 @@ const mockUsers: User[] = [
     email: "nguyen.a@university.edu",
     role: "faculty",
     status: "active",
-    department: "Computer Science",
+    department: "Kỹ Thuật Phần Mềm",
     lastLogin: "2024-01-15 09:30",
     createdAt: "2023-09-01",
     avatar: "/placeholder.svg?height=40&width=40",
@@ -61,7 +61,7 @@ const mockUsers: User[] = [
     email: "tran.b@university.edu",
     role: "admin",
     status: "active",
-    department: "IT Administration",
+    department: "Quản trị CNTT",
     lastLogin: "2024-01-15 08:15",
     createdAt: "2023-08-15",
     avatar: "/placeholder.svg?height=40&width=40",
@@ -73,7 +73,7 @@ const mockUsers: User[] = [
     email: "le.c@student.university.edu",
     role: "student",
     status: "active",
-    department: "Computer Science",
+    department: "Kỹ Thuật Phần Mềm",
     lastLogin: "2024-01-15 14:20",
     createdAt: "2023-09-15",
     avatar: "/placeholder.svg?height=40&width=40",
@@ -85,8 +85,8 @@ const mockUsers: User[] = [
     email: "pham.d@university.edu",
     role: "faculty",
     status: "awaiting_verification",
-    department: "Software Engineering",
-    lastLogin: "Never",
+    department: "Kỹ Thuật Phần Mềm",
+    lastLogin: "Chưa bao giờ",
     createdAt: "2024-01-10",
     avatar: "/placeholder.svg?height=40&width=40",
     permissions: [],
@@ -96,22 +96,22 @@ const mockUsers: User[] = [
 const mockRoles: Role[] = [
   {
     id: "1",
-    name: "Admin",
-    description: "Full system access and management",
+    name: "Quản trị viên",
+    description: "Quyền truy cập và quản lý toàn bộ hệ thống",
     permissions: ["full_access", "user_management", "security_settings"],
     userCount: 3,
   },
   {
     id: "2",
-    name: "Faculty",
-    description: "Teaching staff with content management access",
+    name: "Giảng viên",
+    description: "Đội ngũ giảng dạy có quyền quản lý nội dung",
     permissions: ["review_responses", "manage_knowledge", "view_analytics", "student_monitoring"],
     userCount: 15,
   },
   {
     id: "3",
-    name: "Student",
-    description: "Students with basic interaction access",
+    name: "Sinh viên",
+    description: "Sinh viên có quyền truy cập cơ bản để tương tác",
     permissions: ["ask_questions", "view_responses", "access_materials"],
     userCount: 342,
   },
@@ -175,7 +175,7 @@ export function AdminUserManagement() {
   const getRoleBadge = (role: string) => {
     switch (role) {
       case "admin":
-        return <Badge variant="destructive">Admin</Badge>
+        return <Badge variant="destructive">Quản trị viên</Badge>
       case "faculty":
         return <Badge variant="default">Giảng viên</Badge>
       case "student":
@@ -292,9 +292,9 @@ export function AdminUserManagement() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Tất cả vai trò</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="faculty">Faculty</SelectItem>
-                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="admin">Quản trị viên</SelectItem>
+                    <SelectItem value="faculty">Giảng viên</SelectItem>
+                    <SelectItem value="student">Sinh viên</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -323,7 +323,6 @@ export function AdminUserManagement() {
                   <TableRow>
                     <TableHead>Người dùng</TableHead>
                     <TableHead>Vai trò</TableHead>
-                    <TableHead>Ngành</TableHead>
                     <TableHead>Trạng thái</TableHead>
                     <TableHead>Đăng nhập gần nhất</TableHead>
                     <TableHead>Thao tác</TableHead>
@@ -350,7 +349,6 @@ export function AdminUserManagement() {
                         </div>
                       </TableCell>
                       <TableCell>{getRoleBadge(user.role)}</TableCell>
-                      <TableCell className="text-sm">{user.department}</TableCell>
                       <TableCell>{getStatusBadge(user.status)}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{user.lastLogin}</TableCell>
                       <TableCell>
@@ -388,15 +386,9 @@ export function AdminUserManagement() {
                                     </div>
                                   </div>
 
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                      <label className="text-sm font-medium">Ngành</label>
-                                      <p className="text-sm text-muted-foreground">{selectedUser.department}</p>
-                                    </div>
-                                    <div>
-                                      <label className="text-sm font-medium">Ngày tạo</label>
-                                      <p className="text-sm text-muted-foreground">{selectedUser.createdAt}</p>
-                                    </div>
+                                  <div>
+                                    <label className="text-sm font-medium">Ngày tạo</label>
+                                    <p className="text-sm text-muted-foreground">{selectedUser.createdAt}</p>
                                   </div>
 
                                   <div>
@@ -451,34 +443,236 @@ export function AdminUserManagement() {
         </TabsContent>
 
         <TabsContent value="roles" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {roles.map((role) => (
-              <Card key={role.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {role.name}
-                    <Badge variant="outline">{role.userCount} người dùng</Badge>
-                  </CardTitle>
-                  <CardDescription>{role.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Quyền:</label>
-                    <div className="space-y-1">
-                      {role.permissions.map((permId) => {
-                        const perm = allPermissions.find((p) => p.id === permId)
-                        return perm ? (
-                          <div key={permId} className="text-sm text-muted-foreground">
-                            • {perm.name}
-                          </div>
-                        ) : null
-                      })}
-                    </div>
-                  </div>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Vai trò và phân quyền</h3>
+            </div>
 
-                </CardContent>
-              </Card>
-            ))}
+            <Tabs defaultValue="student" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="student">Sinh viên</TabsTrigger>
+                <TabsTrigger value="faculty">Giảng viên</TabsTrigger>
+                <TabsTrigger value="admin">Quản trị viên</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="student" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      Danh sách sinh viên
+                      <Badge variant="outline">{mockUsers.filter(u => u.role === 'student').length} người dùng</Badge>
+                    </CardTitle>
+                    <CardDescription>Sinh viên có quyền truy cập cơ bản để tương tác với hệ thống</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative flex-1">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input placeholder="Tìm kiếm sinh viên..." className="pl-10" />
+                        </div>
+
+                      </div>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Người dùng</TableHead>
+                            <TableHead>Khoa</TableHead>
+                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>Lần đăng nhập cuối</TableHead>
+                            <TableHead>Thao tác</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {mockUsers.filter(user => user.role === 'student').map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell>
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarImage src={user.avatar} />
+                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="font-medium">{user.name}</div>
+                                    <div className="text-sm text-muted-foreground">{user.email}</div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell>{user.department}</TableCell>
+                              <TableCell>
+                                <Badge variant={user.status === 'active' ? 'default' : user.status === 'inactive' ? 'secondary' : 'outline'}>
+                                  {user.status === 'active' ? 'Hoạt động' : user.status === 'inactive' ? 'Không hoạt động' : 'Chờ xác thực'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{user.lastLogin}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Button variant="ghost" size="sm">
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="faculty" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      Danh sách giảng viên
+                      <Badge variant="outline">{mockUsers.filter(u => u.role === 'faculty').length} người dùng</Badge>
+                    </CardTitle>
+                    <CardDescription>Đội ngũ giảng dạy có quyền quản lý nội dung và hỗ trợ sinh viên</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative flex-1">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input placeholder="Tìm kiếm giảng viên..." className="pl-10" />
+                        </div>
+
+                      </div>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Người dùng</TableHead>
+                            <TableHead>Khoa</TableHead>
+                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>Lần đăng nhập cuối</TableHead>
+                            <TableHead>Thao tác</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {mockUsers.filter(user => user.role === 'faculty').map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell>
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarImage src={user.avatar} />
+                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="font-medium">{user.name}</div>
+                                    <div className="text-sm text-muted-foreground">{user.email}</div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell>{user.department}</TableCell>
+                              <TableCell>
+                                <Badge variant={user.status === 'active' ? 'default' : user.status === 'inactive' ? 'secondary' : 'outline'}>
+                                  {user.status === 'active' ? 'Hoạt động' : user.status === 'inactive' ? 'Không hoạt động' : 'Chờ xác thực'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{user.lastLogin}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Button variant="ghost" size="sm">
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="admin" className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      Danh sách quản trị viên
+                      <Badge variant="outline">{mockUsers.filter(u => u.role === 'admin').length} người dùng</Badge>
+                    </CardTitle>
+                    <CardDescription>Quyền truy cập và quản lý toàn bộ hệ thống</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative flex-1">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input placeholder="Tìm kiếm quản trị viên..." className="pl-10" />
+                        </div>
+
+                      </div>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Người dùng</TableHead>
+
+                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>Lần đăng nhập cuối</TableHead>
+                            <TableHead>Thao tác</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {mockUsers.filter(user => user.role === 'admin').map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell>
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarImage src={user.avatar} />
+                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="font-medium">{user.name}</div>
+                                    <div className="text-sm text-muted-foreground">{user.email}</div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={user.status === 'active' ? 'default' : user.status === 'inactive' ? 'secondary' : 'outline'}>
+                                  {user.status === 'active' ? 'Hoạt động' : user.status === 'inactive' ? 'Không hoạt động' : 'Chờ xác thực'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{user.lastLogin}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Button variant="ghost" size="sm">
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </TabsContent>
 
