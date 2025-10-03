@@ -57,7 +57,7 @@ const systemMetrics: SystemMetric[] = [
     color: "text-green-500"
   },
   {
-    label: "Nội dung KB",
+    label: "Nội dung Kiến thức",
     value: "5,678",
     change: "+3.1%",
     trend: "up",
@@ -65,7 +65,7 @@ const systemMetrics: SystemMetric[] = [
     color: "text-purple-500"
   },
   {
-    label: "Uptime hệ thống",
+    label: "tình trạng AI",
     value: "99.9%",
     change: "0%",
     trend: "stable",
@@ -161,7 +161,7 @@ export function AdminDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Bảng điều khiển Admin</h1>
+          <h1 className="text-3xl font-bold">Bảng điều khiển</h1>
           <p className="text-muted-foreground">
             Tổng quan hệ thống Hannah AI Learning Assistant
           </p>
@@ -170,10 +170,6 @@ export function AdminDashboard() {
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Xuất báo cáo
-          </Button>
-          <Button size="sm">
-            <Settings className="h-4 w-4 mr-2" />
-            Cài đặt hệ thống
           </Button>
         </div>
       </div>
@@ -212,7 +208,7 @@ export function AdminDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
-              Tình trạng hệ thống
+              Tình trạng AI
             </CardTitle>
             <CardDescription>
               Hiệu năng và tình trạng các thành phần hệ thống
@@ -310,44 +306,7 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5" />
-              Thao tác nhanh
-            </CardTitle>
-            <CardDescription>
-              Các tác vụ quản trị thường dùng
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="outline">
-              <Users className="h-4 w-4 mr-2" />
-              Quản lý người dùng
-            </Button>
-            
-            <Button className="w-full justify-start" variant="outline">
-              <Database className="h-4 w-4 mr-2" />
-              Backup database
-            </Button>
-            
-            <Button className="w-full justify-start" variant="outline">
-              <BookOpen className="h-4 w-4 mr-2" />
-              Cập nhật knowledge base
-            </Button>
-            
-            <Button className="w-full justify-start" variant="outline">
-              <Shield className="h-4 w-4 mr-2" />
-              Kiểm tra bảo mật
-            </Button>
-            
-            <Button className="w-full justify-start" variant="outline">
-              <Settings className="h-4 w-4 mr-2" />
-              Cấu hình AI model
-            </Button>
-          </CardContent>
-        </Card>
+
       </div>
 
       {/* System Status Summary */}

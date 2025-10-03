@@ -98,7 +98,7 @@ const mockRoles: Role[] = [
     id: "1",
     name: "Admin",
     description: "Full system access and management",
-    permissions: ["full_access", "user_management", "system_config", "security_settings"],
+    permissions: ["full_access", "user_management", "security_settings"],
     userCount: 3,
   },
   {
@@ -120,7 +120,7 @@ const mockRoles: Role[] = [
 const allPermissions = [
   { id: "full_access", name: "Truy cập đầy đủ", description: "Truy cập toàn bộ hệ thống" },
   { id: "user_management", name: "Quản lý người dùng", description: "Tạo, chỉnh sửa, xóa người dùng" },
-  { id: "system_config", name: "Cấu hình hệ thống", description: "Thay đổi cài đặt hệ thống" },
+
   { id: "security_settings", name: "Cài đặt bảo mật", description: "Quản lý chính sách bảo mật" },
   { id: "review_responses", name: "Xem xét phản hồi", description: "Xem và duyệt phản hồi của AI" },
   { id: "manage_knowledge", name: "Quản lý tri thức", description: "Chỉnh sửa cơ sở tri thức" },
@@ -419,11 +419,7 @@ export function AdminUserManagement() {
                                     </div>
                                   </div>
 
-                                  <div className="flex justify-between pt-4 border-t">
-                                    <Button variant="outline">
-                                      <Key className="h-4 w-4 mr-2" />
-                                      Đặt lại mật khẩu
-                                    </Button>
+                                  <div className="flex justify-end pt-4 border-t">
                                     <div className="flex gap-2">
                                       <Button variant="outline">
                                         <Edit className="h-4 w-4 mr-2" />
@@ -479,13 +475,7 @@ export function AdminUserManagement() {
                       })}
                     </div>
                   </div>
-                  {/* Giữ lại nút Cấu hình theo yêu cầu */}
-                  <div className="flex gap-2 mt-4">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Cấu hình
-                    </Button>
-                  </div>
+
                 </CardContent>
               </Card>
             ))}

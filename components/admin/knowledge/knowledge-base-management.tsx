@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ContentManagement } from "../content/content-management"
 import { 
   Database, 
   FolderTree, 
@@ -45,7 +46,6 @@ interface KnowledgeStructure {
   totalCategories: number
   totalItems: number
   activeCategories: number
-  pendingReview: number
 }
 
 const mockCategories: KnowledgeCategory[] = [
@@ -106,8 +106,7 @@ const mockCategories: KnowledgeCategory[] = [
 const mockStructure: KnowledgeStructure = {
   totalCategories: 15,
   totalItems: 247,
-  activeCategories: 12,
-  pendingReview: 8
+  activeCategories: 12
 }
 
 export function KnowledgeBaseManagement() {
@@ -176,7 +175,7 @@ export function KnowledgeBaseManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Quản lý Knowledge Base</h1>
+          <h1 className="text-3xl font-bold">Quản lý kho tri thức</h1>
           <p className="text-muted-foreground">
             Quản lý cấu trúc, danh mục và tổ chức tri thức của hệ thống Hannah
           </p>
@@ -188,7 +187,7 @@ export function KnowledgeBaseManagement() {
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -198,7 +197,7 @@ export function KnowledgeBaseManagement() {
             <p className="text-2xl font-bold mt-2">{mockStructure.totalCategories}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -208,7 +207,7 @@ export function KnowledgeBaseManagement() {
             <p className="text-2xl font-bold mt-2">{mockStructure.totalItems}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -218,22 +217,13 @@ export function KnowledgeBaseManagement() {
             <p className="text-2xl font-bold mt-2">{mockStructure.activeCategories}</p>
           </CardContent>
         </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-orange-500" />
-              <span className="text-sm font-medium">Chờ duyệt</span>
-            </div>
-            <p className="text-2xl font-bold mt-2">{mockStructure.pendingReview}</p>
-          </CardContent>
-        </Card>
       </div>
 
       <Tabs defaultValue="structure" className="space-y-4">
         <TabsList>
           <TabsTrigger value="structure">Cấu trúc KB</TabsTrigger>
           <TabsTrigger value="categories">Quản lý danh mục</TabsTrigger>
+          <TabsTrigger value="content">Quản lý nội dung</TabsTrigger>
           <TabsTrigger value="settings">Cài đặt</TabsTrigger>
         </TabsList>
 
@@ -373,6 +363,10 @@ export function KnowledgeBaseManagement() {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="content" className="space-y-4">
+          <ContentManagement />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-4">

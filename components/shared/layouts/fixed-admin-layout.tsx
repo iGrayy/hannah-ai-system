@@ -30,12 +30,8 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
     { id: "users", label: "Quản lý người dùng" },
     { id: "system", label: "Cấu hình hệ thống" },
     { id: "performance", label: "Giám sát hiệu năng" },
-    { id: "analytics", label: "Phân tích & Báo cáo" },
-    { id: "security", label: "Bảo mật & Tuân thủ" },
     { id: "integrations", label: "Kết nối tích hợp" },
     { id: "knowledge", label: "Quản lý kho tri thức" },
-    { id: "content", label: "Quản lý nội dung" },
-    { id: "ai-training", label: "Huấn luyện dữ liệu" },
   ]
 
   const currentNavItems = user?.role === "faculty" ? facultyNavItems : adminNavItems
@@ -183,7 +179,9 @@ export function FixedAdminLayout({ children, activeSection: propActiveSection, o
               <div className="p-6 flex-shrink-0">
                 <div className="mb-6 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200 animate-in fade-in-0 slide-in-from-top-2 duration-500 delay-100">
                   <h3 className="text-sm font-bold text-slate-700 mb-1">
+
                     {user?.role === "faculty" ? "Giảng viên" : "Mô-đun Quản trị viên"}
+
                   </h3>
                   <p className="text-xs text-slate-600">Quản lý hệ thống Hannah AI</p>
                 </div>
