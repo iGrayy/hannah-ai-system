@@ -28,7 +28,6 @@ export function AdminSystemConfig() {
           <TabsTrigger value="ai">Phiên bản</TabsTrigger>
           <TabsTrigger value="kb-structure">Cấu trúc Kiến thức</TabsTrigger>
           <TabsTrigger value="database">Cơ sở dữ liệu</TabsTrigger>
-          <TabsTrigger value="security">Bảo mật</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
@@ -190,51 +189,7 @@ export function AdminSystemConfig() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="security" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Cài đặt bảo mật
-              </CardTitle>
-              <CardDescription>Cấu hình bảo mật và tuân thủ</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Xác thực hai lớp</Label>
-                    <p className="text-sm text-muted-foreground">Yêu cầu 2FA cho tất cả tài khoản admin</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Thời gian hết hạn phiên</Label>
-                    <p className="text-sm text-muted-foreground">Tự động đăng xuất khi không hoạt động</p>
-                  </div>
-                  <Select defaultValue="30">
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="15">15 phút</SelectItem>
-                      <SelectItem value="30">30 phút</SelectItem>
-                      <SelectItem value="60">1 giờ</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label>Ghi nhật ký kiểm toán</Label>
-                    <p className="text-sm text-muted-foreground">Ghi lại mọi hành động của admin</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+
       </Tabs>
     </div>
   )
